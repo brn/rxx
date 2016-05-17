@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveAmbientRefs": false,
+    "jsx": "React",
+    "module": "system",
+    "noImplicitAny": false
+  },
+  "files": [
+    "./_references.d.ts"
+  ]
+}

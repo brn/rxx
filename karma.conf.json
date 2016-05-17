@@ -1,0 +1,49 @@
+{
+  "plugins": [
+    "karma-systemjs",
+    "karma-mocha",
+    "karma-chrome-launcher",
+    "karma-phantomjs-launcher",
+    "karma-source-map-support",
+    "karma-jsdom-launcher",
+    "karma-mocha-reporter"
+  ],
+  "frameworks": ["systemjs", "mocha", "source-map-support"],
+  "files": [
+    {"pattern": "src/**/__tests__/*.spec.tsx", "included": true}
+  ],
+  "reporters": ["mocha"],
+  "mochaReporter": {
+    "showDiff": true
+  },
+  "usePolling": false,
+  "customLaunchers": {
+    "PhantomJS_debug": {
+      "base": "PhantomJS",
+      "options": {
+        "windowName": "debug-window"
+      },
+      "debug": true
+    }
+  },
+  "systemjs": {
+	  "configFile": "config.js",
+    
+	  "serveFiles": [
+		  "jspm_packages/**/*",
+      "src/**/*"
+	  ],
+    
+	  "config": {
+		  "paths": {
+        "es6-module-loader": "node_modules/es6-module-loader/dist/es6-module-loader.js",
+        "systemjs": "./jspm_packages/system.js",
+        "system-polyfills": "./jspm_packages/system-polyfills.js",
+        "phantomjs-polyfill": "node_modules/phantomjs-polyfill/bind-polyfill.js",
+        "babel": "./jspm_packages/npm/babel-core@5.8.38/browser.js"
+		  }
+	  },
+    "importPatterns": [".*spec.tsx"],
+    "testFileSuffix": ".spec.tsx"
+  }
+}
