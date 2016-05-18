@@ -77,7 +77,7 @@ describe('HttpRequest', () => {
   const queue: {resolve(res: Response):void, res: Response}[] = []
   beforeEach(() => {
     initPostResponse = () => {
-      window['fetch'] = (url, opt) => {
+      window['fetch'] = (url, opt): Promise<Response> => {
         return new Promise(resolve => {
           const body = opt.body;
           const res = new window['Response'](body, {
@@ -92,7 +92,7 @@ describe('HttpRequest', () => {
     };
 
     initPostErrorResponse = () => {
-      window['fetch'] = (url, opt) => {
+      window['fetch'] = (url, opt): Promise<Response> => {
         return new Promise((_, reject) => queue.push({resolve: reject, res: new window['Response'](opt.body, {
           status: 400,
           headers: {
@@ -103,7 +103,7 @@ describe('HttpRequest', () => {
     };
 
     initFormResponse = () => {
-      window['fetch'] = (url, opt) => {
+      window['fetch'] = (url, opt): Promise<Response> => {
         return new Promise(resolve => queue.push({resolve, res: new window['Response'](opt.body, {
           status: 200,
           headers: {
@@ -114,7 +114,7 @@ describe('HttpRequest', () => {
     };
     
     initGetResponse = (params?: string) => {
-      window['fetch'] = (url, opt) => {
+      window['fetch'] = (url, opt): Promise<Response> => {
         return new Promise(resolve => queue.push({resolve, res: new window['Response']('{"success": true}', {
           status: 200,
           headers: {
@@ -125,7 +125,7 @@ describe('HttpRequest', () => {
     };
     
     initGetErrorResponse = () => {
-      window['fetch'] = (url, opt) => {
+      window['fetch'] = (url, opt): Promise<Response> => {
         return new Promise((_, reject) => queue.push({resolve: reject, res: new window['Response']('{"success": false}', {
           status: 400,
           headers: {

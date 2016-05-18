@@ -26,7 +26,7 @@ const del                = require('del');
 const karma              = require('karma');
 
 
-const DIST = 'dist/public';
+const DIST = 'dist/';
 const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
 
 const exec = (cmd, cb) => {
@@ -54,8 +54,8 @@ gulp.task('install', done => {
  * Compile typescript.
  */
 gulp.task('typescript', () => {  
-  return gulp.src('ts/**/*')
-    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./ts/tsconfig.json')).compilerOptions, {
+  return gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./src/tsconfig.json')).compilerOptions, {
       typescript: require('typescript')
     })))
     .pipe(gulp.dest('lib/'));
@@ -66,7 +66,7 @@ gulp.task('typescript', () => {
  * Minify javascript
  */
 gulp.task('minify', ['typescript'], () => {
-  return gulp.src('lib/main.js')
+  return gulp.src('lib/mvi.js')
     .pipe(build({
       configFile: "config.js",
       build: {

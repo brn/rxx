@@ -16,4 +16,7 @@
  * @author Taketoshi Aono
  */
 
-export {Context, MVIRootComponent, MVISubtreeComponent, ContextReactTypes} from './component/context.react';
+
+import './di';
+import './component';
+import './service';

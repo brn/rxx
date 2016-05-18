@@ -4,7 +4,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "resolveAmbientRefs": false,
     "jsx": "React",
     "module": "system",
     "noImplicitAny": false

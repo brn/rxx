@@ -15,5 +15,13 @@ declare namespace Cookies {
 
 
 declare module 'es6-symbol' {
+  interface SymbolInterface {
+    (string): symbol;
+    length: number;
+    name: string;
+    for(string): symbol;
+    keyFor(string): symbol;
+  }
+  var Symbol: SymbolInterface;
   export default Symbol;
 }
