@@ -13,15 +13,63 @@ inspired by
 
 ```jspm install @react-mvi/core```
 
-If you are typescript user.
+### For typescript user.
+
+Please install type definitions below.
 
 * ```typings install dt~react --save --global```
 * ```typings install dt~react-dom --save --global```
 * ```typings install immutable --save```
 * ```typings install lodash --save```
-* ```npm install rxjs --save```
-* If typescript version is < 0.19, ```npm install @react-mvi/core --save```
 
+Typescript version < 0.19
+
+* ```npm install rxjs --save```
+* ```npm install @react-mvi/core```
+
+tsconfig.json
+```json
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "jsx": "React",
+    "module": "system",
+    "noImplicitAny": false
+  }
+}
+```
+
+Typescript version >= 0.19
+
+tsconfig.json
+```
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "jsx": "React",
+    "module": "system",
+    "noImplicitAny": false
+    "baseDir": ".",
+    "baseURL": ".",
+    "paths": {
+      "@react-mvi/core": [
+        "jspm_packages/npm/@react-mvi/core*"
+      ],
+      "rxjs": [
+        "jspm_packages/npm/rxjs/*"
+      ]
+    }
+  }
+}
+```
 
 ## Simple Usage
 
