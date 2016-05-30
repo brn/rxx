@@ -73,6 +73,11 @@ tsconfig.json
 
 ## Simple Usage
 
+before this example,
+
+```jspm install @react-mvi/http```
+```jspm install @react-mvi/event```
+
 ```typescript
 import * as React from 'react';
 import {
