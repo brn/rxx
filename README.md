@@ -46,7 +46,7 @@ tsconfig.json
 Typescript version >= 0.19
 
 tsconfig.json
-```
+```json
 {
   "compilerOptions": {
     "target": "ES5",
