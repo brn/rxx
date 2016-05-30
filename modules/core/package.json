@@ -119,6 +119,7 @@
   },
   "devDependencies": {
     "@react-mvi/testing": "0.0.12",
+    "ink-docstrap": "^1.2.0",
     "typescript": "^1.9.0-dev.20160526-1.0"
   }
 }

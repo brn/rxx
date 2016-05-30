@@ -34,6 +34,9 @@ System.register(['react', './subscriber'], function(exports_1, context_1) {
                 subscriber_1 = subscriber_1_1;
             }],
         execute: function() {
+            /**
+             * Convert string html tag to Subscriber.
+             */
             toSubscribable = function (name) {
                 return (function (_super) {
                     __extends(class_1, _super);

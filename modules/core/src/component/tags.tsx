@@ -23,11 +23,14 @@ import {
 } from './subscriber';
 
 
+/**
+ * Convert string html tag to Subscriber.
+ */
 const toSubscribable = (name: string) => {
   return class extends React.Component<any, any> {
     public render() {
       return (
-          <Subscriber>
+        <Subscriber>
           {React.createElement(name, this.props)}
         </Subscriber>
       )
@@ -38,9 +41,15 @@ const toSubscribable = (name: string) => {
 }
 
 
+/**
+ * Attributes of the Subscriber that passed through html tag.
+ */
 export interface Attr extends React.HTMLAttributes, React.DOMAttributes, React.ClassAttributes<Element> {}
 
 
+/**
+ * All suppoertd subscriberified tag list.
+ */
 export interface Tags {
   A: new(p: Attr, c: any) => React.Component<Attr, {}>;
   Abbr: new(p: Attr, c: any) => React.Component<Attr, {}>;

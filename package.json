@@ -28,6 +28,8 @@
     "del": "^2.2.0",
     "findup": "^0.1.5",
     "fs-extra": "^0.30.0",
+    "gulp-esdoc": "^0.2.0",
+    "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "^2.13.4",
     "karma-systemjs": "^0.13.0",
     "lodash": "^4.12.0",

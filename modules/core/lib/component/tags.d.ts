@@ -15,8 +15,14 @@
  * @author Taketoshi Aono
  */
 import * as React from 'react';
+/**
+ * Attributes of the Subscriber that passed through html tag.
+ */
 export interface Attr extends React.HTMLAttributes, React.DOMAttributes, React.ClassAttributes<Element> {
 }
+/**
+ * All suppoertd subscriberified tag list.
+ */
 export interface Tags {
     A: new (p: Attr, c: any) => React.Component<Attr, {}>;
     Abbr: new (p: Attr, c: any) => React.Component<Attr, {}>;

@@ -28,38 +28,63 @@ import {
 } from '../io/io';
 
 
+/**
+ * Subscriber component for Rx.Observable.
+ * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
+ */
 export class Subscriber extends React.Component<any, any> {
+  /**
+   * All subscriptions that are subscribed observable embeded in virtual dom trees.
+   */
   private subscription: Subscription;
 
-  private observableMap = [];
+  /**
+   * Observable list that is pushed observable embeded in virtual dom trees.
+   */
+  private observableList = [];
+
 
   constructor(p, c) {
     super(p, c);
+    // State has virtual dom tree that are covered by this component.
     this.state = {
       vdom: null
     };
   }
 
 
+  /**
+   * Rendering new vdom trees that
+   * props are replaced by result value of observable.
+   */
   public render() {
     return this.state.vdom;
   }
 
 
+  /**
+   * Subscribe all observable that embeded in vdom trees.
+   */
   public componentWillMount() {
     this.findObservable(this.props.children);
     this.subscribe();
   }
 
 
+  /**
+   * Reset all subscriptions and re subscribe all observables.
+   */
   public componentWillReceiveProps(nextProps) {
     this.subscription && this.subscription.unsubscribe();
-    this.observableMap = [];
+    this.observableList = [];
     this.findObservable(nextProps.children);
     this.subscribe();
   }
 
 
+  /**
+   * Find observables which are embded in props or text.
+   */
   private findObservable(oldChildren = []) {
     const children = !_.isArray(oldChildren)? [oldChildren]: oldChildren;
     _.forEach(children, (child: React.ReactElement<any>, index) => {
@@ -71,7 +96,7 @@ export class Subscriber extends React.Component<any, any> {
         const props = [];
         _.forIn(_.omit(child.props, 'children'), (v, k) => {
           if (v instanceof Observable) {
-            this.observableMap.push(v);
+            this.observableList.push(v);
           }
         });
 
@@ -80,15 +105,19 @@ export class Subscriber extends React.Component<any, any> {
         }
 
       } else if (child instanceof Observable) {
-        this.observableMap.push(child);
+        this.observableList.push(child);
       }
     });
   }
 
 
+  /**
+   * Subscribe changes of observables.
+   * If observable was updated, children components are updated and rerendered.
+   */
   private subscribe() {
-    if (this.observableMap.length) {
-      this.subscription = Observable.combineLatest(...this.observableMap).subscribe(values => {
+    if (this.observableList.length) {
+      this.subscription = Observable.combineLatest(...this.observableList).subscribe((values: any[]) => {
         const vdom = this.createNewChildren(<div>{this.props.children}</div>, values || []);
         this.renderVdom(vdom);
       });
@@ -98,16 +127,25 @@ export class Subscriber extends React.Component<any, any> {
   }
 
 
+  /**
+   * Rendering children virtual dom tree.
+   * @param vdom New children vdom tree.
+   */
   private renderVdom(vdom: React.ReactElement<any>|React.ReactElement<any>[]) {
     this.setState({vdom});
   }
 
 
-  private createNewChildren(el, observableValues) {
+  /**
+   * Create clone of children recursively.
+   * @param el Child element to clone.
+   * @param observableValues Result value of observables.
+   */
+  private createNewChildren(el: React.ReactElement<any>, observableValues: any[]) {
     const target = el.props? (_.isArray(el.props.children)? el.props.children: el.props.children? [el.props.children]: []): [];
     const children = _.map(target, (child: React.ReactElement<any>, i) => {
       if (child instanceof Observable) {
-        return this.findObservableFromMap(child, observableValues);
+        return this.findObservableFromList(child as any, observableValues);
       } else if (React.isValidElement(child) && !this.isObserverified(child)) {
         return this.createNewChildren(child, observableValues);
       }
@@ -115,7 +153,7 @@ export class Subscriber extends React.Component<any, any> {
     });
     const props = _.mapValues(_.omit(el.props, 'children'), (v: React.ReactElement<any>, k: string) => {
       if (v instanceof Observable) {
-        return this.findObservableFromMap(v, observableValues);
+        return this.findObservableFromList(v, observableValues);
       }
       return v;
     });
@@ -123,8 +161,13 @@ export class Subscriber extends React.Component<any, any> {
   }
 
 
-  private findObservableFromMap(observable, observableValues) {
-    const index = this.observableMap.indexOf(observable);
+  /**
+   * Find a value of observable from observable list.
+   * @param observable Target observable.
+   * @param obsrvableValues Result value list of observable.
+   */
+  private findObservableFromList(observable: Observable<any>, observableValues: any[]) {
+    const index = this.observableList.indexOf(observable);
     if (index > -1) {
       return observableValues[index];
     }
@@ -132,11 +175,18 @@ export class Subscriber extends React.Component<any, any> {
   }
 
 
+  /**
+   * Reset all subscriptions.
+   */
   public componentWillUnmount() {
     this.subscription && this.subscription.unsubscribe();
   }
 
 
+  /**
+   * Check whether child is Subscriber or not.
+   * @param child Child to check.
+   */
   private isObserverified(child: React.ReactElement<any>): boolean {
     return child.type && child.type === Subscriber;
   }

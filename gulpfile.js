@@ -31,6 +31,7 @@ const async        = require('async');
 const findup       = require('findup');
 const semver       = require('semver');
 const npm          = require('npm');
+const esdoc        = require('gulp-esdoc');
 
 
 const DIST = 'dist/';

@@ -15,18 +15,66 @@
  * @author Taketoshi Aono
  */
 import * as React from 'react';
+/**
+ * Subscriber component for Rx.Observable.
+ * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
+ */
 export declare class Subscriber extends React.Component<any, any> {
+    /**
+     * All subscriptions that are subscribed observable embeded in virtual dom trees.
+     */
     private subscription;
-    private observableMap;
+    /**
+     * Observable list that is pushed observable embeded in virtual dom trees.
+     */
+    private observableList;
     constructor(p: any, c: any);
+    /**
+     * Rendering new vdom trees that
+     * props are replaced by result value of observable.
+     */
     render(): any;
+    /**
+     * Subscribe all observable that embeded in vdom trees.
+     */
     componentWillMount(): void;
+    /**
+     * Reset all subscriptions and re subscribe all observables.
+     */
     componentWillReceiveProps(nextProps: any): void;
+    /**
+     * Find observables which are embded in props or text.
+     */
     private findObservable(oldChildren?);
+    /**
+     * Subscribe changes of observables.
+     * If observable was updated, children components are updated and rerendered.
+     */
     private subscribe();
+    /**
+     * Rendering children virtual dom tree.
+     * @param vdom New children vdom tree.
+     */
     private renderVdom(vdom);
+    /**
+     * Create clone of children recursively.
+     * @param el Child element to clone.
+     * @param observableValues Result value of observables.
+     */
     private createNewChildren(el, observableValues);
-    private findObservableFromMap(observable, observableValues);
+    /**
+     * Find a value of observable from observable list.
+     * @param observable Target observable.
+     * @param obsrvableValues Result value list of observable.
+     */
+    private findObservableFromList(observable, observableValues);
+    /**
+     * Reset all subscriptions.
+     */
     componentWillUnmount(): void;
+    /**
+     * Check whether child is Subscriber or not.
+     * @param child Child to check.
+     */
     private isObserverified(child);
 }
