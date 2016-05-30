@@ -17,3 +17,43 @@ If you are typescript user.
 * ```typings install lodash --save```
 * ```npm install rxjs --save```
 * If typescript version is < 0.19, ```npm install @react-mvi/core --save```
+
+
+## Simple Usage
+
+```typescript
+import * as React from 'react';
+import {
+  createModule,
+  component,
+  Tags as T,
+  Subscriber,
+  run
+} from '@react-mvi/core'
+import {
+  EventDispatcher
+} from '@react-mvi/event'
+import {
+  HttpRequest
+} from '@react-mvi/http'
+
+const Service = ({http, event}) => {
+  return {
+    counter: event.for('user::click').scan((_, acc) => acc + 1, 0).publish();
+  }
+}
+
+const module = createModule(config => {
+  config.bind('http').to(HttpRequest);
+  config.bind('event').to(EventDispatcher);
+  config.bind('aService').toInstance(Service);
+});
+
+const View = component((props, context) => {
+  return (
+    <T.Div onClick={context.io.event.asc('user::click')}>conter value is {props.counter}</T.Div>
+  )
+});
+
+run({component: View, modules: [module]}, document.querySelector('#app'));
+```
