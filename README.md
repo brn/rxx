@@ -27,7 +27,6 @@ import {
   createModule,
   component,
   Tags as T,
-  Subscriber,
   run
 } from '@react-mvi/core'
 import {
