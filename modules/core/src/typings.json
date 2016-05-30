@@ -1,0 +1,12 @@
+{
+  "main": "index.d.ts",
+  "name": "@react-mvi/core",
+  "globalDependencies": {
+    "react": "registry:dt/react#0.14.0+20160423065914",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
+  },
+  "dependencies": {
+    "immutable": "registry:npm/immutable#3.7.6+20160411060006",
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+  }
+}

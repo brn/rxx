@@ -15,19 +15,28 @@
  * @author Taketoshi Aono
  */
 
-const _                  = require('lodash');
-const fs                 = require('fs');
-const gulp               = require('gulp');
-const path               = require('path');
-const childProcess       = require('child_process');
-const tsc                = require('gulp-typescript');
-const build              = require('./plugins/build');
-const del                = require('del');
-const karma              = require('karma');
+const _            = require('lodash');
+const fs           = require('fs-extra');
+const gulp         = require('gulp');
+const path         = require('path');
+const childProcess = require('child_process');
+const tsc          = require('gulp-typescript');
+const build        = require('./plugins/build');
+const del          = require('del');
+const karma        = require('karma');
+const merge        = require('merge2');
+const dtsGen       = require('dts-generator');
+const glob         = require('glob');
+const async        = require('async');
+const findup       = require('findup');
+const semver       = require('semver');
+const npm          = require('npm');
 
 
 const DIST = 'dist/';
+const TYPESCRIPT_DIST = `${process.cwd()}/lib`;
 const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
+
 
 const exec = (cmd, cb) => {
   var proc = childProcess.exec(cmd);
@@ -35,8 +44,14 @@ const exec = (cmd, cb) => {
   proc.stderr.on('data', d => process.stdout.write(d));
   proc.on('error', d => process.stdout.write(d));
   cb && proc.on('exit', cb);
-}
+};
 
+
+gulp.task('publish-all', () => {
+  async.forEachSeries(glob.sync('./modules/*'), (dir, done) => {
+    exec(`cd ${dir} && npm publish`, done);
+  });
+});
 
 
 /**
@@ -50,15 +65,69 @@ gulp.task('install', done => {
 });
 
 
+gulp.task('clean', () => {
+  try {
+    fs.removeSync('./lib');
+  } catch(e) {}
+});
+
+
 /**
  * Compile typescript.
  */
-gulp.task('typescript', () => {  
-  return gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./src/tsconfig.json')).compilerOptions, {
-      typescript: require('typescript')
-    })))
-    .pipe(gulp.dest('lib/'));
+gulp.task('typescript', ['clean'], () => {
+  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
+      typescript: require('typescript'),
+      declaration: true
+    })));
+  return merge([
+    tsResult.js.pipe(gulp.dest(TYPESCRIPT_DIST)),
+    tsResult.dts.pipe(gulp.dest(TYPESCRIPT_DIST)),
+  ]);
+});
+
+
+gulp.task('publish', ['pre-publish'], done => {
+  exec('cd lib && npm publish --access public', done);
+});
+
+gulp.task('update-core', done => {
+  exec(`cd ${__dirname}/modules/http && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, done);
+  });
+});
+
+
+gulp.task('update-core-and-publish', done => {
+  exec(`cd ${__dirname}/modules/http && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
+  });
+});
+
+
+gulp.task('check-releasable', ['typescript'], runKarma.bind(null, true, 'PhantomJS'));
+
+
+gulp.task('pre-publish', ['check-releasable'], () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+  const version = semver.inc(pkg.version, 'prerelease', 'beta');
+
+  glob.sync('./src/*').forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
+  pkg.version = version;
+  pkg.main = 'index.js';
+  pkg.jspm.jspmNodeConversion = false;
+  pkg.jspm.main = 'index.js';
+  fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
+  fs.copySync('./package.json', './lib/package.json');
+  fs.copySync('./node_modules', './lib/node_modules');
+  fs.remove('lib/_references.d.ts');
+  try {
+    fs.remove('lib/typings');
+  } catch(e) {}
+  try {
+    fs.remove('lib/typings.json');
+  } catch(e) {}
 });
 
 
@@ -66,7 +135,7 @@ gulp.task('typescript', () => {
  * Minify javascript
  */
 gulp.task('minify', ['typescript'], () => {
-  return gulp.src('lib/mvi.js')
+  return gulp.src(`${process.cwd()}/lib/index.js`)
     .pipe(build({
       configFile: "config.js",
       build: {
@@ -78,7 +147,7 @@ gulp.task('minify', ['typescript'], () => {
         }
       }
     }))
-    .pipe(gulp.dest(`${DIST}/`));
+    .pipe(gulp.dest(`${process.cwd()}/dist/`));
 });
 
 
@@ -89,12 +158,10 @@ gulp.task('clean', (cb) => del([DIST, 'lib'], cb));
 
 
 const KARMA_PID = '.karma.pid';
+const KARMA_CONF = require('./karma.conf')();
 
 
-const KARMA_CONF = JSON.parse(fs.readFileSync('karma.conf.json', 'utf-8'));
-
-
-const doRunKarma = (singleRun, browser, done) => {
+function doRunKarma(singleRun, browser, done) {
   return new karma.Server(_.assign(KARMA_CONF, {
     browsers: [browser],
     singleRun: singleRun
@@ -102,15 +169,9 @@ const doRunKarma = (singleRun, browser, done) => {
 };
 
 
-const runKarma = (singleRun, browser, done) => {
+function runKarma(singleRun, browser, done) {
   if (!singleRun) {
-    try {
-      fs.readFileSync(KARMA_PID);
-      console.error('tdd already running.');
-    } catch (e) {
-      fs.writeFileSync(KARMA_PID, process.pid, 'utf8');
-      doRunKarma(false, browser, done);
-    }
+    doRunKarma(false, browser, done);
   } else {
     doRunKarma(true, browser, done);
   }
@@ -169,4 +230,4 @@ gulp.task('exit-tdd', () => {
 gulp.task('reload-tdd', ['exit-tdd', 'tdd']);
 
 gulp.task('build', ['minify']);
-gulp.task('default', ['build']);
+gulp.task('default', ['pre-publish']);

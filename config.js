@@ -70,7 +70,7 @@ System.config({
     "stable": "npm:babel-core@5.8.38",
     "stable-runtime": "npm:babel-runtime@5.8.38",
     "ts": "github:frankwallis/plugin-typescript@4.0.16",
-    "tsconfig.json": "/src/tsconfig.json",
+    "tsconfig.json": "./tsconfig.json",
     "whatwg-fetch": "npm:whatwg-fetch@0.11.1",
     "github:frankwallis/plugin-typescript@4.0.16": {
       "typescript": "npm:typescript@1.9.0-dev.20160510"

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "React",
+    "module": "system",
+    "noImplicitAny": false
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "src/_references.d.ts",
+    "node_modules/typescript/lib/lib.es6.d.ts"
+  ]
+}

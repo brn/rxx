@@ -1,0 +1,130 @@
+{
+  "name": "@react-mvi/http",
+  "version": "0.3.1-beta.14",
+  "description": "Http IO module for React MVI.",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "gulp --cwd",
+    "patch-and-publish": "gulp publish --cwd",
+    "test": "gulp test --cwd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brn/react-mvi.git"
+  },
+  "keywords": [
+    "react-mvi",
+    "react.js",
+    "react",
+    "reactive",
+    "rxjs",
+    "rfp"
+  ],
+  "author": "Taketoshi Aono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brn/react-mvi/issues"
+  },
+  "homepage": "https://github.com/brn/react-mvi#readme",
+  "jspm": {
+    "dependencies": {
+      "query-string": "npm:query-string@^4.1.0"
+    },
+    "devDependencies": {
+      "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "chai": "npm:chai@^3.5.0",
+      "core-js": "npm:core-js@^1.1.4",
+      "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.11",
+      "ts": "github:frankwallis/plugin-typescript@^4.0.16"
+    },
+    "jspmNodeConversion": false,
+    "main": "index.js",
+    "peerDependencies": {
+      "@react-mvi/core": "npm:@react-mvi/core@^0.3.1-beta.26",
+      "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
+      "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
+      "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
+      "constants": "github:jspm/nodelibs-constants@^0.2.0-alpha",
+      "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
+      "domain": "github:jspm/nodelibs-domain@^0.2.0-alpha",
+      "es6-promise": "npm:es6-promise@^3.2.1",
+      "es6-symbol": "npm:es6-symbol@^3.0.2",
+      "events": "github:jspm/nodelibs-events@^0.2.0-alpha",
+      "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
+      "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
+      "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
+      "lodash": "npm:lodash@^4.13.1",
+      "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
+      "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
+      "react": "npm:react@^15.1.0",
+      "react-dom": "npm:react-dom@^15.1.0",
+      "rxjs": "npm:rxjs@^5.0.0-beta.8",
+      "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
+      "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
+      "url": "github:jspm/nodelibs-url@^0.2.0-alpha",
+      "util": "github:jspm/nodelibs-util@^0.2.0-alpha",
+      "vm": "github:jspm/nodelibs-vm@^0.2.0-alpha",
+      "whatwg-fetch": "npm:whatwg-fetch@^1.0.0",
+      "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
+    },
+    "overrides": {
+      "npm:babel-runtime@5.8.38": {
+        "main": false,
+        "dependencies": {},
+        "optionalDependencies": {
+          "core-js": "^1.2.0"
+        }
+      },
+      "npm:browserify-zlib@0.1.4": {
+        "dependencies": {
+          "readable-stream": "^2.0.2",
+          "pako": "~0.2.0"
+        },
+        "map": {
+          "_stream_transform": "readable-stream/transform"
+        }
+      },
+      "npm:inherits@2.0.1": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:mocha@2.5.1": {
+        "browser": "mocha",
+        "main": "mocha",
+        "meta": {
+          "mocha.js": {
+            "deps": [
+              "./mocha.css!"
+            ],
+            "exports": "Mocha"
+          }
+        },
+        "dependencies": {
+          "css": "*"
+        },
+        "registry": "jspm"
+      },
+      "npm:typescript@1.8.10": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        }
+      }
+    }
+  },
+  "peerDependencies": {
+    "@react-mvi/core": "^0.3.1-beta.26"
+  },
+  "devDependencies": {
+    "@react-mvi/testing": "0.0.5",
+    "typescript": "^1.9.0-dev.20160526-1.0"
+  }
+}

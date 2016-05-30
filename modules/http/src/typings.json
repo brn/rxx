@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+  },
+  "globalDependencies": {
+    "js-cookie": "registry:dt/js-cookie#2.0.0+20160317120654",
+    "query-string": "registry:dt/query-string#3.0.0+20160331065456",
+    "react": "registry:dt/react#0.14.0+20160423065914",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160412133644"
+  }
+}
