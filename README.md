@@ -75,7 +75,7 @@ tsconfig.json
 
 before this example,
 
-```jspm install @react-mvi/http```
+```jspm install @react-mvi/http```  
 ```jspm install @react-mvi/event```
 
 ```typescript
