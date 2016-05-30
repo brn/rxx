@@ -15,3 +15,5 @@ If you are typescript user.
 * ```typings install dt~react-dom --save --global```
 * ```typings install immutable --save```
 * ```typings install lodash --save```
+* ```npm install rxjs --save```
+* If typescript version is < 0.19, ```npm install @react-mvi/core --save```
