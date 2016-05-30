@@ -1,6 +1,8 @@
 # react-mvi
 Minimal framework for react + rxjs mvi architecture
 
+[Documents](http://brn.github.io/react-mvi)
+
 inspired by  
 [react-combinators](https://github.com/milankinen/react-combinators)  
 [react-reactive-toolkit](https://github.com/milankinen/react-reactive-toolkit)
