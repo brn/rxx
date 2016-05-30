@@ -11,7 +11,7 @@ inspired by
 
 - jspm > 0.17.0-beta.16
 
-## Installations
+## Installation
 
 ```jspm install @react-mvi/core```
 
