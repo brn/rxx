@@ -15,35 +15,38 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, context_1) {
+System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var method_proxy_1, _, inject_1;
+    var method_proxy_1, inject_1, symbol_1, lodash_1;
     var INJECTION_NAME_SYMBOL, SINGLETON_KEY, PROXIED_MARD, Injections, Injector;
     return {
         setters:[
             function (method_proxy_1_1) {
                 method_proxy_1 = method_proxy_1_1;
             },
-            function (_1) {
-                _ = _1;
-            },
             function (inject_1_1) {
                 inject_1 = inject_1_1;
+            },
+            function (symbol_1_1) {
+                symbol_1 = symbol_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
             /**
              * di時に使用された名前を格納するキー
              */
-            exports_1("INJECTION_NAME_SYMBOL", INJECTION_NAME_SYMBOL = Symbol('__injectionname__'));
+            exports_1("INJECTION_NAME_SYMBOL", INJECTION_NAME_SYMBOL = symbol_1.Symbol('__injectionname__'));
             /**
              * シングルトンオブジェクトのインスタンスを格納するキー
              */
-            SINGLETON_KEY = Symbol('__instance__');
+            SINGLETON_KEY = symbol_1.Symbol('__instance__');
             /**
              * インターセプタ適用済みの印
              */
-            PROXIED_MARD = Symbol('__proxied__');
+            PROXIED_MARD = symbol_1.Symbol('__proxied__');
             /**
              * 依存性の定義
              */
@@ -95,7 +98,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                  */
                 Injections.prototype.extractInjectionTarget = function (target, symbol) {
                     var resources = target[symbol];
-                    if (!_.isArray(resources)) {
+                    if (!lodash_1._.isArray(resources)) {
                         if (!resources) {
                             resources = [];
                         }
@@ -140,10 +143,10 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                 Injector.prototype.initialize = function (modules) {
                     var _this = this;
                     var obj = {};
-                    _.forEach(modules, function (mod) {
+                    lodash_1._.forEach(modules, function (mod) {
                         mod.configure();
-                        _.extend(obj, mod.getBindings());
-                        _.extend(_this.templates, mod.getTemplates());
+                        lodash_1._.extend(obj, mod.getBindings());
+                        lodash_1._.extend(_this.templates, mod.getTemplates());
                         _this.intercepts = _this.intercepts.concat(mod.getIntercepts() || []);
                     });
                     obj['injector'] = this.fromParams(this);
@@ -155,7 +158,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                  */
                 Injector.prototype.instantiateEagerSingletons = function () {
                     var _this = this;
-                    _.forIn(this.bindings, function (v, k) {
+                    lodash_1._.forIn(this.bindings, function (v, k) {
                         if (v.eagerSingleton) {
                             _this.getInstanceFromSelf(k);
                         }
@@ -224,7 +227,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                 Injector.prototype.injectToInstance = function (inst, params) {
                     if (inst[inject_1.injectionTargetSymbol]) {
                         var keyArgs = this.createArguments(new Injections(null, inst), params, true);
-                        return _.extend(inst, keyArgs);
+                        return lodash_1._.extend(inst, keyArgs);
                     }
                     return inst;
                 };
@@ -267,13 +270,13 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     var _this = this;
                     var ret;
                     if (typeof key === 'string') {
-                        ret = _.filter(_.assign(this.bindings, this.templates), function (binding, name) { return name === key; })[0];
+                        ret = lodash_1._.filter(lodash_1._.assign(this.bindings, this.templates), function (binding, name) { return name === key; })[0];
                         var instance = ret ? this.getInstance(key, null, ret, ret.template) : null;
                         return instance;
                     }
                     else {
                         ret = [];
-                        _.forIn(_.assign(this.bindings, this.templates), function (binding, name) {
+                        lodash_1._.forIn(lodash_1._.assign(this.bindings, this.templates), function (binding, name) {
                             if (key.test(name)) {
                                 var instance = _this.getInstance(name, null, binding, binding.template);
                                 ret.push(instance);
@@ -283,12 +286,12 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     return ret;
                 };
                 Injector.prototype.selfKeys = function () {
-                    return _.map(this.bindings, function (binding, name) { return name; });
+                    return lodash_1._.map(this.bindings, function (binding, name) { return name; });
                 };
                 Injector.prototype.keys = function () {
                     var ret = [];
                     this.findOnParent(function (bindings) {
-                        ret = ret.concat(_.map(bindings, function (binding, name) { return name; }));
+                        ret = ret.concat(lodash_1._.map(bindings, function (binding, name) { return name; }));
                         return true;
                     });
                     return ret;
@@ -304,7 +307,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     var ret = this.invokeNewCall(ctor, args);
                     if (ret[inject_1.injectionTargetSymbol] || ret[inject_1.dynamicTargetSymbol]) {
                         var keyArgs = this.createArguments(new Injections(null, ret), params, true);
-                        _.assign(ret, keyArgs);
+                        lodash_1._.assign(ret, keyArgs);
                     }
                     if (this.intercepts.length > 0) {
                         this.applyInterceptor(ret);
@@ -375,7 +378,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     var args = [];
                     var keyArgs = {};
                     var resources = injections.injections;
-                    var keys = params ? _.keys(params) : [];
+                    var keys = params ? lodash_1._.keys(params) : [];
                     var bindingInfo;
                     var bindingName;
                     var dynamicName;
@@ -389,12 +392,12 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                         var isDynamic = resources[i].length === 3;
                         bindingName = resources[i][0];
                         dynamicName = isDynamic ? resources[i][1] : null;
-                        if (_.isRegExp(bindingName)) {
+                        if (lodash_1._.isRegExp(bindingName)) {
                             var inner = [];
                             this.findOnParent(function (bindings, templates) {
-                                _.forEach(_.assign(bindings, templates), function (binding, name) {
+                                lodash_1._.forEach(lodash_1._.assign(bindings, templates), function (binding, name) {
                                     bindingName.test(name) && inner.push(_this.getInstance(name, null, binding, false));
-                                    _.forEach(keys, function (key) {
+                                    lodash_1._.forEach(keys, function (key) {
                                         if (bindingName.test(key)) {
                                             inner.push(_this.getInstance(key, null, _this.fromParams(params[key]), false));
                                         }
@@ -493,7 +496,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     else if (item.provider) {
                         var provider = this.inject(item.val);
                         var provided = provider.provide();
-                        if (!_.isNil(provided)) {
+                        if (!lodash_1._.isNil(provided)) {
                             provided[INJECTION_NAME_SYMBOL] = bindingName;
                         }
                         ret = provided;
@@ -518,11 +521,11 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                     if (inst[PROXIED_MARD]) {
                         return;
                     }
-                    _.every(this.intercepts, function (i) {
+                    lodash_1._.every(this.intercepts, function (i) {
                         if (inst[i.targetSymbol]) {
-                            if (_.isRegExp(inst[i.targetSymbol][0])) {
+                            if (lodash_1._.isRegExp(inst[i.targetSymbol][0])) {
                                 var regexp_1 = inst[i.targetSymbol][0];
-                                _.forIn(inst, function (v, k) {
+                                lodash_1._.forIn(inst, function (v, k) {
                                     if (regexp_1.test(k)) {
                                         inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
                                     }
@@ -530,7 +533,7 @@ System.register(['./method-proxy', 'lodash', './inject'], function(exports_1, co
                                 return false;
                             }
                             else {
-                                _.forIn(inst[i.targetSymbol], function (s) {
+                                lodash_1._.forIn(inst[i.targetSymbol], function (s) {
                                     if (inst[s]) {
                                         if (typeof inst[s] !== 'function') {
                                             throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));

@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', 'lodash', 'rxjs/Rx'], function(exports_1, context_1) {
+System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -23,20 +23,63 @@ System.register(['react', 'lodash', 'rxjs/Rx'], function(exports_1, context_1) {
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var React, _, Rx_1;
-    var Subscriber;
+    var React, Rx_1, env_1, symbol_1, lodash_1;
+    var process, REACT_ELEMENT_TYPEOF, SUBSCRIBER_MARK, ObservableBinding, EmptyRoot, Subscriber;
     return {
         setters:[
             function (React_1) {
                 React = React_1;
             },
-            function (_1) {
-                _ = _1;
-            },
             function (Rx_1_1) {
                 Rx_1 = Rx_1_1;
+            },
+            function (env_1_1) {
+                env_1 = env_1_1;
+            },
+            function (symbol_1_1) {
+                symbol_1 = symbol_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
+            process = env_1.getProcess();
+            /**
+             * Steal $$typeof symbol from dummy element.
+             */
+            REACT_ELEMENT_TYPEOF = React.createElement('div', {})['$$typeof'];
+            /**
+             * If this symbol was set to static property,
+             * that mean this component is process Observable.
+             */
+            exports_1("SUBSCRIBER_MARK", SUBSCRIBER_MARK = symbol_1.Symbol('__react_mvi_subscriber__'));
+            /**
+             * Information about embedded observables and ReactElement.
+             */
+            ObservableBinding = (function () {
+                function ObservableBinding(updater, _observable) {
+                    this.updater = updater;
+                    this._observable = _observable;
+                }
+                /**
+                 * Return Observable that flow BindingObservableType.
+                 */
+                ObservableBinding.prototype.observable = function () {
+                    var _this = this;
+                    return this._observable.map(function (value) { return ({ value: value, binding: _this }); });
+                };
+                /**
+                 * Update target element props or child.
+                 */
+                ObservableBinding.prototype.update = function (value) {
+                    this.updater(value);
+                };
+                return ObservableBinding;
+            }());
+            /**
+             * Identity function to return children.
+             */
+            EmptyRoot = function (props) { return props.children; };
             /**
              * Subscriber component for Rx.Observable.
              * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
@@ -46,9 +89,17 @@ System.register(['react', 'lodash', 'rxjs/Rx'], function(exports_1, context_1) {
                 function Subscriber(p, c) {
                     _super.call(this, p, c);
                     /**
+                     * All Embeded Observable informations.
+                     */
+                    this.bindings = [];
+                    /**
                      * Observable list that is pushed observable embeded in virtual dom trees.
                      */
                     this.observableList = [];
+                    /**
+                     * Cloned mutable children tree.
+                     */
+                    this.mutableTree = null;
                     // State has virtual dom tree that are covered by this component.
                     this.state = {
                         vdom: null
@@ -65,117 +116,129 @@ System.register(['react', 'lodash', 'rxjs/Rx'], function(exports_1, context_1) {
                  * Subscribe all observable that embeded in vdom trees.
                  */
                 Subscriber.prototype.componentWillMount = function () {
-                    this.findObservable(this.props.children);
-                    this.subscribe();
+                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children));
+                    this.subscribeAll();
                 };
                 /**
                  * Reset all subscriptions and re subscribe all observables.
                  */
                 Subscriber.prototype.componentWillReceiveProps = function (nextProps) {
-                    this.subscription && this.subscription.unsubscribe();
-                    this.observableList = [];
-                    this.findObservable(nextProps.children);
-                    this.subscribe();
-                };
-                /**
-                 * Find observables which are embded in props or text.
-                 */
-                Subscriber.prototype.findObservable = function (oldChildren) {
-                    var _this = this;
-                    if (oldChildren === void 0) { oldChildren = []; }
-                    var children = !_.isArray(oldChildren) ? [oldChildren] : oldChildren;
-                    _.forEach(children, function (child, index) {
-                        if (child.type === Subscriber) {
-                            return;
-                        }
-                        if (child.props) {
-                            var props = [];
-                            _.forIn(_.omit(child.props, 'children'), function (v, k) {
-                                if (v instanceof Rx_1.Observable) {
-                                    _this.observableList.push(v);
-                                }
-                            });
-                            if (child.props.children) {
-                                _this.findObservable(child.props.children);
-                            }
-                        }
-                        else if (child instanceof Rx_1.Observable) {
-                            _this.observableList.push(child);
-                        }
-                    });
+                    this.disposeAll();
+                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children));
+                    this.subscribeAll();
                 };
                 /**
                  * Subscribe changes of observables.
                  * If observable was updated, children components are updated and rerendered.
                  */
-                Subscriber.prototype.subscribe = function () {
+                Subscriber.prototype.subscribeAll = function () {
                     var _this = this;
-                    if (this.observableList.length) {
-                        this.subscription = Rx_1.Observable.combineLatest.apply(Rx_1.Observable, this.observableList).subscribe(function (values) {
-                            var vdom = _this.createNewChildren(React.createElement("div", null, _this.props.children), values || []);
-                            _this.renderVdom(vdom);
+                    if (this.bindings.length > 0) {
+                        var bindings = lodash_1._.map(this.bindings, function (binding) { return binding.observable(); });
+                        this.subscription = Rx_1.Observable.combineLatest.apply(Rx_1.Observable, bindings).subscribe(function (bindings) {
+                            lodash_1._.forEach(bindings, function (_a) {
+                                var value = _a.value, binding = _a.binding;
+                                return binding.update(value);
+                            });
+                            _this.setState({ vdom: _this.mutableTree });
                         });
                     }
                     else {
-                        this.renderVdom(this.props.children);
+                        this.setState({ vdom: this.props.children });
                     }
                 };
                 /**
-                 * Rendering children virtual dom tree.
-                 * @param vdom New children vdom tree.
+                 * Dispose all subscriptions and clear bindings.
                  */
-                Subscriber.prototype.renderVdom = function (vdom) {
-                    this.setState({ vdom: vdom });
+                Subscriber.prototype.disposeAll = function () {
+                    this.subscription && this.subscription.unsubscribe();
+                    this.bindings = [];
+                    this.subscription = null;
                 };
                 /**
-                 * Create clone of children recursively.
-                 * @param el Child element to clone.
-                 * @param observableValues Result value of observables.
+                 * Update children elements.
+                 * @param el A parent ReactElement.
                  */
-                Subscriber.prototype.createNewChildren = function (el, observableValues) {
-                    var _this = this;
-                    var target = el.props ? (_.isArray(el.props.children) ? el.props.children : el.props.children ? [el.props.children] : []) : [];
-                    var children = _.map(target, function (child, i) {
-                        if (child instanceof Rx_1.Observable) {
-                            return _this.findObservableFromList(child, observableValues);
+                Subscriber.prototype.updateChildren = function (el, value, index) {
+                    if (el.props.children && lodash_1._.isArray(el.props.children)) {
+                        el.props.children[index] = value;
+                        if (process.env.NODE_ENV === 'debug') {
+                            // Check valid element or not
+                            React.createElement.apply(React, [el.type, el.props].concat(el.props.children));
                         }
-                        else if (React.isValidElement(child) && !_this.isObserverified(child)) {
-                            return _this.createNewChildren(child, observableValues);
+                    }
+                    else {
+                        el.props.children = value;
+                        if (process.env.NODE_ENV === 'debug') {
+                            // Check valid element or not
+                            React.createElement(el.type, el.props, el.props.children);
+                        }
+                    }
+                };
+                /**
+                 * Create mutable ReactElement trees.
+                 * @param el A source ReactElement.
+                 * @returns Mutable ReactElement like json.
+                 */
+                Subscriber.prototype.createMutableElement = function (el) {
+                    return {
+                        $$typeof: REACT_ELEMENT_TYPEOF,
+                        type: el.type,
+                        props: lodash_1._.clone(el.props),
+                        ref: el['ref'],
+                        key: el.key,
+                        _owner: el['_owner']
+                    };
+                };
+                /**
+                 * Clone all children trees that has mutable props, mutable children, recursively from root.
+                 * @param el Root React.ReactElement.
+                 */
+                Subscriber.prototype.cloneChildren = function (el) {
+                    var _this = this;
+                    var newElement = this.createMutableElement(el);
+                    var target = newElement.props.children ? (!lodash_1._.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [];
+                    var children = lodash_1._.map(target, function (child, i) {
+                        if (child instanceof Rx_1.Observable) {
+                            _this.bindings.push(new ObservableBinding(function (value) {
+                                _this.updateChildren(newElement, value, i);
+                            }, child));
+                        }
+                        else if (React.isValidElement(child) && !_this.isSubscriber(child)) {
+                            return _this.cloneChildren(child);
                         }
                         return child;
                     });
-                    var props = _.mapValues(_.omit(el.props, 'children'), function (v, k) {
+                    lodash_1._.forEach(lodash_1._.omit(newElement.props, 'children'), function (v, k) {
                         if (v instanceof Rx_1.Observable) {
-                            return _this.findObservableFromList(v, observableValues);
+                            _this.bindings.push(new ObservableBinding(function (value) {
+                                newElement.props[k] = value;
+                            }, v));
                         }
-                        return v;
                     });
-                    return React.cloneElement.apply(React, [el, props].concat(children));
-                };
-                /**
-                 * Find a value of observable from observable list.
-                 * @param observable Target observable.
-                 * @param obsrvableValues Result value list of observable.
-                 */
-                Subscriber.prototype.findObservableFromList = function (observable, observableValues) {
-                    var index = this.observableList.indexOf(observable);
-                    if (index > -1) {
-                        return observableValues[index];
+                    if (newElement.props.children) {
+                        if (lodash_1._.isArray(newElement.props.children)) {
+                            newElement.props.children = children;
+                        }
+                        else {
+                            newElement.props.children = children[0];
+                        }
                     }
-                    return null;
+                    return newElement;
                 };
                 /**
                  * Reset all subscriptions.
                  */
                 Subscriber.prototype.componentWillUnmount = function () {
-                    this.subscription && this.subscription.unsubscribe();
+                    this.disposeAll();
                 };
                 /**
                  * Check whether child is Subscriber or not.
                  * @param child Child to check.
+                 * @returns Return true is passed element type is Subscriber constructor or has SUBSCRIBER_MARK.
                  */
-                Subscriber.prototype.isObserverified = function (child) {
-                    return child.type && child.type === Subscriber;
+                Subscriber.prototype.isSubscriber = function (child) {
+                    return child.type && (child.type === Subscriber || child.type[SUBSCRIBER_MARK]);
                 };
                 return Subscriber;
             }(React.Component));

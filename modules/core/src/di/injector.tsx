@@ -32,11 +32,16 @@ import {
 import {
   Module
 }             from './module';
-import * as _ from 'lodash';
 import {
   injectionTargetSymbol,
   dynamicTargetSymbol
 }             from './inject';
+import {
+  Symbol
+} from '../shims/symbol';
+import {
+  _
+} from '../shims/lodash';
 
 
 /**
@@ -576,14 +581,14 @@ export class Injector {
       if (inst[i.targetSymbol]) {
         if (_.isRegExp(inst[i.targetSymbol][0])) {
           const regexp = inst[i.targetSymbol][0];
-          _.forIn(inst, (v, k) => {
+          _.forIn(inst, (v: Function, k) => {
             if (regexp.test(k)) {
               inst[k] = this.getMethodProxy(inst, v, this.getInterceptorInstance(i), k);
             }
           })
           return false;
         } else {
-          _.forIn(inst[i.targetSymbol], s => {
+          _.forIn(inst[i.targetSymbol], (s: string) => {
             if (inst[s]) {
               if (typeof inst[s] !== 'function') {
                 throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);

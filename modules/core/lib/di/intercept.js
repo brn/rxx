@@ -15,10 +15,10 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['lodash'], function(exports_1, context_1) {
+System.register(['../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var _;
+    var lodash_1;
     /**
      * 指定されたキーで設定用の配列を初期化する
      * @param target 対象のオブジェクト
@@ -49,7 +49,7 @@ System.register(['lodash'], function(exports_1, context_1) {
      */
     function intercept(key) {
         return function (target, propertyKey) {
-            if (target[key] && _.isRegExp(target[key][0])) {
+            if (target[key] && lodash_1._.isRegExp(target[key][0])) {
                 throw new Error('Cannot intercept already annotated with @interceptAll');
             }
             initList(target, key);
@@ -60,8 +60,8 @@ System.register(['lodash'], function(exports_1, context_1) {
     exports_1("intercept", intercept);
     return {
         setters:[
-            function (_1) {
-                _ = _1;
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
         }

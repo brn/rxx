@@ -19,7 +19,8 @@
 
 import * as React from 'react';
 import {
-  Subscriber
+  Subscriber,
+  SUBSCRIBER_MARK
 } from './subscriber';
 
 
@@ -27,7 +28,7 @@ import {
  * Convert string html tag to Subscriber.
  */
 const toSubscribable = (name: string) => {
-  return class extends React.Component<any, any> {
+  const ret = class extends React.Component<any, any> {
     public render() {
       return (
         <Subscriber>
@@ -38,6 +39,9 @@ const toSubscribable = (name: string) => {
 
     static displayName = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
   }
+
+  ret[SUBSCRIBER_MARK] = true;
+  return ret;
 }
 
 

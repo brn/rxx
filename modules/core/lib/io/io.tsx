@@ -17,7 +17,6 @@
  */
 
 
-import * as _ from 'lodash';
 import {
   Observable
 }             from 'rxjs/Observable';
@@ -27,6 +26,12 @@ import {
 import {
   Subscription
 }             from 'rxjs/Subscription';
+import {
+  Symbol
+}             from '../shims/symbol';
+import {
+  _
+}             from '../shims/lodash';
 
 
 export const IO_MARK = Symbol('io');
@@ -153,7 +158,7 @@ export class SubjectStore {
    * Dispose all subscriptions.
    */
   public end() {
-    _.forEach(this.subjectMap, v => v.complete());
+    _.forEach(this.subjectMap, (v: Subject<any>) => v.complete());
   }
 }
 

@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '../di/injector', '../io/io'], function(exports_1, context_1) {
+System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -23,7 +23,7 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var _, React, ConnectableObservable_1, injector_1, io_1;
+    var React, Rx_1, injector_1, io_1, lodash_1;
     var ContextReactTypes, isImmutable, connect, Context;
     /**
      * Decorator to set specified type as context type.
@@ -38,20 +38,20 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
     exports_1("setContext", setContext);
     return {
         setters:[
-            function (_1) {
-                _ = _1;
-            },
             function (React_1) {
                 React = React_1;
             },
-            function (ConnectableObservable_1_1) {
-                ConnectableObservable_1 = ConnectableObservable_1_1;
+            function (Rx_1_1) {
+                Rx_1 = Rx_1_1;
             },
             function (injector_1_1) {
                 injector_1 = injector_1_1;
             },
             function (io_1_1) {
                 io_1 = io_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
             /**
@@ -72,7 +72,7 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
                 if (!v) {
                     return;
                 }
-                if (v instanceof ConnectableObservable_1.ConnectableObservable) {
+                if (v instanceof Rx_1.ConnectableObservable) {
                     return v.connect && v.connect();
                 }
                 if (isImmutable(v)) {
@@ -81,24 +81,24 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
                 if (Object.getPrototypeOf(v) !== Object.prototype) {
                     return;
                 }
-                _.forIn(v, function (v, k) {
+                lodash_1._.forIn(v, function (v, k) {
                     if (!v) {
                         return;
                     }
-                    if (v instanceof ConnectableObservable_1.ConnectableObservable && v.connect) {
+                    if (v instanceof Rx_1.ConnectableObservable && v.connect) {
                         v.connect();
                     }
                     else if (isImmutable(v)) {
                         return v;
                     }
-                    else if (_.isArray(v)) {
+                    else if (lodash_1._.isArray(v)) {
                         v.forEach(connect);
                     }
-                    else if (_.isObject(v)) {
+                    else if (lodash_1._.isObject(v)) {
                         if (Object.getPrototypeOf(v) !== Object.prototype) {
                             return;
                         }
-                        _.forIn(v, connect);
+                        lodash_1._.forIn(v, connect);
                     }
                 });
             };
@@ -117,7 +117,7 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
                             for (var _i = 0; _i < arguments.length; _i++) {
                                 args[_i - 0] = arguments[_i];
                             }
-                            var ioResposens = _.mapValues(ioModules, function (v) { return v ? v.response : null; });
+                            var ioResposens = lodash_1._.mapValues(ioModules, function (v) { return v ? v.response : null; });
                             return services.reduce(function (props, service) {
                                 var result;
                                 if (typeof service.initialize !== 'function') {
@@ -127,13 +127,13 @@ System.register(['lodash', 'react', 'rxjs/observable/ConnectableObservable', '..
                                     result = service.initialize();
                                 }
                                 if ('http' in result && ioModules['http']) {
-                                    _.forIn(result['http'], function (v) { return ioModules['http'].wait(v); });
+                                    lodash_1._.forIn(result['http'], function (v) { return ioModules['http'].wait(v); });
                                 }
-                                return _.assign(props, result);
+                                return lodash_1._.assign(props, result);
                             }, {});
                         },
                         clean: function () {
-                            _.forIn(ioModules, function (io) { return io.end(); });
+                            lodash_1._.forIn(ioModules, function (io) { return io.end(); });
                         },
                         connect: connect,
                         injector: injector,

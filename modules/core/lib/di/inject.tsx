@@ -17,6 +17,11 @@
  */
 
 
+import {
+  Symbol
+} from '../shims/symbol';
+
+
 /**
  * DIの設定キー
  */

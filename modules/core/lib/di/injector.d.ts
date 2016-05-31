@@ -19,7 +19,7 @@ import { Module } from './module';
 /**
  * di時に使用された名前を格納するキー
  */
-export declare const INJECTION_NAME_SYMBOL: symbol;
+export declare const INJECTION_NAME_SYMBOL: any;
 /**
  * diを実行するメインクラス
  */

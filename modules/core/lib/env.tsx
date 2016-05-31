@@ -16,15 +16,21 @@
  * @author Taketoshi Aono
  */
 
-export * from './component/context';
-export * from './component/subscriber';
-export * from './component/tags';
-export * from './component/utils';
-export * from './run';
-export {
-  Service
-} from './service/service';
-export * from './io/io';
-export * from './utils';
-export * from './di/index';
-export * from './shims/symbol';
+
+export interface Process {
+  env: {
+    NODE_ENV: 'production' | 'debug'
+  }
+}
+
+
+export function getProcess(): Process {
+  if (!window['process'] || !window['process'].env) {
+    return {
+      env: {
+        NODE_ENV: 'debug'
+      }
+    }
+  }
+  return window['process'];
+}

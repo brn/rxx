@@ -17,11 +17,11 @@
  */
 
 
-import * as _     from 'lodash';
 import * as React from 'react';
 import {
-  ConnectableObservable
-}                 from 'rxjs/observable/ConnectableObservable';
+  ConnectableObservable,
+  Observable
+}                 from 'rxjs/Rx';
 import {
   Module
 }                 from '../di/module';
@@ -42,6 +42,9 @@ import {
 import {
   isDefined
 }                 from '../utils';
+import {
+  _
+}                 from '../shims/lodash';
 
 
 export interface IOTypes extends BasicIOTypes {
@@ -141,7 +144,7 @@ export class Context extends React.Component<ContextProps, {}> {
           }
 
           if ('http' in result && ioModules['http']) {
-            _.forIn(result['http'], v => (ioModules['http'] as Http).wait(v));
+            _.forIn(result['http'], (v: Observable<any>) => (ioModules['http'] as Http).wait(v));
           }
           
           return _.assign(props, result);

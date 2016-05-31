@@ -16,15 +16,21 @@
  * @author Taketoshi Aono
  */
 
-export * from './component/context';
-export * from './component/subscriber';
-export * from './component/tags';
-export * from './component/utils';
-export * from './run';
-export {
-  Service
-} from './service/service';
-export * from './io/io';
-export * from './utils';
-export * from './di/index';
-export * from './shims/symbol';
+
+const HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
+
+
+export const Symbol = HAS_SYMBOL? window['Symbol']: (key: string) => {
+  return key;
+}
+
+
+if (!HAS_SYMBOL) {
+  const GLOBAL_SYMBOL_MAP = {};
+  Symbol.for = (key: string) => {
+    if (!GLOBAL_SYMBOL_MAP[key]) {
+      GLOBAL_SYMBOL_MAP[key] = key;
+    }
+    return key;
+  }
+}

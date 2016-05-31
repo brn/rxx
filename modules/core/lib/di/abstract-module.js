@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['lodash', './binding'], function(exports_1, context_1) {
+System.register(['./binding', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -23,7 +23,7 @@ System.register(['lodash', './binding'], function(exports_1, context_1) {
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var _, binding_1;
+    var binding_1, lodash_1;
     var AbstractModule;
     function createModule(fn) {
         return new ((function (_super) {
@@ -40,11 +40,11 @@ System.register(['lodash', './binding'], function(exports_1, context_1) {
     exports_1("createModule", createModule);
     return {
         setters:[
-            function (_1) {
-                _ = _1;
-            },
             function (binding_1_1) {
                 binding_1 = binding_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
             /**
@@ -115,7 +115,7 @@ System.register(['lodash', './binding'], function(exports_1, context_1) {
                  */
                 AbstractModule.prototype.mixin = function (m) {
                     m.configure();
-                    _.extend(this.bindings, m.getBindings());
+                    lodash_1._.extend(this.bindings, m.getBindings());
                 };
                 return AbstractModule;
             }());

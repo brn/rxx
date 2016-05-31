@@ -16,6 +16,11 @@
  */
 import * as React from 'react';
 /**
+ * If this symbol was set to static property,
+ * that mean this component is process Observable.
+ */
+export declare const SUBSCRIBER_MARK: any;
+/**
  * Subscriber component for Rx.Observable.
  * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
  */
@@ -25,9 +30,17 @@ export declare class Subscriber extends React.Component<any, any> {
      */
     private subscription;
     /**
+     * All Embeded Observable informations.
+     */
+    private bindings;
+    /**
      * Observable list that is pushed observable embeded in virtual dom trees.
      */
     private observableList;
+    /**
+     * Cloned mutable children tree.
+     */
+    private mutableTree;
     constructor(p: any, c: any);
     /**
      * Rendering new vdom trees that
@@ -43,31 +56,30 @@ export declare class Subscriber extends React.Component<any, any> {
      */
     componentWillReceiveProps(nextProps: any): void;
     /**
-     * Find observables which are embded in props or text.
-     */
-    private findObservable(oldChildren?);
-    /**
      * Subscribe changes of observables.
      * If observable was updated, children components are updated and rerendered.
      */
-    private subscribe();
+    private subscribeAll();
     /**
-     * Rendering children virtual dom tree.
-     * @param vdom New children vdom tree.
+     * Dispose all subscriptions and clear bindings.
      */
-    private renderVdom(vdom);
+    private disposeAll();
     /**
-     * Create clone of children recursively.
-     * @param el Child element to clone.
-     * @param observableValues Result value of observables.
+     * Update children elements.
+     * @param el A parent ReactElement.
      */
-    private createNewChildren(el, observableValues);
+    private updateChildren(el, value, index);
     /**
-     * Find a value of observable from observable list.
-     * @param observable Target observable.
-     * @param obsrvableValues Result value list of observable.
+     * Create mutable ReactElement trees.
+     * @param el A source ReactElement.
+     * @returns Mutable ReactElement like json.
      */
-    private findObservableFromList(observable, observableValues);
+    private createMutableElement(el);
+    /**
+     * Clone all children trees that has mutable props, mutable children, recursively from root.
+     * @param el Root React.ReactElement.
+     */
+    private cloneChildren(el);
     /**
      * Reset all subscriptions.
      */
@@ -75,6 +87,7 @@ export declare class Subscriber extends React.Component<any, any> {
     /**
      * Check whether child is Subscriber or not.
      * @param child Child to check.
+     * @returns Return true is passed element type is Subscriber constructor or has SUBSCRIBER_MARK.
      */
-    private isObserverified(child);
+    private isSubscriber(child);
 }

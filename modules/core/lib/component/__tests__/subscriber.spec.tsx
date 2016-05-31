@@ -85,6 +85,7 @@ describe('combinator.tsx', () => {
           <T.Div className={className1}>
             <div className="hoge">
               <T.Span className={className2}>{text}</T.Span>
+              <T.Span className={'className3'}>{'test-text'}</T.Span>
             </div>
           </T.Div>
         );
@@ -94,10 +95,13 @@ describe('combinator.tsx', () => {
       className1.next('className1');
       className2.next('className2');
       text.next('test-text');
+
       setTimeout(() => {
         Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
         Chai.expect(!!div.querySelector('.className2')).to.be.eq(true);
+        Chai.expect(!!div.querySelector('.className3')).to.be.eq(true);
         Chai.expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
+        Chai.expect(div.querySelector('.className3').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
       }, 100);

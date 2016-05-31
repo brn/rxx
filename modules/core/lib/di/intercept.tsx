@@ -17,7 +17,12 @@
  */
 
 
-import * as _ from 'lodash';
+import {
+  Symbol
+} from '../shims/symbol';
+import {
+  _
+} from '../shims/lodash';
 
 
 /**

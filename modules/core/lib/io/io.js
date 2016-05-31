@@ -15,10 +15,10 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['lodash', 'rxjs/Subject'], function(exports_1, context_1) {
+System.register(['rxjs/Subject', '../shims/symbol', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var _, Subject_1;
+    var Subject_1, symbol_1, lodash_1;
     var IO_MARK, IOModule, IO_MODULES, appendIOModuleKey, getIOModules, IOResponse, SubjectStore, HttpMethod, ResponseType, StorageMethod, StorageType;
     /**
      * Decorator for io module.
@@ -29,14 +29,17 @@ System.register(['lodash', 'rxjs/Subject'], function(exports_1, context_1) {
     exports_1("io", io);
     return {
         setters:[
-            function (_1) {
-                _ = _1;
-            },
             function (Subject_1_1) {
                 Subject_1 = Subject_1_1;
+            },
+            function (symbol_1_1) {
+                symbol_1 = symbol_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
-            exports_1("IO_MARK", IO_MARK = Symbol('io'));
+            exports_1("IO_MARK", IO_MARK = symbol_1.Symbol('io'));
             /**
              * Base class of io module.
              */
@@ -135,7 +138,7 @@ System.register(['lodash', 'rxjs/Subject'], function(exports_1, context_1) {
                  * Dispose all subscriptions.
                  */
                 SubjectStore.prototype.end = function () {
-                    _.forEach(this.subjectMap, function (v) { return v.complete(); });
+                    lodash_1._.forEach(this.subjectMap, function (v) { return v.complete(); });
                 };
                 return SubjectStore;
             }());

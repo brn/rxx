@@ -15,9 +15,10 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
+System.register(['../shims/symbol'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
+    var symbol_1;
     var injectionTargetSymbol, dynamicTargetSymbol;
     /**
      * diの設定を保持する配列を初期化する
@@ -59,16 +60,19 @@ System.register([], function(exports_1, context_1) {
     }
     exports_1("param", param);
     return {
-        setters:[],
+        setters:[
+            function (symbol_1_1) {
+                symbol_1 = symbol_1_1;
+            }],
         execute: function() {
             /**
              * DIの設定キー
              */
-            exports_1("injectionTargetSymbol", injectionTargetSymbol = Symbol('__injections__'));
+            exports_1("injectionTargetSymbol", injectionTargetSymbol = symbol_1.Symbol('__injections__'));
             /**
              * dynamicデコレータのキー
              */
-            exports_1("dynamicTargetSymbol", dynamicTargetSymbol = Symbol('__dynamic_injections__'));
+            exports_1("dynamicTargetSymbol", dynamicTargetSymbol = symbol_1.Symbol('__dynamic_injections__'));
         }
     }
 });

@@ -17,7 +17,6 @@
  */
 
 
-import * as _ from 'lodash';
 import {
   Binding,
   BindingRelation,
@@ -28,6 +27,9 @@ import {
 import {
   Module
 } from './module';
+import {
+  _
+} from '../shims/lodash';
 
 
 /**
