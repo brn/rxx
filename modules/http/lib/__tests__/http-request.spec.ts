@@ -17,28 +17,38 @@
  */
 
 /// <reference path="../_references.d.ts" />
+/// <reference path="../declarations.d.ts" />
 
-import 'core-js';
-import {Promise}    from 'es6-promise';
 import {
   Sinon,
   graceful
 }                   from '@react-mvi/testing';
 import {
+  Injector,
+  createModule,
+  MethodInvocation,
+  MethodProxy
+}                   from '@react-mvi/core';
+import {
   HttpRequest,
   HttpMethod,
   HttpConfig,
-  ResponseType
+  ResponseType,
+  HTTP_INTERCEPT,
+  HTTP_REQUEST_INTERCEPT
 }                   from '../http-request';
-import {
-  Filter
-}                   from '../filters/filter';
 import {
   expect
 }                   from 'chai';
 import {
   Subject
 }                   from 'rxjs/Rx';
+import {
+  Promise
+}                   from '../shims/promise';
+import {
+  Response
+}                   from '../shims/fetch';
 
 
 describe('HttpRequest', () => {
@@ -48,18 +58,6 @@ describe('HttpRequest', () => {
   let initPostErrorResponse;
   let initGetResponse;
   let initGetErrorResponse;
-
-  class SuccessFilter implements Filter {
-    public filter({err, res}: {err: any, res: any}) {
-      return err? {err: {result: err}, res: null}: {res: {result: res}, err: null};
-    }
-  }
-
-  class ErrorFilter implements Filter {
-    public filter(res: {err: any, res: any}) {
-      return false;
-    }
-  }
 
   const parseRequest = (req: string) => {
     const ret = {};
@@ -72,94 +70,154 @@ describe('HttpRequest', () => {
     return ret;
   }
 
-  let fetchCache = window.fetch;
   const server = {respond() {queue.forEach(({resolve, res}) => resolve(res))}};
   const queue: {resolve(res: Response):void, res: Response}[] = []
   beforeEach(() => {
-    initPostResponse = () => {
-      window['fetch'] = (url, opt): Promise<Response> => {
-        return new Promise(resolve => {
-          const body = opt.body;
-          const res = new window['Response'](body, {
-            status: 200,
-            headers: {
-              'Content-type': 'application/json'
+    initPostResponse = (proceed: boolean) => {
+      const injector = new Injector([createModule(config => {
+        config.bind('http').to(HttpRequest);
+        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            if (proceed) {
+              return methodInvocation.proceed();
             }
-          });
-          queue.push({resolve, res});
+          }
         });
-      }
+        config.bindInterceptor(HTTP_REQUEST_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            const [{url, data}] = methodInvocation.getArguments();
+            return new Promise(resolve => {
+              const res = new Response(JSON.stringify(data), {
+                status: 200,
+                headers: {
+                  'Content-type': 'application/json'
+                }
+              });
+              queue.push({resolve, res});
+            });
+          }
+        });
+      })]);
+      return injector;
     };
 
-    initPostErrorResponse = () => {
-      window['fetch'] = (url, opt): Promise<Response> => {
-        return new Promise((_, reject) => queue.push({resolve: reject, res: new window['Response'](opt.body, {
-          status: 400,
-          headers: {
-            'Content-type': 'application/json'
+    initPostErrorResponse = (proceed: boolean) => {
+      const injector = new Injector([createModule(config => {
+        config.bind('http').to(HttpRequest);
+        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            if (proceed) {
+              return methodInvocation.proceed();
+            }
           }
-        })}));
-      };
+        });
+        config.bindInterceptor(HTTP_REQUEST_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            const [{url, data}] = methodInvocation.getArguments();
+            return new Promise((_, reject) => queue.push({resolve: reject, res: new Response(JSON.stringify(data), {
+              status: 400,
+              headers: {
+                'Content-type': 'application/json'
+              }
+            })}));
+          }
+        });
+      })]);
+      return injector
     };
 
-    initFormResponse = () => {
-      window['fetch'] = (url, opt): Promise<Response> => {
-        return new Promise(resolve => queue.push({resolve, res: new window['Response'](opt.body, {
-          status: 200,
-          headers: {
-            'Content-type': 'application/json'
+    initFormResponse = (proceed: boolean) => {
+      const injector = new Injector([createModule(config => {
+        config.bind('http').to(HttpRequest);
+        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            if (proceed) {
+              return methodInvocation.proceed();
+            }
           }
-        })}));
-      };
+        });
+        config.bindInterceptor(HTTP_REQUEST_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            const [{url, data}] = methodInvocation.getArguments();
+            return new Promise(resolve => queue.push({resolve, res: new Response(JSON.stringify(data), {
+              status: 200,
+              headers: {
+                'Content-type': 'application/json'
+              }
+            })}));
+          }
+        });
+      })]);
+      return injector;
     };
     
-    initGetResponse = (params?: string) => {
-      window['fetch'] = (url, opt): Promise<Response> => {
-        return new Promise(resolve => queue.push({resolve, res: new window['Response']('{"success": true}', {
-          status: 200,
-          headers: {
-            'Content-type': 'application/json'
+    initGetResponse = (proceed: boolean, params?: string) => {
+      const injector = new Injector([createModule(config => {
+        config.bind('http').to(HttpRequest);
+        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            if (proceed) {
+              return methodInvocation.proceed();
+            }
           }
-        })}));
-      };
+        });
+        config.bindInterceptor(HTTP_REQUEST_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            const [{url, data}] = methodInvocation.getArguments();
+            return new Promise(resolve => queue.push({resolve, res: new Response('{"success": true}', {
+              status: 200,
+              headers: {
+                'Content-type': 'application/json'
+              }
+            })}));
+          }
+        });
+      })]);
+      return injector;
     };
     
-    initGetErrorResponse = () => {
-      window['fetch'] = (url, opt): Promise<Response> => {
-        return new Promise((_, reject) => queue.push({resolve: reject, res: new window['Response']('{"success": false}', {
-          status: 400,
-          headers: {
-            'Content-type': 'application/json'
+    initGetErrorResponse = (proceed: boolean) => {
+      const injector = new Injector([createModule(config => {
+        config.bind('http').to(HttpRequest);
+        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            if (proceed) {
+              return methodInvocation.proceed();
+            }
           }
-        })}));
-      };
+        });
+        config.bindInterceptor(HTTP_REQUEST_INTERCEPT).to(class implements MethodProxy {
+          invoke(methodInvocation: MethodInvocation) {
+            const [{url, data}] = methodInvocation.getArguments();
+            return new Promise((_, reject) => queue.push({resolve: reject, res: new Response('{"success": false}', {
+              status: 400,
+              headers: {
+                'Content-type': 'application/json'
+              }
+            })}));
+          }
+        });
+      })]);
+      return injector;
     };
   });
-
-  let httpRequest: HttpRequest = null;
 
   afterEach(() => {
-    window['fetch'] = fetchCache;
     queue.length = 0;
-    httpRequest && httpRequest.end();
-    httpRequest = null;
   });
+
 
   const waitRequest = (opt, inst) => {
     const subject = new Subject();
     inst.wait(subject);
     subject.next(opt);
   };
-  
-  const init = (filters: Filter[]) => {
-    const ret = httpRequest = new HttpRequest(filters);
-    return ret;
-  };
+
   
   describe('HttpRequest#get()', () => {
-    it('getリクエストを送信する(200)', done => {
-      initGetResponse();
-      const request = init([]);
+    it('Send get request(200)', done => {
+      const injector = initGetResponse(true);
+      const request = injector.get('http');
       request.response.for('test').subscribe(graceful(v => {
         expect(v).to.be.deep.equal({success: true});
       }, done));
@@ -167,9 +225,9 @@ describe('HttpRequest', () => {
       server.respond();
     });
 
-    it('getリクエストを送信する(200,パラメータ付き)', done => {
-      initGetResponse('test=1');
-      const request = init([]);      
+    it('Send get request(200, with parameter)', done => {
+      const injector = initGetResponse(true, 'test=1');
+      const request = injector.get('http');
       request.response.for('test').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
@@ -177,9 +235,9 @@ describe('HttpRequest', () => {
       server.respond();
     });
 
-    it('getリクエストを送信する(400)', done => {
-      initGetErrorResponse();
-      const request = init([]);
+    it('Send get request (400)', done => {
+      const injector = initGetErrorResponse(true);
+      const request = injector.get('http');
       request.response.for('test').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
@@ -187,40 +245,40 @@ describe('HttpRequest', () => {
       server.respond();
     });
     
-    it('filterをかける(200)', done => {
-      initGetResponse();
-      const request = init([new SuccessFilter()]);
+    it('Apply interceptor (200)', done => {
+      const injector = initGetResponse(true);
+      const request = injector.get('http');
       request.response.for('test').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({result: {success: true}});
+        expect(res).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', key: 'test', responseType: ResponseType.JSON}, request);
       server.respond();
     });
 
-    it('filterをかける(400)', done => {
-      initGetErrorResponse();
-      const request = init([new SuccessFilter()]);
+    it('Apply interceptor (400)', done => {
+      const injector = initGetErrorResponse(true);
+      const request = injector.get('http');
       request.response.for('test').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({result: {success: false}});
+        expect(res).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', key: 'test', responseType: ResponseType.JSON}, request);
       server.respond();
     });
 
-    it('filterで処理をとめる(200)', () => {
+    it('Apply interceptor and stop process (200)', () => {
       let called = false;
-      initGetResponse();
-      const request = init([new ErrorFilter()]);
+      const injector = initGetResponse(false);
+      const request = injector.get('http');
       request.response.for('test').subscribe(res => {called = true});
       waitRequest({url: '/test/ok', key: 'test', responseType: ResponseType.JSON}, request);
       server.respond();
       expect(called).to.be.false;
     });
 
-    it('filterで処理をとめる(400)', () => {
+    it('Apply interceptor and stop process (400)', () => {
       let called = false;
-      initGetErrorResponse();
-      const request = init([new ErrorFilter()]);
+      const injector = initGetErrorResponse(false);
+      const request = injector.get('http');
       request.response.for('test').subscribe(() => {}, res => {called = true});
       waitRequest({url: '/test/ng', key: 'test', responseType: ResponseType.JSON}, request);
       server.respond();
@@ -229,9 +287,9 @@ describe('HttpRequest', () => {
   });
 
   describe('HttpRequest#post()', () => {
-    it('postリクエストを送信する(200)', done => {
-      initPostResponse();
-      const request = init([]);
+    it('Send post request.(200)', done => {
+      const injector = initPostResponse(true);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
@@ -240,9 +298,9 @@ describe('HttpRequest', () => {
     });
 
 
-    it('postリクエストを送信する(200, form)', done => {
-      initFormResponse();
-      const request = init([]);
+    it('Send post request.(200, form)', done => {
+      const injector = initFormResponse(true);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
@@ -250,9 +308,9 @@ describe('HttpRequest', () => {
       server.respond();
     });
 
-    it('postリクエストを送信する(400)', done => {
-      initPostErrorResponse();
-      const request = init([]);
+    it('Send post request.(400)', done => {
+      const injector = initPostErrorResponse(true);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
@@ -260,40 +318,40 @@ describe('HttpRequest', () => {
       server.respond();
     });
 
-    it('filterをかける(200)', done => {
-      initPostResponse();
-      const request = init([new SuccessFilter()]);
+    it('Apply interceptor.(200)', done => {
+      const injector = initPostResponse(true);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({result: {success: true}});
+        expect(res).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
       server.respond();
     });
 
-    it('filterをかける(400)', done => {
-      initPostErrorResponse();
-      const request = init([new SuccessFilter()]);
+    it('Apply interceptor.(400)', done => {
+      const injector = initPostErrorResponse(true);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({result: {success: false}});
+        expect(res).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
       server.respond();
     });
 
-    it('filterで処理をとめる(200)', () => {
+    it('Apply interceptor and stop process.(200)', () => {
       let called = false;
-      initPostResponse();
-      const request = init([new ErrorFilter()]);
+      const injector = initPostResponse(false);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(res => {called = true});
       waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
       server.respond();
       expect(called).to.be.false;
     });
 
-    it('filterで処理をとめる(400)', () => {
+    it('Apply interceptor and stop process.(400)', () => {
       let called = false;
-      initPostErrorResponse();
-      const request = init([new ErrorFilter()]);
+      const injector = initPostErrorResponse(false);
+      const request = injector.get('http');
       request.response.for('test-post').subscribe(() => {}, res => {called = true});
       waitRequest({url: '/test/ng', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
       server.respond();

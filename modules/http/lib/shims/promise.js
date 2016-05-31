@@ -1,3 +1,4 @@
+// -*- mode: typescript -*-
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -14,10 +15,18 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-export interface Filter {
-    filter<T>(res: {
-        err: any;
-        res: Blob | FormData | string | ArrayBuffer | T;
-    }): any;
-}
-export declare function __dummy__(): void;
+System.register(['es6-promise'], function(exports_1, context_1) {
+    "use strict";
+    var __moduleName = context_1 && context_1.id;
+    var ESPromise;
+    var Promise;
+    return {
+        setters:[
+            function (ESPromise_1) {
+                ESPromise = ESPromise_1;
+            }],
+        execute: function() {
+            exports_1("Promise", Promise = ESPromise['default'].Promise);
+        }
+    }
+});

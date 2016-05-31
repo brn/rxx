@@ -15,46 +15,18 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./component/context', './component/subscriber', './component/tags', './component/utils', './run', './io/io', './utils', './di/index', './shims/symbol'], function(exports_1, context_1) {
+System.register(['query-string'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    function exportStar_1(m) {
-        var exports = {};
-        for(var n in m) {
-            if (n !== "default") exports[n] = m[n];
-        }
-        exports_1(exports);
-    }
+    var qs;
+    var querystring;
     return {
         setters:[
-            function (context_2_1) {
-                exportStar_1(context_2_1);
-            },
-            function (subscriber_1_1) {
-                exportStar_1(subscriber_1_1);
-            },
-            function (tags_1_1) {
-                exportStar_1(tags_1_1);
-            },
-            function (utils_1_1) {
-                exportStar_1(utils_1_1);
-            },
-            function (run_1_1) {
-                exportStar_1(run_1_1);
-            },
-            function (io_1_1) {
-                exportStar_1(io_1_1);
-            },
-            function (utils_2_1) {
-                exportStar_1(utils_2_1);
-            },
-            function (index_1_1) {
-                exportStar_1(index_1_1);
-            },
-            function (symbol_1_1) {
-                exportStar_1(symbol_1_1);
+            function (qs_1) {
+                qs = qs_1;
             }],
         execute: function() {
+            exports_1("querystring", querystring = qs);
         }
     }
 });

@@ -1,3 +1,4 @@
+/// <reference path="declarations.d.ts" />
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -14,17 +15,15 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import 'whatwg-fetch';
 import { IOResponse, Http, HttpConfig, HttpMethod, ResponseType } from '@react-mvi/core';
-import { Filter } from './filters/filter';
 import { Observable, Subscription } from 'rxjs/Rx';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
-export { Filter };
+export declare const HTTP_INTERCEPT: any;
+export declare const HTTP_REQUEST_INTERCEPT: any;
 /**
  * Http request sender.
  */
 export declare class HttpRequest implements Http {
-    private filters;
     /**
      * Response.
      */
@@ -36,7 +35,7 @@ export declare class HttpRequest implements Http {
     /**
      * @param filters Filter processoers.
      */
-    constructor(filters: Filter[]);
+    constructor();
     /**
      * Wait for request from observables.
      * @override
@@ -81,18 +80,10 @@ export declare class HttpRequest implements Http {
      */
     private delete<T>({url, headers, data, json, mode});
     /**
-     * Do filtering process.
-     * @data err Http Error
-     * @data res Http response
-     * @data resolve Success handler.
-     * @data reject Error handler.
-     */
-    private applyFilters<T>(config, responsePromise);
-    /**
      * Get proper response from fetch response body.
      * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...
      * @param res Http response.
      * @returns
      */
-    private getResponse<T>(responseType, res);
+    private getResponse(responseType, res);
 }

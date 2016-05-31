@@ -1,0 +1,27 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/a12360/.nodebrew/node/v6.2.0/bin/node',
+1 verbose cli   '/Users/a12360/.nodebrew/current/bin/npm',
+1 verbose cli   'run-script',
+1 verbose cli   'patch-and-publish' ]
+2 info using npm@3.9.2
+3 info using node@v6.2.0
+4 verbose stack Error: missing script: patch-and-publish
+4 verbose stack     at run (/Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/lib/run-script.js:150:19)
+4 verbose stack     at /Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/lib/run-script.js:60:5
+4 verbose stack     at /Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/read-package-json/read-json.js:356:5
+4 verbose stack     at checkBinReferences_ (/Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/read-package-json/read-json.js:320:45)
+4 verbose stack     at final (/Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/read-package-json/read-json.js:354:3)
+4 verbose stack     at then (/Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/read-package-json/read-json.js:124:5)
+4 verbose stack     at /Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/read-package-json/read-json.js:243:12
+4 verbose stack     at /Users/a12360/.nodebrew/node/v6.2.0/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
+4 verbose stack     at tryToString (fs.js:449:3)
+4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:436:12)
+5 verbose cwd /Users/a12360/GitHub/react-mvi
+6 error Darwin 15.0.0
+7 error argv "/Users/a12360/.nodebrew/node/v6.2.0/bin/node" "/Users/a12360/.nodebrew/current/bin/npm" "run-script" "patch-and-publish"
+8 error node v6.2.0
+9 error npm  v3.9.2
+10 error missing script: patch-and-publish
+11 error If you need help, you may report this error at:
+11 error     <https://github.com/npm/npm/issues>
+12 verbose exit [ 1, true ]

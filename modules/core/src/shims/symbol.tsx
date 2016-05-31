@@ -16,7 +16,6 @@
  * @author Taketoshi Aono
  */
 
-
 const HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
 
 

@@ -102,12 +102,11 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.1-beta.26",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.1",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
     "constants": "github:jspm/nodelibs-constants@0.2.0-alpha",
-    "core": "npm:@react-mvi/core@0.3.1-beta.26",
     "crypto": "github:jspm/nodelibs-crypto@0.2.0-alpha",
     "domain": "github:jspm/nodelibs-domain@0.2.0-alpha",
     "es6-symbol": "npm:es6-symbol@3.0.2",
@@ -499,6 +498,11 @@ SystemJS.config({
       "map": {}
     },
     "npm:@react-mvi/core@0.3.1-beta.26": {
+      "map": {
+        "core-js": "npm:core-js@2.4.0"
+      }
+    },
+    "npm:@react-mvi/core@0.3.3-beta.1": {
       "map": {
         "core-js": "npm:core-js@2.4.0"
       }

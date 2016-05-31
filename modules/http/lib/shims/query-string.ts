@@ -17,8 +17,14 @@
  */
 
 
-export interface Filter {
-  filter<T>(res: {err: any, res: Blob|FormData|string|ArrayBuffer|T}): any
+/// <reference path="../declarations.d.ts"/>
+
+import * as qs from 'query-string';
+
+
+export interface QueryString {
+  stringify(value: any): string
 }
 
-export function __dummy__() {/* Export dummy function, so plugin-typescript failed if only interface was exported. */}
+
+export const querystring: QueryString = qs as any;

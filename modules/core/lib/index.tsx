@@ -27,3 +27,4 @@ export {
 export * from './io/io';
 export * from './utils';
 export * from './di/index';
+export * from './shims/symbol';

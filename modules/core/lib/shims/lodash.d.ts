@@ -1,3 +1,4 @@
+/// <reference path="../declarations.d.ts" />
 export interface Lodash {
     forEach<T>(a: T[], cb: (v: T, i?: number, a?: T[]) => any): void;
     forEach<T>(a: {

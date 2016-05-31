@@ -18,4 +18,3 @@
 
 
 export * from './http-request';
-export {Filter} from './filters/filter';

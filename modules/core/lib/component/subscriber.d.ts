@@ -61,6 +61,10 @@ export declare class Subscriber extends React.Component<any, any> {
      */
     private subscribeAll();
     /**
+     * Reset all subscriptions.
+     */
+    componentWillUnmount(): void;
+    /**
      * Dispose all subscriptions and clear bindings.
      */
     private disposeAll();
@@ -79,11 +83,13 @@ export declare class Subscriber extends React.Component<any, any> {
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    private cloneChildren(el);
+    private cloneChildren(el, parent, index);
     /**
-     * Reset all subscriptions.
+     * Update ReactElement to force update state of React Element Tree.
+     * @param parent Parent ReactElement of current updated ReactElement.
+     * @param el Updated ReactElement.
      */
-    componentWillUnmount(): void;
+    private updateElement(parent, el, index);
     /**
      * Check whether child is Subscriber or not.
      * @param child Child to check.

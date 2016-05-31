@@ -116,7 +116,7 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                  * Subscribe all observable that embeded in vdom trees.
                  */
                 Subscriber.prototype.componentWillMount = function () {
-                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children));
+                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children), null, null);
                     this.subscribeAll();
                 };
                 /**
@@ -124,7 +124,7 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                  */
                 Subscriber.prototype.componentWillReceiveProps = function (nextProps) {
                     this.disposeAll();
-                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children));
+                    this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children), null, null);
                     this.subscribeAll();
                 };
                 /**
@@ -140,7 +140,7 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                                 var value = _a.value, binding = _a.binding;
                                 return binding.update(value);
                             });
-                            _this.setState({ vdom: _this.mutableTree });
+                            _this.setState({ vdom: _this.createMutableElement(_this.mutableTree) });
                         });
                     }
                     else {
@@ -148,12 +148,18 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                     }
                 };
                 /**
+                 * Reset all subscriptions.
+                 */
+                Subscriber.prototype.componentWillUnmount = function () {
+                    this.disposeAll();
+                };
+                /**
                  * Dispose all subscriptions and clear bindings.
                  */
                 Subscriber.prototype.disposeAll = function () {
                     this.subscription && this.subscription.unsubscribe();
-                    this.bindings = [];
                     this.subscription = null;
+                    this.bindings = [];
                 };
                 /**
                  * Update children elements.
@@ -161,7 +167,12 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                  */
                 Subscriber.prototype.updateChildren = function (el, value, index) {
                     if (el.props.children && lodash_1._.isArray(el.props.children)) {
-                        el.props.children[index] = value;
+                        if (lodash_1._.isArray(value) && lodash_1._.every(value, function (v) { return v['$$typeof'] === REACT_ELEMENT_TYPEOF; })) {
+                            el.props.children = el.props.children.slice(0, index).concat(value);
+                        }
+                        else {
+                            el.props.children[index] = value;
+                        }
                         if (process.env.NODE_ENV === 'debug') {
                             // Check valid element or not
                             React.createElement.apply(React, [el.type, el.props].concat(el.props.children));
@@ -194,7 +205,7 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                  * Clone all children trees that has mutable props, mutable children, recursively from root.
                  * @param el Root React.ReactElement.
                  */
-                Subscriber.prototype.cloneChildren = function (el) {
+                Subscriber.prototype.cloneChildren = function (el, parent, index) {
                     var _this = this;
                     var newElement = this.createMutableElement(el);
                     var target = newElement.props.children ? (!lodash_1._.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [];
@@ -202,10 +213,11 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                         if (child instanceof Rx_1.Observable) {
                             _this.bindings.push(new ObservableBinding(function (value) {
                                 _this.updateChildren(newElement, value, i);
+                                _this.updateElement(parent, newElement, index);
                             }, child));
                         }
                         else if (React.isValidElement(child) && !_this.isSubscriber(child)) {
-                            return _this.cloneChildren(child);
+                            return _this.cloneChildren(child, newElement, i);
                         }
                         return child;
                     });
@@ -213,6 +225,7 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                         if (v instanceof Rx_1.Observable) {
                             _this.bindings.push(new ObservableBinding(function (value) {
                                 newElement.props[k] = value;
+                                _this.updateElement(parent, newElement, index);
                             }, v));
                         }
                     });
@@ -227,10 +240,17 @@ System.register(['react', 'rxjs/Rx', '../env', '../shims/symbol', '../shims/loda
                     return newElement;
                 };
                 /**
-                 * Reset all subscriptions.
+                 * Update ReactElement to force update state of React Element Tree.
+                 * @param parent Parent ReactElement of current updated ReactElement.
+                 * @param el Updated ReactElement.
                  */
-                Subscriber.prototype.componentWillUnmount = function () {
-                    this.disposeAll();
+                Subscriber.prototype.updateElement = function (parent, el, index) {
+                    if (parent) {
+                        this.updateChildren(parent, this.createMutableElement(el), index);
+                    }
+                    else {
+                        this.mutableTree = this.createMutableElement(this.mutableTree);
+                    }
                 };
                 /**
                  * Check whether child is Subscriber or not.

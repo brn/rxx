@@ -138,7 +138,7 @@ export class Subscriber extends React.Component<any, any> {
    * Subscribe all observable that embeded in vdom trees.
    */
   public componentWillMount() {
-    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>)
+    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null)
     this.subscribeAll();
   }
 
@@ -148,7 +148,7 @@ export class Subscriber extends React.Component<any, any> {
    */
   public componentWillReceiveProps(nextProps) {
     this.disposeAll();
-    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>);
+    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null);
     this.subscribeAll();
   }
 
@@ -162,7 +162,7 @@ export class Subscriber extends React.Component<any, any> {
       const bindings = _.map(this.bindings, binding => binding.observable());
       this.subscription = Observable.combineLatest(...bindings).subscribe((bindings: BindingObservableType[]) => {
         _.forEach(bindings, ({value, binding}) => binding.update(value));
-        this.setState({vdom: this.mutableTree});
+        this.setState({vdom: this.createMutableElement(this.mutableTree)});
       });
     } else {
       this.setState({vdom: this.props.children});
@@ -171,12 +171,20 @@ export class Subscriber extends React.Component<any, any> {
 
 
   /**
+   * Reset all subscriptions.
+   */
+  public componentWillUnmount() {
+    this.disposeAll();
+  }
+
+
+  /**
    * Dispose all subscriptions and clear bindings.
    */
   private disposeAll() {
     this.subscription && this.subscription.unsubscribe();
-    this.bindings = [];
     this.subscription = null;
+    this.bindings = [];
   }
 
 
@@ -186,7 +194,11 @@ export class Subscriber extends React.Component<any, any> {
    */
   private updateChildren(el: React.ReactElement<any>, value: any, index: number) {
     if (el.props.children && _.isArray(el.props.children)) {
-      el.props.children[index] = value;
+      if (_.isArray(value) && _.every(value, v => v['$$typeof'] === REACT_ELEMENT_TYPEOF)) {
+        el.props.children = el.props.children.slice(0, index).concat(value);
+      } else {
+        el.props.children[index] = value;
+      }
       if (process.env.NODE_ENV === 'debug') {
         // Check valid element or not
         React.createElement(el.type as any, el.props, ...el.props.children);
@@ -222,16 +234,17 @@ export class Subscriber extends React.Component<any, any> {
    * Clone all children trees that has mutable props, mutable children, recursively from root.
    * @param el Root React.ReactElement.
    */
-  private cloneChildren(el: React.ReactElement<any>) {
+  private cloneChildren(el: React.ReactElement<any>, parent: React.ReactElement<any>, index: number) {
     const newElement = this.createMutableElement(el);
     const target = newElement.props.children? (!_.isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [];
     const children = _.map(target, (child: React.ReactElement<any>|Observable<any>, i) => {
       if (child instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           this.updateChildren(newElement, value, i);
+          this.updateElement(parent, newElement, index);
         }, child as Observable<any>));
       } else if (React.isValidElement(child) && !this.isSubscriber(child)) {
-        return this.cloneChildren(child);
+        return this.cloneChildren(child, newElement, i);
       }
       return child;
     });
@@ -240,6 +253,7 @@ export class Subscriber extends React.Component<any, any> {
       if (v instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           newElement.props[k] = value;
+          this.updateElement(parent, newElement, index);
         }, v as Observable<any>));
       }
     });
@@ -256,10 +270,16 @@ export class Subscriber extends React.Component<any, any> {
 
 
   /**
-   * Reset all subscriptions.
+   * Update ReactElement to force update state of React Element Tree.
+   * @param parent Parent ReactElement of current updated ReactElement.
+   * @param el Updated ReactElement.
    */
-  public componentWillUnmount() {
-    this.disposeAll();
+  private updateElement(parent, el, index) {
+    if (parent) {
+      this.updateChildren(parent, this.createMutableElement(el), index);
+    } else {
+      this.mutableTree = this.createMutableElement(this.mutableTree);
+    }
   }
 
 

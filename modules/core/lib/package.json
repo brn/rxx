@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.3.1-beta.30",
+  "version": "0.3.3-beta.1",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "scripts": {
