@@ -1,19 +1,14 @@
-# react-mvi
-Minimal framework for react + rxjs mvi architecture
-
-[Documents](http://brn.github.io/react-mvi)
-
-inspired by  
-[react-combinators](https://github.com/milankinen/react-combinators)  
-[react-reactive-toolkit](https://github.com/milankinen/react-reactive-toolkit)
+# react-mvi/http
+react-mvi io module for http request.
 
 ## Requirements
 
 - jspm > 0.17.0-beta.16
+- @react-mvi/core
 
 ## Installation
 
-```jspm install @react-mvi/core=npm:@react-mvi/core```
+```jspm install @react-mvi/http=npm:@react-mvi/http```
 
 ### For typescript user.
 
@@ -23,9 +18,6 @@ Please install type definitions below.
 * ```typings install dt~react-dom --save --global```
 
 Typescript version < 1.9
-
-* ```npm install rxjs --save```
-* ```npm install @react-mvi/core```
 
 tsconfig.json
 ```json
@@ -63,6 +55,9 @@ tsconfig.json
       "@react-mvi/core": [
         "jspm_packages/npm/@react-mvi/core*"
       ],
+      "@react-mvi/http": [
+        "jspm_packages/npm/@react-mvi/http*"
+      ],
       "rxjs": [
         "jspm_packages/npm/rxjs/*"
       ]
@@ -71,12 +66,8 @@ tsconfig.json
 }
 ```
 
+
 ## Simple Usage
-
-before this example,
-
-```jspm install @react-mvi/http```  
-```jspm install @react-mvi/event```
 
 ```typescript
 import * as React from 'react';
@@ -90,12 +81,23 @@ import {
   EventDispatcher
 } from '@react-mvi/event'
 import {
-  HttpRequest
+  HttpRequest,
+  HttpMethod,
+  ResponseType
 } from '@react-mvi/http'
 
 const Service = ({http, event}) => {
   return {
-    counter: event.for('user::click').scan((_, acc) => acc + 1, 0).publish();
+    http {
+      testReq: event.for('user::click').map({
+        method: HttpMethod.GET,
+        url: '/profile',
+        json: true,
+        responseType: ResponseType.JSON,
+        key: 'user::profile'
+      })
+    },
+    profile: http.for('user::profile').map(v => v.picture).startWith('').publish()
   }
 }
 
@@ -107,8 +109,9 @@ const module = createModule(config => {
 
 const View = component((props, context) => {
   return (
-    <T.Div onClick={context.io.event.asc('user::click')}>conter value is {props.counter}</T.Div>
-  )
+    <T.Button onClick={context.io.event.asc('user::click')}>Get Picture!</T.Button>
+    <div><span><T.Img src={props.profile} /></span></div>
+  );
 });
 
 run({component: View, modules: [module]}, document.querySelector('#app'));

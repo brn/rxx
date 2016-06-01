@@ -1,19 +1,14 @@
-# react-mvi
-Minimal framework for react + rxjs mvi architecture
-
-[Documents](http://brn.github.io/react-mvi)
-
-inspired by  
-[react-combinators](https://github.com/milankinen/react-combinators)  
-[react-reactive-toolkit](https://github.com/milankinen/react-reactive-toolkit)
+# react-mvi/http
+react-mvi io module for event.
 
 ## Requirements
 
 - jspm > 0.17.0-beta.16
+- @react-mvi/core
 
 ## Installation
 
-```jspm install @react-mvi/core=npm:@react-mvi/core```
+```jspm install @react-mvi/event=npm:@react-mvi/event```
 
 ### For typescript user.
 
@@ -23,9 +18,6 @@ Please install type definitions below.
 * ```typings install dt~react-dom --save --global```
 
 Typescript version < 1.9
-
-* ```npm install rxjs --save```
-* ```npm install @react-mvi/core```
 
 tsconfig.json
 ```json
@@ -63,6 +55,9 @@ tsconfig.json
       "@react-mvi/core": [
         "jspm_packages/npm/@react-mvi/core*"
       ],
+      "@react-mvi/event": [
+        "jspm_packages/npm/@react-mvi/event*"
+      ],
       "rxjs": [
         "jspm_packages/npm/rxjs/*"
       ]
@@ -71,12 +66,8 @@ tsconfig.json
 }
 ```
 
+
 ## Simple Usage
-
-before this example,
-
-```jspm install @react-mvi/http```  
-```jspm install @react-mvi/event```
 
 ```typescript
 import * as React from 'react';
@@ -89,18 +80,14 @@ import {
 import {
   EventDispatcher
 } from '@react-mvi/event'
-import {
-  HttpRequest
-} from '@react-mvi/http'
 
-const Service = ({http, event}) => {
+const Service = ({event}) => {
   return {
-    counter: event.for('user::click').scan((_, acc) => acc + 1, 0).publish();
+    counter: event.for('user::click').scan((_, acc) => acc + 1, 0).startWith(0).publish();
   }
 }
 
 const module = createModule(config => {
-  config.bind('http').to(HttpRequest);
   config.bind('event').to(EventDispatcher);
   config.bind('aService').toInstance(Service);
 });

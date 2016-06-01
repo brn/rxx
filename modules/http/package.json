@@ -2,7 +2,7 @@
   "name": "@react-mvi/http",
   "version": "0.3.3-beta.0",
   "description": "Http IO module for React MVI.",
-  "main": "index.js",
+  "main": "http.js",
   "scripts": {
     "gulp": "gulp --cwd",
     "patch-and-publish": "gulp publish --cwd",
@@ -40,7 +40,7 @@
       "ts": "github:frankwallis/plugin-typescript@^4.0.16"
     },
     "jspmNodeConversion": false,
-    "main": "index.js",
+    "main": "http.js",
     "peerDependencies": {
       "@react-mvi/core": "npm:@react-mvi/core@^0.3.3-beta.1",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
