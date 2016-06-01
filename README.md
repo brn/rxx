@@ -11,6 +11,6 @@ inspired by
 
 ## Modules
 
-[@react-mvi/core](modules/core)
-[@react-mvi/http](modules/http)
-[@react-mvi/event](modules/event)
+- [@react-mvi/core](modules/core)
+- [@react-mvi/http](modules/http)
+- [@react-mvi/event](modules/event)
