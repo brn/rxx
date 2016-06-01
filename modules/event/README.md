@@ -1,4 +1,4 @@
-# react-mvi/http
+# react-mvi/event
 react-mvi io module for event.
 
 ## Requirements
