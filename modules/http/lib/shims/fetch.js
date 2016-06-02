@@ -23,7 +23,14 @@ System.register(['whatwg-fetch'], function(exports_1, context_1) {
         setters:[
             function (_1) {}],
         execute: function() {
-            exports_1("fetch", fetch = window['fetch']);
+            exports_1("fetch", fetch = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                return (_a = window['fetch']).call.apply(_a, [window].concat(args));
+                var _a;
+            });
             exports_1("Request", Request = window['Request']);
             exports_1("Response", Response = window['Response']);
         }

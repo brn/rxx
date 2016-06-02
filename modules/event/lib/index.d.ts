@@ -14,4 +14,62 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-export * from './event';
+import { IOResponse, Event } from '@react-mvi/core';
+/**
+ * Event publisher.
+ */
+export declare class EventDispatcher implements Event {
+    /**
+     * Subject store.
+     */
+    private store;
+    /**
+     * IO Response.
+     */
+    private res;
+    /**
+     * Event history.
+     */
+    private history;
+    constructor();
+    /**
+     * Publish event.
+     * @override
+     * @param key Event name. If 'RETRY' passed, past published event will be republishing.
+     * @param args Event args. If a first argument was 'RETRY', specify history index.
+     * If empty, last event will be publishing.
+     */
+    fire(key: string, args?: any): void;
+    /**
+     * Fire event after specific time.
+     * @override
+     * @param time Time to delay.
+     * @param key Event name.
+     * @param args Event args.
+     */
+    throttle(time: number, key: string, args?: any): void;
+    /**
+     * Return callback function that will publish event.
+     * @override
+     * @param key Event name.
+     * @param v Event args. Override publish args.
+     */
+    asCallback(key: string, v?: any): (args?: any) => void;
+    /**
+     * Same as asCallback.
+     * @override
+     * @param key Event name.
+     * @param v Event args.
+     */
+    asc(key: string, v?: any): (args?: any) => void;
+    /**
+     * Dispose all subscriptions.
+     * @override
+     */
+    end(): void;
+    /**
+     * Return response of events.
+     * @override
+     */
+    readonly response: IOResponse;
+}

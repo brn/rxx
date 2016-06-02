@@ -117,6 +117,6 @@ export interface Fetch {
 }
 
 
-export const fetch: Fetch = window['fetch'] as any;
+export const fetch: Fetch = (...args) => window['fetch'].call(window, ...args) as any;
 export const Request: RequestStatic = window['Request'] as any;
 export const Response: ResponseStatic = window['Response'] as any;

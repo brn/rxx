@@ -76,6 +76,9 @@ export const ContextReactTypes = {
 }
 
 
+/**
+ * Check param is immutablejs object or not.
+ */
 const isImmutable = v => v['isIterable'] && v['isIterable']()
 
 
@@ -121,9 +124,12 @@ export interface ContextProps {
   modules: Module[]
 }
 
-
+/**
+ * @class
+ */
 export class Context extends React.Component<ContextProps, {}> {
   private contextObject: ContextType;
+
 
   public constructor(props, c) {
     super(props, c);

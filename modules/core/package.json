@@ -1,12 +1,13 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.3.3-beta.1",
+  "version": "0.3.3-beta.15",
   "description": "React MVI micro framework.",
-  "main": "mvi.js",
+  "main": "index.js",
   "scripts": {
     "gulp": "gulp --cwd",
     "patch-and-publish": "gulp publish --cwd",
-    "test": "gulp test --cwd"
+    "test": "gulp test --cwd",
+    "pre-publish": "gulp pre-publish --cwd"
   },
   "repository": {
     "type": "git",
@@ -112,7 +113,7 @@
       }
     },
     "jspmNodeConversion": false,
-    "main": "mvi.js"
+    "main": "index.js"
   },
   "dependencies": {
     "rxjs": "^5.0.0-beta.8"

@@ -16,9 +16,16 @@
  * @author Taketoshi Aono
  */
 
+
+/**
+ * Check browser has Symbol implementations.
+ */
 const HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
 
 
+/**
+ * Shim of Symbol.
+ */
 export const Symbol = HAS_SYMBOL? window['Symbol']: (key: string) => {
   return key;
 }

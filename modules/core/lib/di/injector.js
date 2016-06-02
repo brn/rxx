@@ -19,7 +19,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var method_proxy_1, inject_1, symbol_1, lodash_1;
-    var INJECTION_NAME_SYMBOL, SINGLETON_KEY, PROXIED_MARD, Injections, Injector;
+    var INJECTION_NAME_SYMBOL, SINGLETON_KEY, PROXIED_MARK, Injections, Injector;
     return {
         setters:[
             function (method_proxy_1_1) {
@@ -36,27 +36,27 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
             }],
         execute: function() {
             /**
-             * di時に使用された名前を格納するキー
+             * The key to hold dependency name.
              */
             exports_1("INJECTION_NAME_SYMBOL", INJECTION_NAME_SYMBOL = symbol_1.Symbol('__injectionname__'));
             /**
-             * シングルトンオブジェクトのインスタンスを格納するキー
+             * The key to hold singleton instance.
              */
             SINGLETON_KEY = symbol_1.Symbol('__instance__');
             /**
-             * インターセプタ適用済みの印
+             * The key to distinct proxied class.
              */
-            PROXIED_MARD = symbol_1.Symbol('__proxied__');
+            PROXIED_MARK = symbol_1.Symbol('__proxied__');
             /**
-             * 依存性の定義
+             * Dependency definition.
              */
             Injections = (function () {
                 /**
-                 * @param ctor コンストラクタ関数
+                 * @param ctor Constructor function.
                  */
                 function Injections(ctor, inst) {
                     /**
-                     * 依存しているクラス、インスタンス、プロバイダ名の配列
+                     * The name of depends class, instance, provider array.
                      */
                     this.injectionList = [];
                     if (!inst) {
@@ -68,33 +68,33 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                 }
                 Object.defineProperty(Injections.prototype, "injections", {
                     /**
-                     * 依存リストを返す
-                     * @returns 依存しているクラス、インスタンス、プロバイダ名の配列
+                     * Return dependencies list.
+                     * @returns The name of depends class, instance, provider array.
                      */
                     get: function () { return this.injectionList; },
                     enumerable: true,
                     configurable: true
                 });
                 /**
-                 * 依存名の配列を構築する
-                 * @param ctor コンストラクタ関数
+                 * Construct dependent name array.
+                 * @param ctor Constructor function.
                  */
                 Injections.prototype.initCtorInjections = function (ctor) {
                     this.extractInjectionTarget(ctor, inject_1.injectionTargetSymbol);
                     this.extractInjectionTarget(ctor, inject_1.dynamicTargetSymbol);
                 };
                 /**
-                 * 依存名の配列を構築する
-                 * @param ctor コンストラクタ関数
+                 * Construct dependent name array.
+                 * @param ctor Constructor function.
                  */
                 Injections.prototype.initInstanceInjections = function (inst) {
                     this.extractInjectionTarget(inst, inject_1.injectionTargetSymbol);
                     this.extractInjectionTarget(inst, inject_1.dynamicTargetSymbol);
                 };
                 /**
-                 * 指定されたsymbolをキーにdiの設定を抽出する。
-                 * @param target 対象オブジェクト
-                 * @param symbol symbolオブジェクト
+                 * Extract configs by symbol.
+                 * @param target Target object.
+                 * @param symbol Symbol object.
                  */
                 Injections.prototype.extractInjectionTarget = function (target, symbol) {
                     var resources = target[symbol];
@@ -111,34 +111,34 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                 return Injections;
             }());
             /**
-             * diを実行するメインクラス
+             * The main class.
              */
             Injector = (function () {
                 /**
-                 * @param modules 依存関係を定義したモジュールの配列
+                 * @param modules The module array that is defined dependencies.
                  */
                 function Injector(modules) {
                     /**
-                     * バインディングの定義
+                     * Definition of bindings.
                      */
                     this.bindings = {};
                     /**
-                     * インターセプタのバインディング定義
+                     * Definition of interceptor bindings.
                      */
                     this.intercepts = [];
                     /**
-                     * テンプレートのバインディング定義
+                     * Definition of template bindings.
                      */
                     this.templates = {};
                     /**
-                     * テンプレート定義
+                     * Definition of template.
                      */
                     this.templateDefinitions = {};
                     this.initialize(modules);
                 }
                 /**
-                 * 初期化処理を行う
-                 * @param modules バインディング定義が記述された`Module`
+                 * Iniaitlize modules and injector.
+                 * @param modules The `Module` that are defined dependency relations.
                  */
                 Injector.prototype.initialize = function (modules) {
                     var _this = this;
@@ -154,7 +154,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     this.instantiateEagerSingletons();
                 };
                 /**
-                 * eagerSingletonのインスタンスを作成しておく
+                 * Instantiate eagerSingleton class.
                  */
                 Injector.prototype.instantiateEagerSingletons = function () {
                     var _this = this;
@@ -165,11 +165,11 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     });
                 };
                 /**
-                 * 依存性を解決した上でインスタンスを生成する。
+                 * Construct dependency resolved instance.
                  *
-                 * @param ctor コンストラクタ関数
-                 * @param params 追加の依存性
-                 * @returns 依存性を注入したインスタンス
+                 * @param ctor Constructor function
+                 * @param params Additional dependencies.
+                 * @returns Dependency resolved instance.
                  * @example
                  *
                  * class Foo {...}
@@ -187,9 +187,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  *   }
                  * }
                  *
-                 * var injector = new Injector(new TestModule());
+                 * var injector = new Injector([new TestModule()]);
                  *
-                 * //この呼出でBarクラスの引数fooにModuleで指定されている値が自動で注入される。
+                 * //This call inject foo property of class Bar to module defined value.
                  * injector.inject<Bar>(Bar);
                  */
                 Injector.prototype.inject = function (ctor, params) {
@@ -197,11 +197,11 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return this.doCreate(ctor, injections, params);
                 };
                 /**
-                 * 生成されたインスタンスに依存性を注入する
+                 * Inject dependency to instance.
                  *
-                 * @param ctor コンストラクタ関数
-                 * @param params 追加の依存性
-                 * @returns 依存性を注入したインスタンス
+                 * @param inst Instance.
+                 * @param params Additional dependencies.
+                 * @returns Dependency injected instance.
                  * @example
                  *
                  * class Foo {...}
@@ -219,9 +219,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  *   }
                  * }
                  *
-                 * var injector = new Injector(new TestModule());
+                 * var injector = new Injector([new TestModule()]);
                  *
-                 * //この呼出でBarクラスの引数fooにModuleで指定されている値が自動で注入される。
+                 * //This call inject foo property of class Bar to module defined value.
                  * injector.injectToInstance<Bar>(new Bar());
                  */
                 Injector.prototype.injectToInstance = function (inst, params) {
@@ -232,10 +232,11 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return inst;
                 };
                 /**
-                 * 一度だけ依存性を解決する、二度目以降に同じコンストラクタ関数が渡された場合は、
-                 * 初回に生成したインスタンスを返す。
-                 * @param ctor コンストラクタ関数
-                 * @param params 追加の依存性
+                 * Resolve dependencies at once.
+                 * If passed same constructor function twice,
+                 * return first time instantiated instance.
+                 * @param ctor Constructor function.
+                 * @param params Additional dependencies.
                  */
                 Injector.prototype.injectOnce = function (ctor, params) {
                     if (!ctor[SINGLETON_KEY]) {
@@ -244,14 +245,19 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return ctor[SINGLETON_KEY];
                 };
                 /**
-                 * 既存の`Injector`インスタンスから新たな`Injector`を生成する。
-                 * @param modules 新たに追加する`Module`
+                 * Create child injector of passed injector.
+                 * @param modules The new module to add.
                  */
                 Injector.prototype.createChildInjector = function (modules) {
                     var injector = new Injector(modules);
                     injector.parent = this;
                     return injector;
                 };
+                /**
+                 * Get instance from self and parents.
+                 * @param key The key of dependency.
+                 * @return The instance that created from found dependency.
+                 */
                 Injector.prototype.get = function (key) {
                     var instance = null;
                     var injector = this;
@@ -261,10 +267,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return instance;
                 };
                 /**
-                 * 自分自身からバインディング定義を検索してインスタンスを生成する。
-                 * この際、親の`Injector`の定義は参照しない。
-                 * @param key 検索するバインディング定義
-                 * @returns 見つかった定義から生成したインスタンス
+                 * Get instance from self, not includes parents.
+                 * @param key The key of dependency.
+                 * @returns The instance that created from found dependency.
                  */
                 Injector.prototype.getInstanceFromSelf = function (key) {
                     var _this = this;
@@ -285,9 +290,17 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     }
                     return ret;
                 };
+                /**
+                 * Return all registered dependent names of self, not includes parents.
+                 * @returns List of dependent names.
+                 */
                 Injector.prototype.selfKeys = function () {
                     return lodash_1._.map(this.bindings, function (binding, name) { return name; });
                 };
+                /**
+                 * @return all registerd dependent names.
+                 * @return List of dependent names.
+                 */
                 Injector.prototype.keys = function () {
                     var ret = [];
                     this.findOnParent(function (bindings) {
@@ -297,10 +310,10 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return ret;
                 };
                 /**
-                 * インスタンスの生成とbindingの解決を行う
-                 * @param ctor コンストラクタ関数
-                 * @param injections 依存性
-                 * @returns 依存性を注入したインスタンス
+                 * Create instance and resolve bindings.
+                 * @param ctor Constructor function.
+                 * @param injections Dependencies.
+                 * @returns The instance that dependencies injected.
                  */
                 Injector.prototype.doCreate = function (ctor, injections, params) {
                     var args = this.createArguments(injections, params, false);
@@ -318,11 +331,11 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return ret;
                 };
                 /**
-                 * インスタンス生成
-                 * 速度のために、Function.prototype.applyを使わずに引数の数で分岐する。
-                 * @param ctor コンストラクタ関数
-                 * @param args 引数
-                 * @return 依存性を注入したインスタンス
+                 * Instantiate class.
+                 * To fast instantiation, not use Function.prototype.apply but use switch case.
+                 * @param ctor Constructor function.
+                 * @param args Arguments.
+                 * @return The instance that dependencies injected.
                  */
                 Injector.prototype.invokeNewCall = function (ctor, args) {
                     var instance;
@@ -369,9 +382,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return instance;
                 };
                 /**
-                 * 引数の自動生成を行う
-                 * @param injections 依存性
-                 * @returns 依存性の配列
+                 * Create arguments from bindings.
+                 * @param injections Dependencies.
+                 * @returns Array of dependencies.
                  */
                 Injector.prototype.createArguments = function (injections, params, useKeys) {
                     var _this = this;
@@ -436,9 +449,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return useKeys ? keyArgs : args;
                 };
                 /**
-                 * 親の`Injector`を含めて検索する
-                 * 引数で渡された関数がtrueを返す限り親をたどり続ける
-                 * @param cb コールバック関数
+                 * Search include parents `Injector`.
+                 * Until passed callback return true, traverse parents.
+                 * @param cb Callback function.
                  */
                 Injector.prototype.findOnParent = function (cb) {
                     var injector = this;
@@ -451,9 +464,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     }
                 };
                 /**
-                 * `Injector#inject`等の引数で渡された追加の依存性から、バインディング定義を生成する
-                 * @param val バインディング定義の値
-                 * @returns バインディング定義
+                 * Create binding from additional parameter.
+                 * @param val defined value in Binding.
+                 * @returns Binding definition.
                  */
                 Injector.prototype.fromParams = function (val) {
                     return {
@@ -466,10 +479,10 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     };
                 };
                 /**
-                 * 依存しているインスタンスの生成
-                 * @param bindingName インスタンス名
-                 * @param item バインディングの定義
-                 * @returns 構築済みインスタンス
+                 * Create dependent instance.
+                 * @param bindingName Instance name.
+                 * @param item The defitnition of dependencies.
+                 * @returns The instance that is constructed.
                  */
                 Injector.prototype.getInstance = function (bindingName, dynamicName, item, isTemplate) {
                     if (isTemplate && dynamicName && this.templateDefinitions[dynamicName]) {
@@ -513,12 +526,12 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return ret;
                 };
                 /**
-                 * インターセプタをフックする
-                 * @param フックする対象インスタンス
+                 * Hook interceptor.
+                 * @param Target instance.
                  */
                 Injector.prototype.applyInterceptor = function (inst) {
                     var _this = this;
-                    if (inst[PROXIED_MARD]) {
+                    if (inst[PROXIED_MARK]) {
                         return;
                     }
                     lodash_1._.every(this.intercepts, function (i) {
@@ -542,15 +555,15 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                                     }
                                 });
                             }
-                            inst[PROXIED_MARD] = true;
+                            inst[PROXIED_MARK] = true;
                         }
                         return true;
                     });
                 };
                 /**
-                 * インターセプタ自体のインスタンスを取得する
-                 * @param i インターセプタクラス
-                 * @returns インターセプタのインスタンス
+                 * Get interceptor instance.
+                 * @param i Interceptor class.
+                 * @returns INterceptor instance.
                  */
                 Injector.prototype.getInterceptorInstance = function (i) {
                     if (!i.interceptor[SINGLETON_KEY]) {
@@ -559,12 +572,12 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     return i.interceptor[SINGLETON_KEY];
                 };
                 /**
-                 * インターセプタでラップしたメソッドを返す。
-                 * @param context 実行コンテキスト
-                 * @param base 実際のメソッド
-                 * @param interceptor インターセプタインスタンス
-                 * @param propertyKey プロパティ名
-                 * @returns ラップされた関数
+                 * Return wrapped method by interceptor.
+                 * @param context Execution context.
+                 * @param base Real method.
+                 * @param interceptor Instance of interceptor.
+                 * @param propertyKey Property name.
+                 * @returns Wrapped function.
                  */
                 Injector.prototype.getMethodProxy = function (context, base, interceptor, propertyKey) {
                     return function () {

@@ -32,6 +32,7 @@ const findup       = require('findup');
 const semver       = require('semver');
 const npm          = require('npm');
 const esdoc        = require('gulp-esdoc');
+const typedoc      = require('gulp-typedoc');
 
 
 const DIST = 'dist/';
@@ -67,9 +68,27 @@ gulp.task('install', done => {
 
 
 gulp.task('clean', () => {
-  try {
-    fs.removeSync('./lib');
-  } catch(e) {}
+  try {fs.removeSync('./lib');} catch(e) {}
+  try {fs.removeSync('./docs');} catch(e) {}
+});
+
+
+gulp.task('docs', () => {
+  return gulp
+    .src(["src/**/*.ts*", '!src/**/__tests__/**/*'])
+    .pipe(typedoc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
+
+      // Output options (see typedoc docs)
+      out: "./docs",
+      json: "docs/json/docs.json",
+
+      // TypeDoc options (see typedoc docs)
+      name: "react-mvi",
+      theme: "default",
+//      plugins: ["my", "plugins"],
+      ignoreCompilerErrors: false,
+      version: true
+    })));
 });
 
 
@@ -89,25 +108,55 @@ gulp.task('typescript', ['clean'], () => {
 });
 
 
+gulp.task('typescript-cjs', () => {
+  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
+      module: 'commonjs',
+      typescript: require('typescript'),
+      declaration: true
+    })));
+  return merge([
+    tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
+    tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
+  ]);
+});
+
+
+gulp.task('typescript-es2015', () => {
+  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
+      module: 'es2015',
+      target: 'ES5',
+      typescript: require('typescript'),
+      declaration: true
+    })));
+  return merge([
+    tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
+    tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
+  ]);
+});
+
+
 gulp.task('publish', ['pre-publish'], done => {
   exec('cd lib && npm publish --access public', done);
 });
 
+
 gulp.task('update-core', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, done);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, done);
   });
 });
 
 
 gulp.task('update-core-and-publish', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
   });
 });
 
 
-gulp.task('check-releasable', ['typescript'], runKarma.bind(null, true, 'PhantomJS'));
+gulp.task('check-releasable', ['docs', 'typescript', 'typescript-cjs', 'typescript-es2015'], runKarma.bind(null, true, 'PhantomJS'));
 
 
 gulp.task('pre-publish', ['check-releasable'], () => {
@@ -150,12 +199,6 @@ gulp.task('minify', ['typescript'], () => {
     }))
     .pipe(gulp.dest(`${process.cwd()}/dist/`));
 });
-
-
-/**
- * Delete temporary file.
- */
-gulp.task('clean', (cb) => del([DIST, 'lib'], cb));
 
 
 const KARMA_PID = '.karma.pid';

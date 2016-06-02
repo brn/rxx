@@ -33,29 +33,29 @@ import {
 
 
 /**
- * モジュールのベース実装
+ * Base implementation of `Module`.
  */
 export abstract class AbstractModule implements Module {
   /**
-   * バインディングのマップ
+   * Map of bindings.
    */
   private bindings: BindingRelation = {};
 
   /**
-   * テンプレートのマッピング
+   * Map of template.
    */
   private templates: BindingRelation = {};
 
   /**
-   * インターセプタのマッピング
+   * Map of interceptor.
    */
   private intercepts: InterceptPlaceholder[] = [];
 
 
   /**
-   * バインディングのIdを定義する
-   * @param name バインディングのId
-   * @returns 実体定義クラス
+   * Define binding id.
+   * @param name Binding id.
+   * @returns Concrete class.
    */
   public bind(name: string): BindingPlaceholder {
     return new BindingPlaceholder(name, this.bindings);
@@ -63,7 +63,8 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * テンプレートのIDを定義する
+   * Define template id.
+   * @param name Template binding id.
    */
   public template(name: string): TemplatePlaceholder {
     return new TemplatePlaceholder(name, this.templates);
@@ -71,8 +72,8 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * インターセプトするシンボルを登録する
-   * @param targetSymbol インターセプトするsymbol
+   * Register interceptor Symbol.
+   * @param targetSymbol Symbol that set interceptor target.
    */
   public bindInterceptor(targetSymbol: symbol) {
     const p = new InterceptPlaceholder(targetSymbol);
@@ -82,8 +83,8 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * バインディングのマップを返す
-   * @returns バインディング定義
+   * Return binding map.
+   * @returns Binding definitions.
    */
   public getBindings(): BindingRelation {
     return this.bindings;
@@ -91,8 +92,8 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * テンプレートのマップを返す
-   * @returns テンプレートのバインディング定義
+   * Return template map.
+   * @returns Template definitions.
    */
   public getTemplates(): BindingRelation {
     return this.templates;
@@ -100,8 +101,8 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * インターセプトするシンボルのリストを取得する
-   * @returns インターセプタのバインディング定義
+   * Get list of symbol that interceptor target.
+   * @returns Definition of binding of interceptor.
    */
   public getIntercepts(): InterceptPlaceholder[] {
     return this.intercepts;
@@ -109,15 +110,15 @@ export abstract class AbstractModule implements Module {
 
 
   /**
-   * 設定を行う
+   * Configure binding of modules.
    * @override
    */
   public abstract configure(): void
 
 
   /**
-   * 他のモジュールの設定を取り込む
-   * @param m モジュール
+   * Mixin other module configs.
+   * @param m Module.
    */
   public mixin(m: AbstractModule): void {
     m.configure();
@@ -126,6 +127,11 @@ export abstract class AbstractModule implements Module {
 }
 
 
+/**
+ * Simple utility function that create module.
+ * @param fn The configure method body.
+ * @returns Module implementation.
+ */
 export function createModule(fn: (config: AbstractModule) => void): Module {
   return new (class extends AbstractModule {
     configure() {

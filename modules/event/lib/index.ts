@@ -16,5 +16,123 @@
  * @author Taketoshi Aono
  */
 
+import {
+  IOResponse,
+  SubjectStore,
+  Event,
+  isDefined
+} from '@react-mvi/core';
 
-export * from './event';
+
+/**
+ * History size.
+ */
+const MAX_HISTORY_LENGTH = 10;
+
+
+/**
+ * Event publisher.
+ */
+export class EventDispatcher implements Event {
+  /**
+   * Subject store.
+   */
+  private store = new SubjectStore();
+
+  /**
+   * IO Response.
+   */
+  private res: IOResponse;
+
+  /**
+   * Event history.
+   */
+  private history = [];
+
+
+  public constructor() {
+    this.res = new IOResponse(this.store);
+  }
+
+
+  /**
+   * Publish event.
+   * @override
+   * @param key Event name. If 'RETRY' passed, past published event will be republishing.
+   * @param args Event args. If a first argument was 'RETRY', specify history index.
+   * If empty, last event will be publishing.
+   */
+  public fire(key: string, args?: any): void {
+    if (key === 'RETRY') {
+      const target = this.history[args || this.history.length - 1];
+      if (target) {
+        target();
+      }
+      return;
+    }
+    if (!this.store.has(key)) {
+      return;
+    }
+    const subjects = this.store.get(key);
+    const fire = () => subjects.forEach(subject => subject.next(args));
+    this.history.push(fire);
+    if (this.history.length > MAX_HISTORY_LENGTH) {
+      this.history.shift();
+    }
+    fire();
+  }
+
+
+  /**
+   * Fire event after specific time.
+   * @override
+   * @param time Time to delay.
+   * @param key Event name.
+   * @param args Event args.
+   */
+  public throttle(time: number, key: string, args?: any): void {
+    setTimeout(() => {
+      this.fire(key, args);
+    }, time);
+  }
+
+
+  /**
+   * Return callback function that will publish event.
+   * @override
+   * @param key Event name.
+   * @param v Event args. Override publish args.
+   */
+  public asCallback(key: string, v?: any): (args?: any) => void {
+    return (args?: any) => this.fire(key, isDefined(v)? v: args);
+  }
+
+
+  /**
+   * Same as asCallback.
+   * @override
+   * @param key Event name.
+   * @param v Event args.
+   */
+  public asc(key: string, v?: any): (args?: any) => void {
+    return this.asCallback(key, v);
+  }
+
+
+  /**
+   * Dispose all subscriptions.
+   * @override
+   */
+  public end() {
+    this.store.end();
+  }
+
+
+  /**
+   * Return response of events.
+   * @override
+   */
+  public get response() {
+    return this.res;
+  }
+}

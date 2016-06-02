@@ -18,8 +18,24 @@
 
 
 /**
- * コンストラクタ関数の定義
+ * Constructor function definitions.
  */
 export interface ClassType<T> {
+  new (a: any): T;
+  new (a: any, b: any): T;
+  new (a: any, b: any, c:any): T;
+  new (a: any, b: any, c:any, d:any): T;
+  new (a: any, b: any, c:any, d:any, e:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any, m:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any, m:any, n:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any, m:any, n:any, o:any): T;
+  new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any, m:any, n:any, o:any, p:any): T;
   new (a: any, b: any, c:any, d:any, e:any, f:any, g:any, h:any, i:any, j:any, k:any, l:any, m:any, n:any, o:any, p:any, q:any): T;
 }

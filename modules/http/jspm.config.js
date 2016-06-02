@@ -110,7 +110,7 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.1",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.6",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -182,13 +182,6 @@ SystemJS.config({
     "npm:asap@2.0.4": {
       "map": {}
     },
-    "npm:asn1.js@4.6.0": {
-      "map": {
-        "bn.js": "npm:bn.js@4.11.3",
-        "inherits": "npm:inherits@2.0.1",
-        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
-      }
-    },
     "npm:browserify-aes@1.0.6": {
       "map": {
         "buffer-xor": "npm:buffer-xor@1.0.3",
@@ -224,7 +217,7 @@ SystemJS.config({
         "browserify-rsa": "npm:browserify-rsa@4.0.1",
         "create-hash": "npm:create-hash@1.1.2",
         "create-hmac": "npm:create-hmac@1.1.4",
-        "elliptic": "npm:elliptic@6.2.7",
+        "elliptic": "npm:elliptic@6.2.8",
         "inherits": "npm:inherits@2.0.1",
         "parse-asn1": "npm:parse-asn1@5.0.0"
       }
@@ -261,7 +254,7 @@ SystemJS.config({
     "npm:create-ecdh@4.0.0": {
       "map": {
         "bn.js": "npm:bn.js@4.11.3",
-        "elliptic": "npm:elliptic@6.2.7"
+        "elliptic": "npm:elliptic@6.2.8"
       }
     },
     "npm:create-hash@1.1.2": {
@@ -312,14 +305,6 @@ SystemJS.config({
     },
     "npm:domain-browser@1.1.7": {
       "map": {}
-    },
-    "npm:elliptic@6.2.7": {
-      "map": {
-        "bn.js": "npm:bn.js@4.11.3",
-        "brorand": "npm:brorand@1.0.5",
-        "hash.js": "npm:hash.js@1.0.3",
-        "inherits": "npm:inherits@2.0.1"
-      }
     },
     "npm:encoding@0.1.12": {
       "map": {
@@ -402,7 +387,7 @@ SystemJS.config({
     },
     "npm:parse-asn1@5.0.0": {
       "map": {
-        "asn1.js": "npm:asn1.js@4.6.0",
+        "asn1.js": "npm:asn1.js@4.6.2",
         "browserify-aes": "npm:browserify-aes@1.0.6",
         "create-hash": "npm:create-hash@1.1.2",
         "evp_bytestokey": "npm:evp_bytestokey@1.0.0",
@@ -504,7 +489,22 @@ SystemJS.config({
     "npm:util-deprecate@1.0.2": {
       "map": {}
     },
-    "npm:@react-mvi/core@0.3.3-beta.1": {
+    "npm:elliptic@6.2.8": {
+      "map": {
+        "bn.js": "npm:bn.js@4.11.3",
+        "inherits": "npm:inherits@2.0.1",
+        "brorand": "npm:brorand@1.0.5",
+        "hash.js": "npm:hash.js@1.0.3"
+      }
+    },
+    "npm:asn1.js@4.6.2": {
+      "map": {
+        "bn.js": "npm:bn.js@4.11.3",
+        "inherits": "npm:inherits@2.0.1",
+        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
+      }
+    },
+    "npm:@react-mvi/core@0.3.3-beta.6": {
       "map": {
         "core-js": "npm:core-js@2.4.0"
       }

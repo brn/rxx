@@ -27,43 +27,43 @@ import {
 
 
 /**
- * バインディングの定義
+ * Binding definition.
  */
 export interface Binding {
   /**
-   * 設定された値
+   * Defined value.
    */
   val: any;
   
   /**
-   * シングルトンかどうか
+   * Singleton or not.
    */
   singleton: boolean;
 
   /**
-   * インスタンスを前もって作成するかどうか
+   * EagerSingleton or not.
    */
   eagerSingleton: boolean;
 
   /**
-   * 即値かどうか
+   * Immediate value or not.
    */
   instance: boolean;
 
   /**
-   * providerの設定
+   * Provider or not.
    */
   provider: boolean;
 
   /**
-   * templateの設定
+   * Template or not.
    */
   template: boolean;
 }
 
 
 /**
- * バインディング名から設定を引くための辞書
+ * Dictionary to look up config from bindings.
  */
 export interface BindingRelation {
   [index: string]: Binding;
@@ -71,31 +71,32 @@ export interface BindingRelation {
 
 
 /**
- * プロバイダのインターフェース
+ * The interface of Provider.
  */
 export interface Provider<T> {
   /**
-   * インスタンスを作成する
+   * Create instance.
+   * @return Create instance.
    */
   provide(): T;
 }
 
 
 /**
- * クラス型の追加設定
+ * Options for class type.
  */
 export class ClassTypeOption {
   public constructor(private binding: Binding) {}
 
   /**
-   * シングルトンにする
+   * Make class singleton.
    */
   public asSingleton() {
     this.binding.singleton = true;
   }
 
   /**
-   * シングルトンにする
+   * Make class eager singleton.
    */
   public asEagerSingleton() {
     this.binding.singleton = true;
@@ -105,21 +106,21 @@ export class ClassTypeOption {
 
 
 /**
- * バインディングと値をひもづける
+ * Link binding to value.
  */
 export class BindingPlaceholder {
   /**
-   * @param id 名前
-   * @param holder バインディングのmap
+   * @param id Binding id.
+   * @param holder Bindings map.
    */
   constructor(private id: string,
               private holder: BindingRelation) {}
   
 
   /**
-   * クラスコンストラクタをIdと紐つける
-   * @param ctor コンストラクタ関数
-   * @returns 追加の設定クラス
+   * Link constructor function to binding id.
+   * @param ctor Constructor function.
+   * @returns Option.
    */
   public to<T>(ctor: any);
   public to<T>(ctor: ClassType<T>) {
@@ -129,8 +130,8 @@ export class BindingPlaceholder {
 
   
   /**
-   * インスタンスとIdを紐つける
-   * @param value 即値
+   * Link instance to binding id.
+   * @param value Immediate value.
    */
   public toInstance<T>(value: T) {
     this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false};
@@ -138,8 +139,8 @@ export class BindingPlaceholder {
 
 
   /**
-   * プロバイダとIdを紐つける
-   * @param value プロバイダのコンストラクタ
+   * Link Provider to binding id.
+   * @param value Provider constructor function.
    */
   public toProvider<T>(value: ClassType<Provider<T>>) {
     this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false}
@@ -148,22 +149,22 @@ export class BindingPlaceholder {
 
 
 /**
- * インターセプタと値を保持するクラス
+ * Hold interceptor and value.
  */
 export class InterceptPlaceholder {
   /**
-   * インターセプタ
+   * Interceptor function.
    */
   private interceptor: new() => MethodProxy;
 
   /**
-   * @param targetSymbol インターセプトするターゲットに設定されるsymbol
+   * @param targetSymbol The symbol that set to intercepted.
    */
   public constructor(private targetSymbol: symbol) {}
 
   /**
-   * バインドを行う
-   * @param methodProxyCtor MethodProxyのコンストラクタ
+   * Do binding.
+   * @param methodProxyCtor MethodProxy constructor funciton.
    */
   public to(methodProxyCtor: new() => MethodProxy) {
     this.interceptor = methodProxyCtor;
@@ -172,20 +173,20 @@ export class InterceptPlaceholder {
 
 
 /**
- * テンプレート定義と値を保持するクラス
+ * Hold template definitions and values.
  */
 export class TemplatePlaceholder {
   /**
-   * @param id templateのid
-   * @param holder バインディングを保持するオブジェクト
+   * @param id Template id.
+   * @param holder Object that hold bindings.
    */
   constructor(private id: string,
               private holder: BindingRelation) {}
 
 
   /**
-   * 値を紐つける
-   * @param ctor コンストラクタ
+   * Link template to binding id.
+   * @param ctor Constructor function.
    */
   public to<T>(ctor: ClassType<T>) {
     this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true};

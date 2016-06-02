@@ -26,9 +26,9 @@ import {
 
 
 /**
- * 指定されたキーで設定用の配列を初期化する
- * @param target 対象のオブジェクト
- * @param key キー
+ * Initialize array by specified key.
+ * @param target Target object.
+ * @param key A key.
  */
 function initList(target: any, key: symbol) {
   if (!target[key]) {
@@ -38,10 +38,10 @@ function initList(target: any, key: symbol) {
 
 
 /**
- * 指定された正規表現にマッチした、全てのメソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @param regexp メソッドを指定するための正規表現
- * @returns クラスデコレータ
+ * Intercept methods that are specified by regular expression.
+ * @param key Symbol to intercept.
+ * @param regexp Regular expression that specify methods.
+ * @returns Class decorator.
  */
 export function interceptAll(key: symbol, regexp: RegExp) {
   return <T extends Function>(target: T) => {
@@ -52,9 +52,9 @@ export function interceptAll(key: symbol, regexp: RegExp) {
 
 
 /**
- * メソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @returns メソッドデコレータ
+ * Specifiy injector to intercept method.
+ * @param key Symbol to intercept.
+ * @returns Method decorator.
  */
 export function intercept(key: symbol) {
   return (target: Object, propertyKey: string | symbol): void => {

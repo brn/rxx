@@ -25,7 +25,7 @@ import {
 } from '@react-mvi/testing';
 import {
   EventDispatcher
-} from '../event';
+} from '../index';
 
 
 const {expect} = Chai;

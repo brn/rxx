@@ -20,7 +20,6 @@
 import {
   Chai
 }               from '@react-mvi/testing';
-import Symbol   from 'es6-symbol';
 import {Injector} from '../injector';
 import {
   MethodProxy,
@@ -35,6 +34,9 @@ import {
 import {
   intercept
 }               from '../intercept';
+import {
+  Symbol
+}               from '../../shims/symbol';
 
 
 const {expect} = Chai;

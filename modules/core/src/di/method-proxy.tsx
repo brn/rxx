@@ -18,15 +18,15 @@
 
 
 /**
- * メソッド呼び出しの抽象表現
+ * Abstract expression for method invocation.
  */
 export class MethodInvocation {
   /**
-   * @param method 関数本体
-   * @param context 呼び出しコンテキスト
-   * @param args 引数
-   * @param contextName 実行コンテキストの名前
-   * @param propertyKey 呼び出しプロパティ名
+   * @param method Function body.
+   * @param context Calling context.
+   * @param args Arguments.
+   * @param contextName The name of execution context.
+   * @param propertyKey Property name.
    */
   public constructor(private method: Function,
                      private context: any,
@@ -36,8 +36,8 @@ export class MethodInvocation {
 
 
   /**
-   * 関数呼び出しを実行する
-   * @returns 実行結果
+   * Execute function.
+   * @returns Execute result.
    */
   public proceed(): any {
     return this.method.apply(this.context, this.args);
@@ -45,8 +45,8 @@ export class MethodInvocation {
 
 
   /**
-   * 引数を取得する
-   * @returns 引数リスト
+   * Get arguments.
+   * @returns Arguments.
    */
   public getArguments(): any[] {
     return this.args;
@@ -54,8 +54,8 @@ export class MethodInvocation {
 
 
   /**
-   * 実行コンテキストを取得する
-   * @returns 実行コンテキスト
+   * Get context.
+   * @returns Execution context.
    */
   public getContext(): any {
     return this.context;
@@ -63,8 +63,8 @@ export class MethodInvocation {
 
 
   /**
-   * インスタンス名を取得する
-   * @returns string
+   * Get instance name.
+   * @returns string A instance name.
    */
   public getInstanceName() :string {
     return this.contextName;
@@ -72,8 +72,8 @@ export class MethodInvocation {
 
 
   /**
-   * プロパティ名を取得する
-   * @returns string
+   * Get property name.
+   * @returns string A property name.
    */
   public getPropertyName(): string {
     return this.propertyKey;
@@ -81,7 +81,7 @@ export class MethodInvocation {
 
 
   /**
-   * コンテキスト名とプロパティ名を繋いだ名前を返す。
+   * Return joined name of context and property.
    */
   public getFullQualifiedName(): string {
     return `${this.getInstanceName()}.${this.getPropertyName()}`;
@@ -90,12 +90,12 @@ export class MethodInvocation {
 
 
 /**
- * インターセプタのインターフェース
+ * Interceptor interface.
  */
 export interface MethodProxy {
   /**
-   * インターセプタを呼び出す。
-   * @param methodInvocation インターセプトしたメソッドの抽象表現
+   * Call interceptor.
+   * @param methodInvocation Abstract expression of method invocation..
    */
   invoke(methodInvocation: MethodInvocation): any;
 }

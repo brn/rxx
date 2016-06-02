@@ -64,6 +64,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                 injector: React.PropTypes.object,
                 io: React.PropTypes.object
             });
+            /**
+             * Check param is immutablejs object or not.
+             */
             isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
             /**
              * Call connect method of the ConnectableObservable for all properties of props.
@@ -102,6 +105,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                     }
                 });
             };
+            /**
+             * @class
+             */
             Context = (function (_super) {
                 __extends(Context, _super);
                 function Context(props, c) {

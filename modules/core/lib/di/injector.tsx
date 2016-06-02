@@ -45,34 +45,34 @@ import {
 
 
 /**
- * di時に使用された名前を格納するキー
+ * The key to hold dependency name.
  */
 export const INJECTION_NAME_SYMBOL = Symbol('__injectionname__');
 
 
 /**
- * シングルトンオブジェクトのインスタンスを格納するキー
+ * The key to hold singleton instance.
  */
 const SINGLETON_KEY = Symbol('__instance__');
 
 
 /**
- * インターセプタ適用済みの印
+ * The key to distinct proxied class.
  */
-const PROXIED_MARD = Symbol('__proxied__');
+const PROXIED_MARK = Symbol('__proxied__');
 
 
 /**
- * 依存性の定義
+ * Dependency definition.
  */
 class Injections<T> {
   /**
-   * 依存しているクラス、インスタンス、プロバイダ名の配列
+   * The name of depends class, instance, provider array.
    */
   private injectionList: string[] = [];
 
   /**
-   * @param ctor コンストラクタ関数
+   * @param ctor Constructor function.
    */
   constructor(ctor?: ClassType<T>, inst?: T) {
     if (!inst) {
@@ -83,15 +83,15 @@ class Injections<T> {
   }
 
   /**
-   * 依存リストを返す
-   * @returns 依存しているクラス、インスタンス、プロバイダ名の配列
+   * Return dependencies list.
+   * @returns The name of depends class, instance, provider array.
    */
   public get injections() {return this.injectionList;}
 
   
   /**
-   * 依存名の配列を構築する
-   * @param ctor コンストラクタ関数
+   * Construct dependent name array.
+   * @param ctor Constructor function.
    */
   private initCtorInjections(ctor: ClassType<T>): void {
     this.extractInjectionTarget(ctor, injectionTargetSymbol);
@@ -100,8 +100,8 @@ class Injections<T> {
 
 
   /**
-   * 依存名の配列を構築する
-   * @param ctor コンストラクタ関数
+   * Construct dependent name array.
+   * @param ctor Constructor function.
    */
   private initInstanceInjections(inst: T): void {
     this.extractInjectionTarget(inst, injectionTargetSymbol);
@@ -110,9 +110,9 @@ class Injections<T> {
 
 
   /**
-   * 指定されたsymbolをキーにdiの設定を抽出する。
-   * @param target 対象オブジェクト
-   * @param symbol symbolオブジェクト
+   * Extract configs by symbol.
+   * @param target Target object.
+   * @param symbol Symbol object.
    */
   private extractInjectionTarget<T>(target: T, symbol: symbol) {
     var resources: any = target[symbol];
@@ -129,36 +129,36 @@ class Injections<T> {
 
 
 /**
- * diを実行するメインクラス
+ * The main class.
  */
 export class Injector {
   /**
-   * 親の`Injector`
+   * Parent `Injector`.
    */
   private parent: Injector;
 
   /**
-   * バインディングの定義
+   * Definition of bindings.
    */
   private bindings: BindingRelation = {} as BindingRelation;
 
   /**
-   * インターセプタのバインディング定義
+   * Definition of interceptor bindings.
    */
   private intercepts: InterceptPlaceholder[] = [];
 
   /**
-   * テンプレートのバインディング定義
+   * Definition of template bindings.
    */
   private templates: BindingRelation = {};
 
   /**
-   * テンプレート定義
+   * Definition of template.
    */
   private templateDefinitions: {[key: string]: any} = {};
 
   /**
-   * @param modules 依存関係を定義したモジュールの配列
+   * @param modules The module array that is defined dependencies.
    */
   constructor(modules: Module[]) {
     this.initialize(modules)
@@ -166,8 +166,8 @@ export class Injector {
 
 
   /**
-   * 初期化処理を行う
-   * @param modules バインディング定義が記述された`Module`
+   * Iniaitlize modules and injector.
+   * @param modules The `Module` that are defined dependency relations.
    */
   private initialize(modules: Module[]): void {
     var obj: BindingRelation = {} as BindingRelation;
@@ -184,7 +184,7 @@ export class Injector {
 
 
   /**
-   * eagerSingletonのインスタンスを作成しておく
+   * Instantiate eagerSingleton class.
    */
   private instantiateEagerSingletons() {
     _.forIn(this.bindings, (v, k) => {
@@ -196,11 +196,11 @@ export class Injector {
 
 
   /**
-   * 依存性を解決した上でインスタンスを生成する。
+   * Construct dependency resolved instance.
    *
-   * @param ctor コンストラクタ関数
-   * @param params 追加の依存性
-   * @returns 依存性を注入したインスタンス
+   * @param ctor Constructor function
+   * @param params Additional dependencies.
+   * @returns Dependency resolved instance.
    * @example
    *
    * class Foo {...}
@@ -218,9 +218,9 @@ export class Injector {
    *   }
    * }
    *
-   * var injector = new Injector(new TestModule());
+   * var injector = new Injector([new TestModule()]);
    *
-   * //この呼出でBarクラスの引数fooにModuleで指定されている値が自動で注入される。
+   * //This call inject foo property of class Bar to module defined value.
    * injector.inject<Bar>(Bar);
    */
   public inject<T>(ctor: ClassType<T>, params?: any): T {
@@ -230,11 +230,11 @@ export class Injector {
 
 
   /**
-   * 生成されたインスタンスに依存性を注入する
+   * Inject dependency to instance.
    *
-   * @param ctor コンストラクタ関数
-   * @param params 追加の依存性
-   * @returns 依存性を注入したインスタンス
+   * @param inst Instance.
+   * @param params Additional dependencies.
+   * @returns Dependency injected instance.
    * @example
    *
    * class Foo {...}
@@ -252,9 +252,9 @@ export class Injector {
    *   }
    * }
    *
-   * var injector = new Injector(new TestModule());
+   * var injector = new Injector([new TestModule()]);
    *
-   * //この呼出でBarクラスの引数fooにModuleで指定されている値が自動で注入される。
+   * //This call inject foo property of class Bar to module defined value.
    * injector.injectToInstance<Bar>(new Bar());
    */
   public injectToInstance<T>(inst: T, params?: any): T {
@@ -267,10 +267,11 @@ export class Injector {
 
 
   /**
-   * 一度だけ依存性を解決する、二度目以降に同じコンストラクタ関数が渡された場合は、  
-   * 初回に生成したインスタンスを返す。
-   * @param ctor コンストラクタ関数
-   * @param params 追加の依存性
+   * Resolve dependencies at once.
+   * If passed same constructor function twice,
+   * return first time instantiated instance.
+   * @param ctor Constructor function.
+   * @param params Additional dependencies.
    */
   public injectOnce<T>(ctor: ClassType<T>, params?: any): T {
     if (!ctor[SINGLETON_KEY]) {
@@ -281,8 +282,8 @@ export class Injector {
 
 
   /**
-   * 既存の`Injector`インスタンスから新たな`Injector`を生成する。
-   * @param modules 新たに追加する`Module`
+   * Create child injector of passed injector.
+   * @param modules The new module to add.
    */
   public createChildInjector(modules: Module[]) {
     const injector = new Injector(modules);
@@ -291,6 +292,11 @@ export class Injector {
   }
 
 
+  /**
+   * Get instance from self and parents.
+   * @param key The key of dependency.
+   * @return The instance that created from found dependency.
+   */
   public get(key: string|RegExp): any {
     let instance = null;
     let injector = this as Injector;
@@ -302,10 +308,9 @@ export class Injector {
 
 
   /**
-   * 自分自身からバインディング定義を検索してインスタンスを生成する。  
-   * この際、親の`Injector`の定義は参照しない。
-   * @param key 検索するバインディング定義
-   * @returns 見つかった定義から生成したインスタンス
+   * Get instance from self, not includes parents.
+   * @param key The key of dependency.
+   * @returns The instance that created from found dependency.
    */
   public getInstanceFromSelf(key: string|RegExp): any {
     let ret;
@@ -326,11 +331,19 @@ export class Injector {
   }
 
 
+  /**
+   * Return all registered dependent names of self, not includes parents.
+   * @returns List of dependent names.
+   */
   public selfKeys(): string[] {
     return _.map(this.bindings, (binding: Binding, name: string) => name);
   }
 
 
+  /**
+   * @return all registerd dependent names.
+   * @return List of dependent names.
+   */
   public keys(): string[] {
     let ret = [];
     this.findOnParent(bindings => {
@@ -342,10 +355,10 @@ export class Injector {
 
   
   /**
-   * インスタンスの生成とbindingの解決を行う
-   * @param ctor コンストラクタ関数
-   * @param injections 依存性
-   * @returns 依存性を注入したインスタンス
+   * Create instance and resolve bindings.
+   * @param ctor Constructor function.
+   * @param injections Dependencies.
+   * @returns The instance that dependencies injected.
    */
   private doCreate<T>(ctor: ClassType<T>, injections: Injections<T>, params: any): T {
     let args = this.createArguments(injections, params, false) as any[];
@@ -365,11 +378,11 @@ export class Injector {
 
 
   /**
-   * インスタンス生成  
-   * 速度のために、Function.prototype.applyを使わずに引数の数で分岐する。
-   * @param ctor コンストラクタ関数
-   * @param args 引数
-   * @return 依存性を注入したインスタンス
+   * Instantiate class.  
+   * To fast instantiation, not use Function.prototype.apply but use switch case.
+   * @param ctor Constructor function.
+   * @param args Arguments.
+   * @return The instance that dependencies injected.
    */
   private invokeNewCall<T>(ctor: any, args: any[]): T {
     var instance: T;
@@ -418,9 +431,9 @@ export class Injector {
 
 
   /**
-   * 引数の自動生成を行う
-   * @param injections 依存性
-   * @returns 依存性の配列
+   * Create arguments from bindings.
+   * @param injections Dependencies.
+   * @returns Array of dependencies.
    */
   private createArguments<T>(injections: Injections<T>, params: any, useKeys?: boolean): any[]|{} {
     const args = [];
@@ -486,9 +499,9 @@ export class Injector {
 
 
   /**
-   * 親の`Injector`を含めて検索する  
-   * 引数で渡された関数がtrueを返す限り親をたどり続ける
-   * @param cb コールバック関数
+   * Search include parents `Injector`.
+   * Until passed callback return true, traverse parents.
+   * @param cb Callback function.
    */
   private findOnParent(cb: Function) {
     var injector = this as Injector;
@@ -503,9 +516,9 @@ export class Injector {
 
 
   /**
-   * `Injector#inject`等の引数で渡された追加の依存性から、バインディング定義を生成する
-   * @param val バインディング定義の値
-   * @returns バインディング定義
+   * Create binding from additional parameter.
+   * @param val defined value in Binding.
+   * @returns Binding definition.
    */
   private fromParams(val: any): Binding {
     return {
@@ -520,10 +533,10 @@ export class Injector {
 
   
   /**
-   * 依存しているインスタンスの生成
-   * @param bindingName インスタンス名
-   * @param item バインディングの定義
-   * @returns 構築済みインスタンス
+   * Create dependent instance.
+   * @param bindingName Instance name.
+   * @param item The defitnition of dependencies.
+   * @returns The instance that is constructed.
    */
   private getInstance<T>(bindingName: string, dynamicName: string, item: Binding, isTemplate: boolean): any {
     if (isTemplate && dynamicName && this.templateDefinitions[dynamicName]) {
@@ -569,11 +582,11 @@ export class Injector {
 
 
   /**
-   * インターセプタをフックする
-   * @param フックする対象インスタンス
+   * Hook interceptor.
+   * @param Target instance.
    */
   private applyInterceptor<T>(inst: T): void {
-    if (inst[PROXIED_MARD]) {
+    if (inst[PROXIED_MARK]) {
       return;
     }
 
@@ -597,7 +610,7 @@ export class Injector {
             }
           })
         }
-        inst[PROXIED_MARD] = true;
+        inst[PROXIED_MARK] = true;
       }
       return true;
     });
@@ -605,9 +618,9 @@ export class Injector {
 
 
   /**
-   * インターセプタ自体のインスタンスを取得する
-   * @param i インターセプタクラス
-   * @returns インターセプタのインスタンス
+   * Get interceptor instance.
+   * @param i Interceptor class.
+   * @returns INterceptor instance.
    */
   private getInterceptorInstance(i: any): MethodProxy {
     if (!i.interceptor[SINGLETON_KEY]) {
@@ -618,12 +631,12 @@ export class Injector {
 
 
   /**
-   * インターセプタでラップしたメソッドを返す。
-   * @param context 実行コンテキスト
-   * @param base 実際のメソッド
-   * @param interceptor インターセプタインスタンス
-   * @param propertyKey プロパティ名
-   * @returns ラップされた関数
+   * Return wrapped method by interceptor.
+   * @param context Execution context.
+   * @param base Real method.
+   * @param interceptor Instance of interceptor.
+   * @param propertyKey Property name.
+   * @returns Wrapped function.
    */
   private getMethodProxy(context: any, base: Function, interceptor: MethodProxy, propertyKey: string): (...args: any[]) => any {
     return (...args) => {
