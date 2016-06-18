@@ -1,5 +1,0 @@
-# Interface StorageIO
-Interface for storage io processor.### Extends* [IO](_io_io_.io.html)
-## Index### Properties* [response](_io_io_.storageio.html#response)### Methods* [end](_io_io_.storageio.html#end)* [wait](_io_io_.storageio.html#wait)## Properties### response: [IOResponse](../classes/_io_io_.ioresponse.html)
-* Inherited from [IO](_io_io_.io.html).[response](_io_io_.io.html#response)* Defined in [io/io.tsx:170](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L170)## Methods### end(): void  * Inherited from [IO](_io_io_.io.html).[end](_io_io_.io.html#end)* Defined in [io/io.tsx:171](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L171)#### Returns: void### wait(ob: Observable<[StorageOptions](_io_io_.storageoptions.html)>): void  * Defined in [io/io.tsx:329](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L329)#### Parameters| Name | Type | Description || ---- | ---- | ---- || ob | Observable<[StorageOptions](_io_io_.storageoptions.html)>|  |#### Returns: void
-Generated using [TypeDoc](http://typedoc.io)

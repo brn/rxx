@@ -27,6 +27,9 @@ export interface Lodash {
   forEach<T>(a: {[key: string]: T}, cb: (v: T, k?: string, a?: {[key: string]: T}) => any): void;
   forEach<T>(a: T, cb: (v: T, i?: string, a?: T) => any): void;
   every<T>(a: T[], cb: (v: T, i?: number, a?: T[]) => boolean): boolean;
+  every<T>(a: {[key: string]: T}, cb: (v: T, k?: string, a?: {[key: string]: T}) => boolean): boolean;
+  some<T>(a: T[], cb: (v: T, i?: number, a?: T[]) => boolean): boolean;
+  some<T>(a: {[key: string]: T}, cb: (v: T, k?: string, a?: {[key: string]: T}) => boolean): boolean;
   forIn<T>(a: {[key: string]: T}, cb: (v: T, k?: string, a?: {[key: string]: T}) => any): void;
   forIn<T, U>(a: T, cb: (v: U, k?: string, a?: T) => any): void;
   map<T, U>(a: T[], cb: (v: T, i?: number, a?: T[]) => U): U[];

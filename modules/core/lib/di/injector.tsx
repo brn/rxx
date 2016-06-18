@@ -16,6 +16,7 @@
  * @author Taketoshi Aono
  */
 
+
 import {
   ClassType
 }             from './classtype';
@@ -282,7 +283,8 @@ export class Injector {
 
 
   /**
-   * Create child injector of passed injector.
+   * Create child injector.  
+   * Child injector is binded parent modules and self modules.
    * @param modules The new module to add.
    */
   public createChildInjector(modules: Module[]) {
@@ -351,6 +353,38 @@ export class Injector {
       return true
     });
     return ret;
+  }
+
+
+  /**
+   * Find bindings.
+   * @param predicate Predicate callback.
+   */
+  public find(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
+    const results = {} as {[key: string]: Binding};
+    this.findOnParent((bindings: BindingRelation) => {
+      _.forIn(bindings, (v, k) => {
+        if (predicate(v, k)) {
+          results[k] = v;
+        }
+      });
+    });
+    return results;
+  }
+
+
+  /**
+   * Find bindings.
+   * @param predicate Predicate callback.
+   */
+  public findFromSelf(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
+    const results = {} as {[key: string]: Binding};
+    _.forIn(this.bindings, (v, k) => {
+      if (predicate(v, k)) {
+        results[k] = v;
+      }
+    });
+    return results;
   }
 
   

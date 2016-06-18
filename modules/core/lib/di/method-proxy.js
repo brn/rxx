@@ -23,15 +23,15 @@ System.register([], function(exports_1, context_1) {
         setters:[],
         execute: function() {
             /**
-             * メソッド呼び出しの抽象表現
+             * Abstract expression for method invocation.
              */
             MethodInvocation = (function () {
                 /**
-                 * @param method 関数本体
-                 * @param context 呼び出しコンテキスト
-                 * @param args 引数
-                 * @param contextName 実行コンテキストの名前
-                 * @param propertyKey 呼び出しプロパティ名
+                 * @param method Function body.
+                 * @param context Calling context.
+                 * @param args Arguments.
+                 * @param contextName The name of execution context.
+                 * @param propertyKey Property name.
                  */
                 function MethodInvocation(method, context, args, contextName, propertyKey) {
                     this.method = method;
@@ -41,42 +41,42 @@ System.register([], function(exports_1, context_1) {
                     this.propertyKey = propertyKey;
                 }
                 /**
-                 * 関数呼び出しを実行する
-                 * @returns 実行結果
+                 * Execute function.
+                 * @returns Execute result.
                  */
                 MethodInvocation.prototype.proceed = function () {
                     return this.method.apply(this.context, this.args);
                 };
                 /**
-                 * 引数を取得する
-                 * @returns 引数リスト
+                 * Get arguments.
+                 * @returns Arguments.
                  */
                 MethodInvocation.prototype.getArguments = function () {
                     return this.args;
                 };
                 /**
-                 * 実行コンテキストを取得する
-                 * @returns 実行コンテキスト
+                 * Get context.
+                 * @returns Execution context.
                  */
                 MethodInvocation.prototype.getContext = function () {
                     return this.context;
                 };
                 /**
-                 * インスタンス名を取得する
-                 * @returns string
+                 * Get instance name.
+                 * @returns string A instance name.
                  */
                 MethodInvocation.prototype.getInstanceName = function () {
                     return this.contextName;
                 };
                 /**
-                 * プロパティ名を取得する
-                 * @returns string
+                 * Get property name.
+                 * @returns string A property name.
                  */
                 MethodInvocation.prototype.getPropertyName = function () {
                     return this.propertyKey;
                 };
                 /**
-                 * コンテキスト名とプロパティ名を繋いだ名前を返す。
+                 * Return joined name of context and property.
                  */
                 MethodInvocation.prototype.getFullQualifiedName = function () {
                     return this.getInstanceName() + "." + this.getPropertyName();

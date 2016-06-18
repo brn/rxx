@@ -25,6 +25,7 @@ var React = require('react');
 var Rx_1 = require('rxjs/Rx');
 var injector_1 = require('../di/injector');
 var io_1 = require('../io/io');
+var service_1 = require('../service/service');
 var lodash_1 = require('../shims/lodash');
 /**
  * React contextTypes.
@@ -40,10 +41,24 @@ exports.ContextReactTypes = {
  * Check param is immutablejs object or not.
  */
 var isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
+var isEnumerable = function (v) {
+    if (Object.getPrototypeOf) {
+        if (Object.getPrototypeOf(v) !== Object.prototype) {
+            return false;
+        }
+    }
+    else {
+        if (v.constructor && v.constructor !== Object) {
+            return false;
+        }
+    }
+    return true;
+};
 /**
  * Call connect method of the ConnectableObservable for all properties of props.
+ * @param v The value to search
  */
-var connect = function (v, k) {
+var connect = function (v) {
     if (!v) {
         return;
     }
@@ -53,7 +68,7 @@ var connect = function (v, k) {
     if (isImmutable(v)) {
         return v;
     }
-    if (Object.getPrototypeOf(v) !== Object.prototype) {
+    if (!isEnumerable(v)) {
         return;
     }
     lodash_1._.forIn(v, function (v, k) {
@@ -70,7 +85,7 @@ var connect = function (v, k) {
             v.forEach(connect);
         }
         else if (lodash_1._.isObject(v)) {
-            if (Object.getPrototypeOf(v) !== Object.prototype) {
+            if (!isEnumerable(v)) {
                 return;
             }
             lodash_1._.forIn(v, connect);
@@ -78,7 +93,7 @@ var connect = function (v, k) {
     });
 };
 /**
- * @class
+ * React context provider.
  */
 var Context = (function (_super) {
     __extends(Context, _super);
@@ -86,9 +101,20 @@ var Context = (function (_super) {
         _super.call(this, props, c);
         var self = this;
         var injector = new injector_1.Injector(props.modules);
-        var ioModules = {};
-        io_1.getIOModules().map(function (k) { return ioModules[k] = injector.get(k); });
-        var services = injector.get(/Service$/);
+        var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
+            if (!binding.instance && binding.val) {
+                return binding.val[io_1.IO_MARK];
+            }
+            else if (binding.instance) {
+                return binding.instance[io_1.IO_MARK];
+            }
+        }), function (v, k) { return injector.get(k); });
+        var services = lodash_1._.map(injector.find(function (binding) {
+            if (binding.val) {
+                return !!binding.val[service_1.SERVICE_MARK];
+            }
+            return;
+        }), function (v, k) { return injector.get(k); });
         this.contextObject = {
             createProps: function () {
                 var args = [];
@@ -102,12 +128,10 @@ var Context = (function (_super) {
                         result = service.apply(void 0, [ioResposens, injector].concat(args));
                     }
                     else {
-                        result = service.initialize();
+                        result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                     }
-                    if ('http' in result && ioModules['http']) {
-                        lodash_1._.forIn(result['http'], function (v) { return ioModules['http'].wait(v); });
-                    }
-                    return lodash_1._.assign(props, result);
+                    lodash_1._.forIn(ioModules, function (io) { return io.subscribe(result); });
+                    return lodash_1._.assign(props, result['view'] || {});
                 }, {});
             },
             clean: function () {
@@ -136,11 +160,16 @@ var Context = (function (_super) {
 exports.Context = Context;
 /**
  * Decorator to set specified type as context type.
+ * @param target A class constructor.
  */
 function context(target) {
     target['contextTypes'] = exports.ContextReactTypes;
 }
 exports.context = context;
+/**
+ * Set context type to stateless component.
+ * @param component A stateless component.
+ */
 function setContext(component) {
     component['contextTypes'] = exports.ContextReactTypes;
 }

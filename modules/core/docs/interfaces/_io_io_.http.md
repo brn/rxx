@@ -1,5 +1,0 @@
-# Interface Http
-Interface for Http IO.### Extends* [IO](_io_io_.io.html)
-## Index### Properties* [response](_io_io_.http.html#response)### Methods* [end](_io_io_.http.html#end)* [wait](_io_io_.http.html#wait)## Properties### response: [IOResponse](../classes/_io_io_.ioresponse.html)
-* Inherited from [IO](_io_io_.io.html).[response](_io_io_.io.html#response)* Defined in [io/io.tsx:170](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L170)## Methods### end(): voidDispose all subscriptions.  * Overwrites [IO](_io_io_.io.html).[end](_io_io_.io.html#end)* Defined in [io/io.tsx:227](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L227)#### Returns: void### wait(request: Observable<[HttpConfig](../modules/_io_io_.html#httpconfig)>): SubscriptionWait Http request observable.  * Defined in [io/io.tsx:221](https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L221)#### Parameters| Name | Type | Description || ---- | ---- | ---- || request | Observable<[HttpConfig](../modules/_io_io_.html#httpconfig)>| Disposable. |#### Returns: Subscription
-Generated using [TypeDoc](http://typedoc.io)

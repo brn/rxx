@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
+System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -27,12 +27,15 @@ System.register(['@react-mvi/core', './shims/query-string', './shims/promise', '
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, query_string_1, promise_1, fetch_1;
+    var core_1, Rx_1, query_string_1, promise_1, fetch_1;
     var HTTP_INTERCEPT, HTTP_REQUEST_INTERCEPT, HttpRequest;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+            },
+            function (Rx_1_1) {
+                Rx_1 = Rx_1_1;
             },
             function (query_string_1_1) {
                 query_string_1 = query_string_1_1;
@@ -65,28 +68,49 @@ System.register(['@react-mvi/core', './shims/query-string', './shims/promise', '
                  * @override
                  * @param request Observable that send request.
                  */
-                HttpRequest.prototype.wait = function (request) {
+                HttpRequest.prototype.subscribe = function (props) {
                     var _this = this;
-                    return request.subscribe(function (config) {
-                        var subjects = _this.store.get(config.key);
-                        (function () {
-                            switch (config.method) {
-                                case core_1.HttpMethod.GET:
-                                    return _this.get(config);
-                                case core_1.HttpMethod.POST:
-                                    return _this.post(config);
-                                case core_1.HttpMethod.PUT:
-                                    return _this.put(config);
-                                default:
-                                    return _this.get(config);
+                    var disp = new core_1.Disposable();
+                    if (props['http']) {
+                        var _loop_1 = function(reqKey) {
+                            var req = props['http'][reqKey];
+                            disp.addSubscription(req.subscribe(function (config) {
+                                var subjects = _this.store.get(reqKey);
+                                (function () {
+                                    switch (config.method) {
+                                        case core_1.HttpMethod.GET:
+                                            return _this.get(config);
+                                        case core_1.HttpMethod.POST:
+                                            return _this.post(config);
+                                        case core_1.HttpMethod.PUT:
+                                            return _this.put(config);
+                                        default:
+                                            return _this.get(config);
+                                    }
+                                })()
+                                    .then(function (res) {
+                                    _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
+                                }).catch(function (err) {
+                                    if (err && typeof err.json === 'function') {
+                                        _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
+                                    }
+                                    else {
+                                        subjects.forEach(function (subject) { return subject.error(err); });
+                                    }
+                                });
+                            }));
+                        };
+                        for (var reqKey in props['http']) {
+                            _loop_1(reqKey);
+                        }
+                        for (var reqKey in props['http']) {
+                            var req = props['http'][reqKey];
+                            if (req instanceof Rx_1.ConnectableObservable || typeof req.connect === 'function') {
+                                req.connect();
                             }
-                        })()
-                            .then(function (res) {
-                            _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
-                        }).catch(function (err) {
-                            _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
-                        });
-                    });
+                        }
+                    }
+                    return disp;
                 };
                 /**
                  * Dispose all subscriptions.
@@ -216,6 +240,10 @@ System.register(['@react-mvi/core', './shims/query-string', './shims/promise', '
                     __metadata('design:paramtypes', [Number, fetch_1.Response]), 
                     __metadata('design:returntype', promise_1.Promise)
                 ], HttpRequest.prototype, "getResponse", null);
+                HttpRequest = __decorate([
+                    core_1.io, 
+                    __metadata('design:paramtypes', [])
+                ], HttpRequest);
                 return HttpRequest;
             }());
             exports_1("HttpRequest", HttpRequest);

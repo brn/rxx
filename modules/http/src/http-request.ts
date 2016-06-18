@@ -20,19 +20,22 @@
 /// <reference path="./declarations.d.ts"/>
 
 import {
+  io,
+  IO,
   IOResponse,
   SubjectStore,
-  Http,
   HttpConfig,
   HttpMethod,
   ResponseType,
   param,
   Symbol,
-  intercept
+  intercept,
+  Disposable
 } from '@react-mvi/core';
 import {
   Observable,
-  Subscription
+  Subscription,
+  ConnectableObservable
 } from 'rxjs/Rx';
 import {
   querystring as qs
@@ -56,8 +59,8 @@ export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__
 /**
  * Http request sender.
  */
-export class HttpRequest implements Http {
-
+@io
+export class HttpRequest implements IO {
   /**
    * Response.
    */
@@ -83,27 +86,44 @@ export class HttpRequest implements Http {
    * @override
    * @param request Observable that send request.
    */
-  public wait(request: Observable<HttpConfig>): Subscription {
-    return request.subscribe(config => {
-      const subjects = this.store.get(config.key);
-      (() => {
-        switch (config.method) {
-        case HttpMethod.GET:
-          return this.get(config);
-        case HttpMethod.POST:
-          return this.post(config);
-        case HttpMethod.PUT:
-          return this.put(config);
-        default:
-          return this.get(config);
+  public subscribe(props: {[key: string]: any}): Disposable {
+    const disp = new Disposable();
+    if (props['http']) {
+      for (let reqKey in props['http']) {
+        const req = props['http'][reqKey];
+        disp.addSubscription(req.subscribe((config: HttpConfig) => {
+          const subjects = this.store.get(reqKey);
+          (() => {
+            switch (config.method) {
+            case HttpMethod.GET:
+              return this.get(config);
+            case HttpMethod.POST:
+              return this.post(config);
+            case HttpMethod.PUT:
+              return this.put(config);
+            default:
+              return this.get(config);
+            }
+          })()
+            .then(res => {
+              this.getResponse(config.responseType, res).then(res => subjects.forEach(subject => subject.next(res)));
+            }).catch(err => {
+              if (err && typeof err.json === 'function') {
+                this.getResponse(config.responseType, err).then(err => subjects.forEach(subject => subject.error(err)));
+              } else {
+                subjects.forEach(subject => subject.error(err))
+              }
+            });
+        }));
+      }
+      for (let reqKey in props['http']) {
+        const req = props['http'][reqKey];
+        if (req instanceof ConnectableObservable || typeof req.connect === 'function') {
+          req.connect();
         }
-      })()
-        .then(res => {
-          this.getResponse(config.responseType, res).then(res => subjects.forEach(subject => subject.next(res)));
-        }).catch(err => {
-          this.getResponse(config.responseType, err).then(err => subjects.forEach(subject => subject.error(err)));
-        });
-    });
+      }
+    }
+    return disp;
   }
 
 

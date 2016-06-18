@@ -230,7 +230,8 @@ var Injector = (function () {
         return ctor[SINGLETON_KEY];
     };
     /**
-     * Create child injector of passed injector.
+     * Create child injector.
+     * Child injector is binded parent modules and self modules.
      * @param modules The new module to add.
      */
     Injector.prototype.createChildInjector = function (modules) {
@@ -293,6 +294,34 @@ var Injector = (function () {
             return true;
         });
         return ret;
+    };
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    Injector.prototype.find = function (predicate) {
+        var results = {};
+        this.findOnParent(function (bindings) {
+            lodash_1._.forIn(bindings, function (v, k) {
+                if (predicate(v, k)) {
+                    results[k] = v;
+                }
+            });
+        });
+        return results;
+    };
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    Injector.prototype.findFromSelf = function (predicate) {
+        var results = {};
+        lodash_1._.forIn(this.bindings, function (v, k) {
+            if (predicate(v, k)) {
+                results[k] = v;
+            }
+        });
+        return results;
     };
     /**
      * Create instance and resolve bindings.

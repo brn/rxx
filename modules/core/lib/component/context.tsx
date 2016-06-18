@@ -31,12 +31,13 @@ import {
 import {
   IO,
   Event,
-  Http,
   StorageIO,
   getIOModules,
-  BasicIOTypes
+  BasicIOTypes,
+  IO_MARK
 }                 from '../io/io';
 import {
+  SERVICE_MARK,
   Service
 }                 from '../service/service';
 import {
@@ -82,22 +83,36 @@ export const ContextReactTypes = {
 const isImmutable = v => v['isIterable'] && v['isIterable']()
 
 
+const isEnumerable = (v: any) => {
+  if (Object.getPrototypeOf) {
+    if (Object.getPrototypeOf(v) !== Object.prototype) {
+      return false;
+    }
+  } else {
+    if (v.constructor && v.constructor !== Object) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
 /**
  * Call connect method of the ConnectableObservable for all properties of props.
+ * @param v The value to search
  */
-const connect = (v: any, k?: any) => {
+const connect = (v: any) => {
   if (!v) {return;}
 
   if (v instanceof ConnectableObservable) {
     return v.connect && v.connect();
   }
+
   if (isImmutable(v)) {
     return v;
   }
 
-  if (Object.getPrototypeOf(v) !== Object.prototype) {
-    return;
-  }
+  if (!isEnumerable(v)) {return}
 
   _.forIn(v, (v, k) => {
     if (!v) {return;}
@@ -108,7 +123,7 @@ const connect = (v: any, k?: any) => {
     } else if (_.isArray(v)) {
       v.forEach(connect);
     } else if (_.isObject(v)) {
-      if (Object.getPrototypeOf(v) !== Object.prototype) {
+      if (!isEnumerable(v)) {
         return;
       }
       _.forIn(v, connect);
@@ -124,10 +139,14 @@ export interface ContextProps {
   modules: Module[]
 }
 
+
 /**
- * @class
+ * React context provider.
  */
 export class Context extends React.Component<ContextProps, {}> {
+  /**
+   * Context object.
+   */
   private contextObject: ContextType;
 
 
@@ -135,9 +154,22 @@ export class Context extends React.Component<ContextProps, {}> {
     super(props, c);
     const self = this;
     const injector = new Injector(props.modules);
-    const ioModules: IOTypes = {} as any;
-    getIOModules().map(k => ioModules[k] = injector.get(k));
-    const services: Service<any, any>[] = injector.get(/Service$/);
+
+    const ioModules: IOTypes = _.mapValues(injector.find(binding => {
+      if (!binding.instance && binding.val) {
+        return binding.val[IO_MARK];
+      } else if (binding.instance) {
+        return binding.instance[IO_MARK];
+      }
+    }), (v, k) => injector.get(k)) as IOTypes;
+
+    const services: Service<any, any>[] = _.map(injector.find(binding => {
+      if (binding.val) {
+        return !!binding.val[SERVICE_MARK];
+      }
+      return;
+    }), (v, k) => injector.get(k));
+
     this.contextObject = {
       createProps<T>(...args: any[]) {
         const ioResposens = _.mapValues(ioModules, v => v? v.response: null);
@@ -146,14 +178,12 @@ export class Context extends React.Component<ContextProps, {}> {
           if (typeof service.initialize !== 'function') {
             result = service(ioResposens, injector, ...args);
           } else {
-            result = service.initialize();
+            result = service.initialize(ioResposens, injector, ...args);
           }
 
-          if ('http' in result && ioModules['http']) {
-            _.forIn(result['http'], (v: Observable<any>) => (ioModules['http'] as Http).wait(v));
-          }
+          _.forIn(ioModules, io => io.subscribe(result));
           
-          return _.assign(props, result);
+          return _.assign(props, result['view'] || {});
         }, {});
       },
       clean() {
@@ -184,12 +214,17 @@ export class Context extends React.Component<ContextProps, {}> {
 
 /**
  * Decorator to set specified type as context type.
+ * @param target A class constructor.
  */
 export function context<T extends Function>(target: T) {
   target['contextTypes'] = ContextReactTypes;
 }
 
 
+/**
+ * Set context type to stateless component.
+ * @param component A stateless component.
+ */
 export function setContext(component: any): void {
   component['contextTypes'] = ContextReactTypes;
 }

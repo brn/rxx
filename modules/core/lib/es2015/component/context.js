@@ -15,15 +15,21 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import * as React from 'react';
 import { ConnectableObservable } from 'rxjs/Rx';
 import { Injector } from '../di/injector';
-import { getIOModules } from '../io/io';
+import { IO_MARK } from '../io/io';
+import { SERVICE_MARK } from '../service/service';
 import { _ } from '../shims/lodash';
 /**
  * React contextTypes.
  */
-export const ContextReactTypes = {
+export var ContextReactTypes = {
     createProps: React.PropTypes.func,
     clean: React.PropTypes.func,
     connect: React.PropTypes.func,
@@ -33,11 +39,25 @@ export const ContextReactTypes = {
 /**
  * Check param is immutablejs object or not.
  */
-const isImmutable = v => v['isIterable'] && v['isIterable']();
+var isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
+var isEnumerable = function (v) {
+    if (Object.getPrototypeOf) {
+        if (Object.getPrototypeOf(v) !== Object.prototype) {
+            return false;
+        }
+    }
+    else {
+        if (v.constructor && v.constructor !== Object) {
+            return false;
+        }
+    }
+    return true;
+};
 /**
  * Call connect method of the ConnectableObservable for all properties of props.
+ * @param v The value to search
  */
-const connect = (v, k) => {
+var connect = function (v) {
     if (!v) {
         return;
     }
@@ -47,10 +67,10 @@ const connect = (v, k) => {
     if (isImmutable(v)) {
         return v;
     }
-    if (Object.getPrototypeOf(v) !== Object.prototype) {
+    if (!isEnumerable(v)) {
         return;
     }
-    _.forIn(v, (v, k) => {
+    _.forIn(v, function (v, k) {
         if (!v) {
             return;
         }
@@ -64,7 +84,7 @@ const connect = (v, k) => {
             v.forEach(connect);
         }
         else if (_.isObject(v)) {
-            if (Object.getPrototypeOf(v) !== Object.prototype) {
+            if (!isEnumerable(v)) {
                 return;
             }
             _.forIn(v, connect);
@@ -72,57 +92,82 @@ const connect = (v, k) => {
     });
 };
 /**
- * @class
+ * React context provider.
  */
-export class Context extends React.Component {
-    constructor(props, c) {
-        super(props, c);
-        const self = this;
-        const injector = new Injector(props.modules);
-        const ioModules = {};
-        getIOModules().map(k => ioModules[k] = injector.get(k));
-        const services = injector.get(/Service$/);
+var Context = (function (_super) {
+    __extends(Context, _super);
+    function Context(props, c) {
+        _super.call(this, props, c);
+        var self = this;
+        var injector = new Injector(props.modules);
+        var ioModules = _.mapValues(injector.find(function (binding) {
+            if (!binding.instance && binding.val) {
+                return binding.val[IO_MARK];
+            }
+            else if (binding.instance) {
+                return binding.instance[IO_MARK];
+            }
+        }), function (v, k) { return injector.get(k); });
+        var services = _.map(injector.find(function (binding) {
+            if (binding.val) {
+                return !!binding.val[SERVICE_MARK];
+            }
+            return;
+        }), function (v, k) { return injector.get(k); });
         this.contextObject = {
-            createProps(...args) {
-                const ioResposens = _.mapValues(ioModules, v => v ? v.response : null);
-                return services.reduce((props, service) => {
-                    let result;
+            createProps: function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i - 0] = arguments[_i];
+                }
+                var ioResposens = _.mapValues(ioModules, function (v) { return v ? v.response : null; });
+                return services.reduce(function (props, service) {
+                    var result;
                     if (typeof service.initialize !== 'function') {
-                        result = service(ioResposens, injector, ...args);
+                        result = service.apply(void 0, [ioResposens, injector].concat(args));
                     }
                     else {
-                        result = service.initialize();
+                        result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                     }
-                    if ('http' in result && ioModules['http']) {
-                        _.forIn(result['http'], (v) => ioModules['http'].wait(v));
-                    }
-                    return _.assign(props, result);
+                    _.forIn(ioModules, function (io) { return io.subscribe(result); });
+                    return _.assign(props, result['view'] || {});
                 }, {});
             },
-            clean() {
-                _.forIn(ioModules, io => io.end());
+            clean: function () {
+                _.forIn(ioModules, function (io) { return io.end(); });
             },
-            connect,
+            connect: connect,
             injector: injector,
             io: ioModules
         };
     }
-    render() {
+    Context.prototype.render = function () {
         return this.props.children;
-    }
-    getChildContext() {
+    };
+    Context.prototype.getChildContext = function () {
         return this.contextObject;
-    }
-    static get childContextTypes() {
-        return ContextReactTypes;
-    }
-}
+    };
+    Object.defineProperty(Context, "childContextTypes", {
+        get: function () {
+            return ContextReactTypes;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Context;
+}(React.Component));
+Context = Context;
 /**
  * Decorator to set specified type as context type.
+ * @param target A class constructor.
  */
 export function context(target) {
     target['contextTypes'] = ContextReactTypes;
 }
+/**
+ * Set context type to stateless component.
+ * @param component A stateless component.
+ */
 export function setContext(component) {
     component['contextTypes'] = ContextReactTypes;
 }

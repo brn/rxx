@@ -18,35 +18,27 @@
 import { Subject } from 'rxjs/Subject';
 import { Symbol } from '../shims/symbol';
 import { _ } from '../shims/lodash';
-export const IO_MARK = Symbol('io');
-/**
- * Base class of io module.
- */
-export class IOModule {
-    constructor() {
-        this[IO_MARK] = true;
-    }
-}
+export var IO_MARK = Symbol('io');
 /**
  * Decorator for io module.
  */
 export function io(target) {
     target[IO_MARK] = true;
 }
-const IO_MODULES = ['http', 'event', 'storage'];
-export const appendIOModuleKey = (name) => {
+var IO_MODULES = ['http', 'event', 'storage'];
+export var appendIOModuleKey = function (name) {
     if (IO_MODULES.indexOf(name) === -1) {
         IO_MODULES.push(name);
         return;
     }
-    throw new Error(`${name} is already registered as io module.`);
+    throw new Error(name + " is already registered as io module.");
 };
-export const getIOModules = () => IO_MODULES.slice();
+export var getIOModules = function () { return IO_MODULES.slice(); };
 /**
  * Represent IO response.
  */
-export class IOResponse {
-    constructor(subjectStore) {
+var IOResponse = (function () {
+    function IOResponse(subjectStore) {
         this.subjectStore = subjectStore;
     }
     ;
@@ -55,49 +47,52 @@ export class IOResponse {
      * @param key Subject name.
      * @returns Registered Subject.
      */
-    for(key) {
+    IOResponse.prototype.for = function (key) {
         if (!this.subjectStore.hasWithoutGlobal(key)) {
             return this.subjectStore.add(key);
         }
         return this.subjectStore.getWithoutGlobal(key);
-    }
-}
+    };
+    return IOResponse;
+}());
+IOResponse = IOResponse;
 /**
  * Hold Subject cache.
  */
-export class SubjectStore {
-    constructor(subjectMap = {}) {
+var SubjectStore = (function () {
+    function SubjectStore(subjectMap) {
+        if (subjectMap === void 0) { subjectMap = {}; }
         this.subjectMap = subjectMap;
     }
-    hasWithoutGlobal(key) {
+    SubjectStore.prototype.hasWithoutGlobal = function (key) {
         return !!this.subjectMap[key];
-    }
+    };
     /**
      * Check whether Subject was defined with specific key or not.
      * @param key Subject name.
      * @return True if Subject was defined.
      */
-    has(key) {
-        const splited = key.split('::');
-        const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
+    SubjectStore.prototype.has = function (key) {
+        var splited = key.split('::');
+        var globalKey = splited.length > 1 ? "*::" + splited[1] : null;
         return this.subjectMap[key] || (globalKey ? this.subjectMap[globalKey] : false);
-    }
-    getWithoutGlobal(key) {
+    };
+    SubjectStore.prototype.getWithoutGlobal = function (key) {
         if (this.subjectMap[key]) {
             return this.subjectMap[key];
         }
         return null;
-    }
+    };
     /**
      * Get Subject by specific key.
      * @param key Subject name.
      * @returns Registered Subject.
      */
-    get(key) {
-        const ret = [];
-        const splited = key.split('::');
-        const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
-        const globalBus = globalKey && this.subjectMap[globalKey] ? this.subjectMap[globalKey] : null;
+    SubjectStore.prototype.get = function (key) {
+        var ret = [];
+        var splited = key.split('::');
+        var globalKey = splited.length > 1 ? "*::" + splited[1] : null;
+        var globalBus = globalKey && this.subjectMap[globalKey] ? this.subjectMap[globalKey] : null;
         if (this.subjectMap[key]) {
             ret.push(this.subjectMap[key]);
         }
@@ -105,22 +100,38 @@ export class SubjectStore {
             ret.push(globalBus);
         }
         return ret;
-    }
+    };
     /**
      * Append new Subject.
      * @param key Subject name.
      * @returns Registered Subject.
      */
-    add(key) {
+    SubjectStore.prototype.add = function (key) {
         return this.subjectMap[key] = new Subject();
-    }
+    };
     /**
      * Dispose all subscriptions.
      */
-    end() {
-        _.forEach(this.subjectMap, (v) => v.complete());
+    SubjectStore.prototype.end = function () {
+        _.forEach(this.subjectMap, function (v) { return v.complete(); });
+    };
+    return SubjectStore;
+}());
+SubjectStore = SubjectStore;
+var Disposable = (function () {
+    function Disposable() {
+        this.subscriptions = [];
     }
-}
+    Disposable.prototype.addSubscription = function (subscription) {
+        this.subscriptions.push(subscription);
+    };
+    Disposable.prototype.getSubscriptions = function () { return this.subscriptions; };
+    Disposable.prototype.dispose = function () {
+        _.forEach(this.subscriptions, function (subscription) { return subscription.unsubscribe(); });
+    };
+    return Disposable;
+}());
+Disposable = Disposable;
 /**
  * The methods of the Http request.
  */
@@ -141,6 +152,7 @@ export var ResponseType;
     ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
     ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
 })(ResponseType || (ResponseType = {}));
+;
 /**
  * The methods of the StorageIO.
  */

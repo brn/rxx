@@ -17,60 +17,66 @@
 import { BindingRelation, BindingPlaceholder, TemplatePlaceholder, InterceptPlaceholder } from './binding';
 import { Module } from './module';
 /**
- * モジュールのベース実装
+ * Base implementation of `Module`.
  */
 export declare abstract class AbstractModule implements Module {
     /**
-     * バインディングのマップ
+     * Map of bindings.
      */
     private bindings;
     /**
-     * テンプレートのマッピング
+     * Map of template.
      */
     private templates;
     /**
-     * インターセプタのマッピング
+     * Map of interceptor.
      */
     private intercepts;
     /**
-     * バインディングのIdを定義する
-     * @param name バインディングのId
-     * @returns 実体定義クラス
+     * Define binding id.
+     * @param name Binding id.
+     * @returns Concrete class.
      */
     bind(name: string): BindingPlaceholder;
     /**
-     * テンプレートのIDを定義する
+     * Define template id.
+     * @param name Template binding id.
      */
     template(name: string): TemplatePlaceholder;
     /**
-     * インターセプトするシンボルを登録する
-     * @param targetSymbol インターセプトするsymbol
+     * Register interceptor Symbol.
+     * @param targetSymbol Symbol that set interceptor target.
      */
     bindInterceptor(targetSymbol: symbol): InterceptPlaceholder;
     /**
-     * バインディングのマップを返す
-     * @returns バインディング定義
+     * Return binding map.
+     * @returns Binding definitions.
      */
     getBindings(): BindingRelation;
     /**
-     * テンプレートのマップを返す
-     * @returns テンプレートのバインディング定義
+     * Return template map.
+     * @returns Template definitions.
      */
     getTemplates(): BindingRelation;
     /**
-     * インターセプトするシンボルのリストを取得する
-     * @returns インターセプタのバインディング定義
+     * Get list of symbol that interceptor target.
+     * @returns Definition of binding of interceptor.
      */
     getIntercepts(): InterceptPlaceholder[];
     /**
-     * 設定を行う
+     * Configure binding of modules.
      * @override
      */
     abstract configure(): void;
     /**
-     * 他のモジュールの設定を取り込む
-     * @param m モジュール
+     * Mixin other module configs.
+     * @param m Module.
      */
     mixin(m: AbstractModule): void;
 }
+/**
+ * Simple utility function that create module.
+ * @param fn The configure method body.
+ * @returns Module implementation.
+ */
 export declare function createModule(fn: (config: AbstractModule) => void): Module;

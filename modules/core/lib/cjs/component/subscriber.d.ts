@@ -41,6 +41,7 @@ export declare class Subscriber extends React.Component<any, any> {
      * Cloned mutable children tree.
      */
     private mutableTree;
+    private hasObservable;
     constructor(p: any, c: any);
     /**
      * Rendering new vdom trees that
@@ -79,6 +80,11 @@ export declare class Subscriber extends React.Component<any, any> {
      * @returns Mutable ReactElement like json.
      */
     private createMutableElement(el);
+    /**
+     * Clone all children trees that has mutable props, mutable children, recursively from root.
+     * @param el Root React.ReactElement.
+     */
+    private areThereObservableInChildren(el);
     /**
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.

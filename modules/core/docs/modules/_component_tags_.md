@@ -1,3 +1,0 @@
-# External module "component/tags"
-## Index### Interfaces* [Attr](../interfaces/_component_tags_.attr.html)* [Tags](../interfaces/_component_tags_.tags.html)### Functions* [toSubscribable](_component_tags_.html#tosubscribable)## Functions### toSubscribable(name: string): (Anonymous class)Convert string html tag to Subscriber.  * Defined in [component/tags.tsx:30](https://github.com/brn/react-mvi/blob/master/modules/core/src/component/tags.tsx#L30)#### Parameters| Name | Type | Description || ---- | ---- | ---- || name | string|  |#### Returns: (Anonymous class)
-Generated using [TypeDoc](http://typedoc.io)

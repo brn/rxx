@@ -42,6 +42,7 @@ module.exports = () => {
       packages: 'jspm_packages',
       loadFiles: ["src/**/__tests__/*.spec.ts*", "src/__tests__/*.spec.ts*"],
       serveFiles: [
+        "node_modules/**/**.d.ts",
         "jspm_packages/**/*.js",
         "jspm_packages/**/*.ts*",
         "jspm_packages/**/*.json",

@@ -16,4 +16,4 @@
  * @author Taketoshi Aono
  */
 import * as lodash from 'lodash';
-export const _ = lodash;
+export var _ = lodash;

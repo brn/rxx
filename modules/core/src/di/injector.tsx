@@ -355,6 +355,38 @@ export class Injector {
     return ret;
   }
 
+
+  /**
+   * Find bindings.
+   * @param predicate Predicate callback.
+   */
+  public find(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
+    const results = {} as {[key: string]: Binding};
+    this.findOnParent((bindings: BindingRelation) => {
+      _.forIn(bindings, (v, k) => {
+        if (predicate(v, k)) {
+          results[k] = v;
+        }
+      });
+    });
+    return results;
+  }
+
+
+  /**
+   * Find bindings.
+   * @param predicate Predicate callback.
+   */
+  public findFromSelf(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
+    const results = {} as {[key: string]: Binding};
+    _.forIn(this.bindings, (v, k) => {
+      if (predicate(v, k)) {
+        results[k] = v;
+      }
+    });
+    return results;
+  }
+
   
   /**
    * Create instance and resolve bindings.

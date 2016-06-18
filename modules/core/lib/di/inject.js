@@ -66,11 +66,11 @@ System.register(['../shims/symbol'], function(exports_1, context_1) {
             }],
         execute: function() {
             /**
-             * DIの設定キー
+             * DI config key.
              */
             exports_1("injectionTargetSymbol", injectionTargetSymbol = symbol_1.Symbol('__injections__'));
             /**
-             * dynamicデコレータのキー
+             * Dynamic decorator key.
              */
             exports_1("dynamicTargetSymbol", dynamicTargetSymbol = symbol_1.Symbol('__dynamic_injections__'));
         }

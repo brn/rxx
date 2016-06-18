@@ -16,92 +16,100 @@
  * @author Taketoshi Aono
  */
 /**
- * クラス型の追加設定
+ * Options for class type.
  */
-export class ClassTypeOption {
-    constructor(binding) {
+var ClassTypeOption = (function () {
+    function ClassTypeOption(binding) {
         this.binding = binding;
     }
     /**
-     * シングルトンにする
+     * Make class singleton.
      */
-    asSingleton() {
+    ClassTypeOption.prototype.asSingleton = function () {
         this.binding.singleton = true;
-    }
+    };
     /**
-     * シングルトンにする
+     * Make class eager singleton.
      */
-    asEagerSingleton() {
+    ClassTypeOption.prototype.asEagerSingleton = function () {
         this.binding.singleton = true;
         this.binding.eagerSingleton = true;
-    }
-}
+    };
+    return ClassTypeOption;
+}());
+ClassTypeOption = ClassTypeOption;
 /**
- * バインディングと値をひもづける
+ * Link binding to value.
  */
-export class BindingPlaceholder {
+var BindingPlaceholder = (function () {
     /**
-     * @param id 名前
-     * @param holder バインディングのmap
+     * @param id Binding id.
+     * @param holder Bindings map.
      */
-    constructor(id, holder) {
+    function BindingPlaceholder(id, holder) {
         this.id = id;
         this.holder = holder;
     }
-    to(ctor) {
+    BindingPlaceholder.prototype.to = function (ctor) {
         this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false };
         return new ClassTypeOption(this.holder[this.id]);
-    }
+    };
     /**
-     * インスタンスとIdを紐つける
-     * @param value 即値
+     * Link instance to binding id.
+     * @param value Immediate value.
      */
-    toInstance(value) {
+    BindingPlaceholder.prototype.toInstance = function (value) {
         this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false };
-    }
+    };
     /**
-     * プロバイダとIdを紐つける
-     * @param value プロバイダのコンストラクタ
+     * Link Provider to binding id.
+     * @param value Provider constructor function.
      */
-    toProvider(value) {
+    BindingPlaceholder.prototype.toProvider = function (value) {
         this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false };
-    }
-}
+    };
+    return BindingPlaceholder;
+}());
+BindingPlaceholder = BindingPlaceholder;
 /**
- * インターセプタと値を保持するクラス
+ * Hold interceptor and value.
  */
-export class InterceptPlaceholder {
+var InterceptPlaceholder = (function () {
     /**
-     * @param targetSymbol インターセプトするターゲットに設定されるsymbol
+     * @param targetSymbol The symbol that set to intercepted.
      */
-    constructor(targetSymbol) {
+    function InterceptPlaceholder(targetSymbol) {
         this.targetSymbol = targetSymbol;
     }
     /**
-     * バインドを行う
-     * @param methodProxyCtor MethodProxyのコンストラクタ
+     * Do binding.
+     * @param methodProxyCtor MethodProxy constructor funciton.
      */
-    to(methodProxyCtor) {
+    InterceptPlaceholder.prototype.to = function (methodProxyCtor) {
         this.interceptor = methodProxyCtor;
-    }
-}
+    };
+    return InterceptPlaceholder;
+}());
+InterceptPlaceholder = InterceptPlaceholder;
 /**
- * テンプレート定義と値を保持するクラス
+ * Hold template definitions and values.
  */
-export class TemplatePlaceholder {
+var TemplatePlaceholder = (function () {
     /**
-     * @param id templateのid
-     * @param holder バインディングを保持するオブジェクト
+     * @param id Template id.
+     * @param holder Object that hold bindings.
      */
-    constructor(id, holder) {
+    function TemplatePlaceholder(id, holder) {
         this.id = id;
         this.holder = holder;
     }
     /**
-     * 値を紐つける
-     * @param ctor コンストラクタ
+     * Link template to binding id.
+     * @param ctor Constructor function.
      */
-    to(ctor) {
+    TemplatePlaceholder.prototype.to = function (ctor) {
         this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true };
-    }
-}
+    };
+    return TemplatePlaceholder;
+}());
+TemplatePlaceholder = TemplatePlaceholder;

@@ -19,7 +19,7 @@ export * from './component/subscriber';
 export * from './component/tags';
 export * from './component/utils';
 export * from './run';
-export { Service } from './service/service';
+export * from './service/service';
 export * from './io/io';
 export * from './utils';
 export * from './di/index';

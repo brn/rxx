@@ -24,7 +24,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { IOResponse, SubjectStore, HttpMethod, ResponseType, Symbol, intercept } from '@react-mvi/core';
+import { io, IOResponse, SubjectStore, HttpMethod, ResponseType, Symbol, intercept, Disposable } from '@react-mvi/core';
+import { ConnectableObservable } from 'rxjs/Rx';
 import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
 import { fetch, Response } from './shims/fetch';
@@ -47,28 +48,49 @@ var HttpRequest = (function () {
      * @override
      * @param request Observable that send request.
      */
-    HttpRequest.prototype.wait = function (request) {
+    HttpRequest.prototype.subscribe = function (props) {
         var _this = this;
-        return request.subscribe(function (config) {
-            var subjects = _this.store.get(config.key);
-            (function () {
-                switch (config.method) {
-                    case HttpMethod.GET:
-                        return _this.get(config);
-                    case HttpMethod.POST:
-                        return _this.post(config);
-                    case HttpMethod.PUT:
-                        return _this.put(config);
-                    default:
-                        return _this.get(config);
+        var disp = new Disposable();
+        if (props['http']) {
+            var _loop_1 = function(reqKey) {
+                var req = props['http'][reqKey];
+                disp.addSubscription(req.subscribe(function (config) {
+                    var subjects = _this.store.get(reqKey);
+                    (function () {
+                        switch (config.method) {
+                            case HttpMethod.GET:
+                                return _this.get(config);
+                            case HttpMethod.POST:
+                                return _this.post(config);
+                            case HttpMethod.PUT:
+                                return _this.put(config);
+                            default:
+                                return _this.get(config);
+                        }
+                    })()
+                        .then(function (res) {
+                        _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
+                    }).catch(function (err) {
+                        if (err && typeof err.json === 'function') {
+                            _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
+                        }
+                        else {
+                            subjects.forEach(function (subject) { return subject.error(err); });
+                        }
+                    });
+                }));
+            };
+            for (var reqKey in props['http']) {
+                _loop_1(reqKey);
+            }
+            for (var reqKey in props['http']) {
+                var req = props['http'][reqKey];
+                if (req instanceof ConnectableObservable || typeof req.connect === 'function') {
+                    req.connect();
                 }
-            })()
-                .then(function (res) {
-                _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
-            }).catch(function (err) {
-                _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
-            });
-        });
+            }
+        }
+        return disp;
     };
     /**
      * Dispose all subscriptions.
@@ -198,6 +220,10 @@ var HttpRequest = (function () {
         __metadata('design:paramtypes', [Number, Response]), 
         __metadata('design:returntype', Promise)
     ], HttpRequest.prototype, "getResponse", null);
+    HttpRequest = __decorate([
+        io, 
+        __metadata('design:paramtypes', [])
+    ], HttpRequest);
     return HttpRequest;
 }());
 HttpRequest = HttpRequest;

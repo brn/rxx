@@ -16,23 +16,23 @@
  */
 import * as binding from './binding';
 /**
- * モジュールのインターフェース
+ * Module interface.
  */
 export interface Module {
     /**
-     * Idに実体を紐つける
+     * Bind id to concreate class.
      */
     configure(): void;
     /**
-     * テンプレート定義を取得する
+     * Get template definitions.
      */
     getTemplates(): binding.BindingRelation;
     /**
-     * バインディングのマップを取得する
+     * Get binding maps.
      */
     getBindings(): binding.BindingRelation;
     /**
-     * インターセプトするシンボルのリストを取得する
+     * Get symbol of interceptor.
      */
     getIntercepts(): binding.InterceptPlaceholder[];
 }

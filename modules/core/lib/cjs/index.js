@@ -24,6 +24,7 @@ __export(require('./component/subscriber'));
 __export(require('./component/tags'));
 __export(require('./component/utils'));
 __export(require('./run'));
+__export(require('./service/service'));
 __export(require('./io/io'));
 __export(require('./utils'));
 __export(require('./di/index'));

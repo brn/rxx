@@ -15,58 +15,66 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import { ContextReactTypes } from './context';
 import * as React from 'react';
 /**
- * statelessなCompositeComponentを作成する
- * @param render render関数か、各種lifecycleメソッドが定義されたオブジェクト
+ * Create stateless CompositeComponent with context that type is `ContextReactType`.
+ * @param render Render function or object that implements each lifecycle methods.
  */
 export function component(render, componentName) {
     /**
-     * render関数かどうかを判定する
+     * Check whether render is function or not.
      */
     function isRender(v) {
         return typeof v === 'function';
     }
     /**
-     * 引数で渡された関数、オブジェクトから生成したCompositeComponent
+     * React.Component that is created from passed function or object.
      */
-    const ret = (_a = class extends React.Component {
-            render() {
-                return isRender(render) ? render.call(this, this.props, this.context) : render.render.call(this, this.props, this.context);
+    var ret = (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            _super.apply(this, arguments);
+        }
+        class_1.prototype.render = function () {
+            return isRender(render) ? render.call(this, this.props, this.context) : render.render.call(this, this.props, this.context);
+        };
+        class_1.prototype.componentWillMount = function () {
+            if (!isRender(render) && render.componentWillMount) {
+                render.componentWillMount.call(this);
             }
-            componentWillMount() {
-                if (!isRender(render) && render.componentWillMount) {
-                    render.componentWillMount.call(this);
-                }
+        };
+        class_1.prototype.componentDidMount = function () {
+            if (!isRender(render) && render.componentDidMount) {
+                render.componentDidMount.call(this);
             }
-            componentDidMount() {
-                if (!isRender(render) && render.componentDidMount) {
-                    render.componentDidMount.call(this);
-                }
+        };
+        class_1.prototype.componentDidUpdate = function () {
+            if (!isRender(render) && render.componentDidUpdate) {
+                render.componentDidUpdate.call(this);
             }
-            componentDidUpdate() {
-                if (!isRender(render) && render.componentDidUpdate) {
-                    render.componentDidUpdate.call(this);
-                }
+        };
+        class_1.prototype.componentWillUnmount = function () {
+            if (!isRender(render) && render.componentWillUnmount) {
+                render.componentWillUnmount.call(this);
             }
-            componentWillUnmount() {
-                if (!isRender(render) && render.componentWillUnmount) {
-                    render.componentWillUnmount.call(this);
-                }
+        };
+        class_1.prototype.shouldComponentUpdate = function (nextProps) {
+            if (!isRender(render) && render.shouldComponentUpdate) {
+                return render.shouldComponentUpdate.call(this, nextProps);
             }
-            shouldComponentUpdate(nextProps) {
-                if (!isRender(render) && render.shouldComponentUpdate) {
-                    return render.shouldComponentUpdate.call(this, nextProps);
-                }
-                return true;
-            }
-        },
-        _a.contextTypes = ContextReactTypes,
-        _a);
+            return true;
+        };
+        class_1.contextTypes = ContextReactTypes;
+        return class_1;
+    }(React.Component));
     if (componentName) {
         ret['displayName'] = componentName;
     }
     return ret;
-    var _a;
 }

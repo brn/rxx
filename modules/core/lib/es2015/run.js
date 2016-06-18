@@ -15,6 +15,11 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -24,35 +29,42 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
+import { _ } from './shims/lodash';
 import { render } from 'react-dom';
 import { Context, ContextReactTypes } from './component/context';
-export function runner({ component, modules }) {
-    class Renderer extends React.Component {
-        constructor(p, c) {
-            super(p, c);
+export function runnable(_a) {
+    var component = _a.component, modules = _a.modules;
+    var Renderer = (function (_super) {
+        __extends(Renderer, _super);
+        function Renderer(p, c) {
+            _super.call(this, p, c);
             this.model = c.createProps(p);
         }
-        render() {
-            const C = component;
-            return React.createElement(C, __assign({}, this.model));
-        }
-        componentDidMount() {
+        Renderer.prototype.render = function () {
+            var C = component;
+            return React.createElement(C, __assign({}, _.assign(this.model, this.props)));
+        };
+        Renderer.prototype.componentDidMount = function () {
             this.context.connect(this.model);
+        };
+        Renderer.contextTypes = ContextReactTypes;
+        return Renderer;
+    }(React.Component));
+    return (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            _super.apply(this, arguments);
         }
-    }
-    Renderer.contextTypes = ContextReactTypes;
-    return (_a = class extends React.Component {
-            render() {
-                return (React.createElement(Context, {modules: modules}, 
-                    React.createElement(Renderer, __assign({}, this.props))
-                ));
-            }
-        },
-        _a.displayName = 'MVIRoot',
-        _a);
-    var _a;
+        class_1.prototype.render = function () {
+            return (React.createElement(Context, {modules: modules}, 
+                React.createElement(Renderer, __assign({}, this.props))
+            ));
+        };
+        class_1.displayName = 'MVIRoot';
+        return class_1;
+    }(React.Component));
 }
 export function run(opt, el) {
-    const Root = runner(opt);
+    var Root = runnable(opt);
     render(React.createElement(Root, null), el);
 }

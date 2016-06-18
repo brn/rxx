@@ -22,23 +22,23 @@ import { _ } from '../shims/lodash';
 /**
  * The key to hold dependency name.
  */
-export const INJECTION_NAME_SYMBOL = Symbol('__injectionname__');
+export var INJECTION_NAME_SYMBOL = Symbol('__injectionname__');
 /**
  * The key to hold singleton instance.
  */
-const SINGLETON_KEY = Symbol('__instance__');
+var SINGLETON_KEY = Symbol('__instance__');
 /**
  * The key to distinct proxied class.
  */
-const PROXIED_MARK = Symbol('__proxied__');
+var PROXIED_MARK = Symbol('__proxied__');
 /**
  * Dependency definition.
  */
-class Injections {
+var Injections = (function () {
     /**
      * @param ctor Constructor function.
      */
-    constructor(ctor, inst) {
+    function Injections(ctor, inst) {
         /**
          * The name of depends class, instance, provider array.
          */
@@ -50,33 +50,37 @@ class Injections {
             this.initInstanceInjections(inst);
         }
     }
-    /**
-     * Return dependencies list.
-     * @returns The name of depends class, instance, provider array.
-     */
-    get injections() { return this.injectionList; }
+    Object.defineProperty(Injections.prototype, "injections", {
+        /**
+         * Return dependencies list.
+         * @returns The name of depends class, instance, provider array.
+         */
+        get: function () { return this.injectionList; },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Construct dependent name array.
      * @param ctor Constructor function.
      */
-    initCtorInjections(ctor) {
+    Injections.prototype.initCtorInjections = function (ctor) {
         this.extractInjectionTarget(ctor, injectionTargetSymbol);
         this.extractInjectionTarget(ctor, dynamicTargetSymbol);
-    }
+    };
     /**
      * Construct dependent name array.
      * @param ctor Constructor function.
      */
-    initInstanceInjections(inst) {
+    Injections.prototype.initInstanceInjections = function (inst) {
         this.extractInjectionTarget(inst, injectionTargetSymbol);
         this.extractInjectionTarget(inst, dynamicTargetSymbol);
-    }
+    };
     /**
      * Extract configs by symbol.
      * @param target Target object.
      * @param symbol Symbol object.
      */
-    extractInjectionTarget(target, symbol) {
+    Injections.prototype.extractInjectionTarget = function (target, symbol) {
         var resources = target[symbol];
         if (!_.isArray(resources)) {
             if (!resources) {
@@ -87,16 +91,17 @@ class Injections {
             }
         }
         this.injectionList = this.injectionList.concat(resources);
-    }
-}
+    };
+    return Injections;
+}());
 /**
  * The main class.
  */
-export class Injector {
+var Injector = (function () {
     /**
      * @param modules The module array that is defined dependencies.
      */
-    constructor(modules) {
+    function Injector(modules) {
         /**
          * Definition of bindings.
          */
@@ -119,28 +124,30 @@ export class Injector {
      * Iniaitlize modules and injector.
      * @param modules The `Module` that are defined dependency relations.
      */
-    initialize(modules) {
+    Injector.prototype.initialize = function (modules) {
+        var _this = this;
         var obj = {};
-        _.forEach(modules, (mod) => {
+        _.forEach(modules, function (mod) {
             mod.configure();
             _.extend(obj, mod.getBindings());
-            _.extend(this.templates, mod.getTemplates());
-            this.intercepts = this.intercepts.concat(mod.getIntercepts() || []);
+            _.extend(_this.templates, mod.getTemplates());
+            _this.intercepts = _this.intercepts.concat(mod.getIntercepts() || []);
         });
         obj['injector'] = this.fromParams(this);
         this.bindings = obj;
         this.instantiateEagerSingletons();
-    }
+    };
     /**
      * Instantiate eagerSingleton class.
      */
-    instantiateEagerSingletons() {
-        _.forIn(this.bindings, (v, k) => {
+    Injector.prototype.instantiateEagerSingletons = function () {
+        var _this = this;
+        _.forIn(this.bindings, function (v, k) {
             if (v.eagerSingleton) {
-                this.getInstanceFromSelf(k);
+                _this.getInstanceFromSelf(k);
             }
         });
-    }
+    };
     /**
      * Construct dependency resolved instance.
      *
@@ -169,10 +176,10 @@ export class Injector {
      * //This call inject foo property of class Bar to module defined value.
      * injector.inject<Bar>(Bar);
      */
-    inject(ctor, params) {
+    Injector.prototype.inject = function (ctor, params) {
         var injections = new Injections(ctor);
         return this.doCreate(ctor, injections, params);
-    }
+    };
     /**
      * Inject dependency to instance.
      *
@@ -201,13 +208,13 @@ export class Injector {
      * //This call inject foo property of class Bar to module defined value.
      * injector.injectToInstance<Bar>(new Bar());
      */
-    injectToInstance(inst, params) {
+    Injector.prototype.injectToInstance = function (inst, params) {
         if (inst[injectionTargetSymbol]) {
-            let keyArgs = this.createArguments(new Injections(null, inst), params, true);
+            var keyArgs = this.createArguments(new Injections(null, inst), params, true);
             return _.extend(inst, keyArgs);
         }
         return inst;
-    }
+    };
     /**
      * Resolve dependencies at once.
      * If passed same constructor function twice,
@@ -215,87 +222,117 @@ export class Injector {
      * @param ctor Constructor function.
      * @param params Additional dependencies.
      */
-    injectOnce(ctor, params) {
+    Injector.prototype.injectOnce = function (ctor, params) {
         if (!ctor[SINGLETON_KEY]) {
             ctor[SINGLETON_KEY] = this.inject(ctor, params);
         }
         return ctor[SINGLETON_KEY];
-    }
+    };
     /**
-     * Create child injector of passed injector.
+     * Create child injector.
+     * Child injector is binded parent modules and self modules.
      * @param modules The new module to add.
      */
-    createChildInjector(modules) {
-        const injector = new Injector(modules);
+    Injector.prototype.createChildInjector = function (modules) {
+        var injector = new Injector(modules);
         injector.parent = this;
         return injector;
-    }
+    };
     /**
      * Get instance from self and parents.
      * @param key The key of dependency.
      * @return The instance that created from found dependency.
      */
-    get(key) {
-        let instance = null;
-        let injector = this;
+    Injector.prototype.get = function (key) {
+        var instance = null;
+        var injector = this;
         while (injector && !(instance = injector.getInstanceFromSelf(key))) {
             injector = injector.parent;
         }
         return instance;
-    }
+    };
     /**
      * Get instance from self, not includes parents.
      * @param key The key of dependency.
      * @returns The instance that created from found dependency.
      */
-    getInstanceFromSelf(key) {
-        let ret;
+    Injector.prototype.getInstanceFromSelf = function (key) {
+        var _this = this;
+        var ret;
         if (typeof key === 'string') {
-            ret = _.filter(_.assign(this.bindings, this.templates), (binding, name) => name === key)[0];
-            let instance = ret ? this.getInstance(key, null, ret, ret.template) : null;
+            ret = _.filter(_.assign(this.bindings, this.templates), function (binding, name) { return name === key; })[0];
+            var instance = ret ? this.getInstance(key, null, ret, ret.template) : null;
             return instance;
         }
         else {
             ret = [];
-            _.forIn(_.assign(this.bindings, this.templates), (binding, name) => {
+            _.forIn(_.assign(this.bindings, this.templates), function (binding, name) {
                 if (key.test(name)) {
-                    let instance = this.getInstance(name, null, binding, binding.template);
+                    var instance = _this.getInstance(name, null, binding, binding.template);
                     ret.push(instance);
                 }
             });
         }
         return ret;
-    }
+    };
     /**
      * Return all registered dependent names of self, not includes parents.
      * @returns List of dependent names.
      */
-    selfKeys() {
-        return _.map(this.bindings, (binding, name) => name);
-    }
+    Injector.prototype.selfKeys = function () {
+        return _.map(this.bindings, function (binding, name) { return name; });
+    };
     /**
      * @return all registerd dependent names.
      * @return List of dependent names.
      */
-    keys() {
-        let ret = [];
-        this.findOnParent(bindings => {
-            ret = ret.concat(_.map(bindings, (binding, name) => name));
+    Injector.prototype.keys = function () {
+        var ret = [];
+        this.findOnParent(function (bindings) {
+            ret = ret.concat(_.map(bindings, function (binding, name) { return name; }));
             return true;
         });
         return ret;
-    }
+    };
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    Injector.prototype.find = function (predicate) {
+        var results = {};
+        this.findOnParent(function (bindings) {
+            _.forIn(bindings, function (v, k) {
+                if (predicate(v, k)) {
+                    results[k] = v;
+                }
+            });
+        });
+        return results;
+    };
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    Injector.prototype.findFromSelf = function (predicate) {
+        var results = {};
+        _.forIn(this.bindings, function (v, k) {
+            if (predicate(v, k)) {
+                results[k] = v;
+            }
+        });
+        return results;
+    };
     /**
      * Create instance and resolve bindings.
      * @param ctor Constructor function.
      * @param injections Dependencies.
      * @returns The instance that dependencies injected.
      */
-    doCreate(ctor, injections, params) {
-        let args = this.createArguments(injections, params, false);
-        let ret = this.invokeNewCall(ctor, args);
+    Injector.prototype.doCreate = function (ctor, injections, params) {
+        var args = this.createArguments(injections, params, false);
+        var ret = this.invokeNewCall(ctor, args);
         if (ret[injectionTargetSymbol] || ret[dynamicTargetSymbol]) {
-            let keyArgs = this.createArguments(new Injections(null, ret), params, true);
+            var keyArgs = this.createArguments(new Injections(null, ret), params, true);
             _.assign(ret, keyArgs);
         }
         if (this.intercepts.length > 0) {
@@ -305,7 +342,7 @@ export class Injector {
             ret['postInit']();
         }
         return ret;
-    }
+    };
     /**
      * Instantiate class.
      * To fast instantiation, not use Function.prototype.apply but use switch case.
@@ -313,7 +350,7 @@ export class Injector {
      * @param args Arguments.
      * @return The instance that dependencies injected.
      */
-    invokeNewCall(ctor, args) {
+    Injector.prototype.invokeNewCall = function (ctor, args) {
         var instance;
         switch (args.length) {
             case 0:
@@ -350,29 +387,30 @@ export class Injector {
                 instance = new ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
                 break;
             default:
-                var dummy = () => { };
+                var dummy = function () { };
                 dummy.prototype = ctor.prototype;
                 instance = new dummy;
                 ctor.apply(instance, args);
         }
         return instance;
-    }
+    };
     /**
      * Create arguments from bindings.
      * @param injections Dependencies.
      * @returns Array of dependencies.
      */
-    createArguments(injections, params, useKeys) {
-        const args = [];
-        const keyArgs = {};
-        const resources = injections.injections;
-        const keys = params ? _.keys(params) : [];
-        let bindingInfo;
-        let bindingName;
-        let dynamicName;
-        let passProvider = false;
-        let i = 0;
-        let len;
+    Injector.prototype.createArguments = function (injections, params, useKeys) {
+        var _this = this;
+        var args = [];
+        var keyArgs = {};
+        var resources = injections.injections;
+        var keys = params ? _.keys(params) : [];
+        var bindingInfo;
+        var bindingName;
+        var dynamicName;
+        var passProvider = false;
+        var i = 0;
+        var len;
         if (!resources) {
             return args;
         }
@@ -382,12 +420,12 @@ export class Injector {
             dynamicName = isDynamic ? resources[i][1] : null;
             if (_.isRegExp(bindingName)) {
                 var inner = [];
-                this.findOnParent((bindings, templates) => {
-                    _.forEach(_.assign(bindings, templates), (binding, name) => {
-                        bindingName.test(name) && inner.push(this.getInstance(name, null, binding, false));
-                        _.forEach(keys, key => {
+                this.findOnParent(function (bindings, templates) {
+                    _.forEach(_.assign(bindings, templates), function (binding, name) {
+                        bindingName.test(name) && inner.push(_this.getInstance(name, null, binding, false));
+                        _.forEach(keys, function (key) {
                             if (bindingName.test(key)) {
-                                inner.push(this.getInstance(key, null, this.fromParams(params[key]), false));
+                                inner.push(_this.getInstance(key, null, _this.fromParams(params[key]), false));
                             }
                         });
                     });
@@ -402,8 +440,8 @@ export class Injector {
             }
             else {
                 var item;
-                this.findOnParent((bindings, templates) => {
-                    item = bindings[bindingName] || templates[bindingName] || (params ? this.fromParams(params[bindingName]) : null);
+                this.findOnParent(function (bindings, templates) {
+                    item = bindings[bindingName] || templates[bindingName] || (params ? _this.fromParams(params[bindingName]) : null);
                     if (item) {
                         return false;
                     }
@@ -422,13 +460,13 @@ export class Injector {
             }
         }
         return useKeys ? keyArgs : args;
-    }
+    };
     /**
      * Search include parents `Injector`.
      * Until passed callback return true, traverse parents.
      * @param cb Callback function.
      */
-    findOnParent(cb) {
+    Injector.prototype.findOnParent = function (cb) {
         var injector = this;
         while (injector) {
             var ret = cb(injector.bindings, injector.templates);
@@ -437,13 +475,13 @@ export class Injector {
             }
             injector = injector.parent;
         }
-    }
+    };
     /**
      * Create binding from additional parameter.
      * @param val defined value in Binding.
      * @returns Binding definition.
      */
-    fromParams(val) {
+    Injector.prototype.fromParams = function (val) {
         return {
             val: val,
             singleton: false,
@@ -452,14 +490,14 @@ export class Injector {
             provider: false,
             template: false
         };
-    }
+    };
     /**
      * Create dependent instance.
      * @param bindingName Instance name.
      * @param item The defitnition of dependencies.
      * @returns The instance that is constructed.
      */
-    getInstance(bindingName, dynamicName, item, isTemplate) {
+    Injector.prototype.getInstance = function (bindingName, dynamicName, item, isTemplate) {
         if (isTemplate && dynamicName && this.templateDefinitions[dynamicName]) {
             return this.templateDefinitions[dynamicName];
         }
@@ -499,33 +537,34 @@ export class Injector {
             this.templateDefinitions[dynamicName] = ret;
         }
         return ret;
-    }
+    };
     /**
      * Hook interceptor.
      * @param Target instance.
      */
-    applyInterceptor(inst) {
+    Injector.prototype.applyInterceptor = function (inst) {
+        var _this = this;
         if (inst[PROXIED_MARK]) {
             return;
         }
-        _.every(this.intercepts, (i) => {
+        _.every(this.intercepts, function (i) {
             if (inst[i.targetSymbol]) {
                 if (_.isRegExp(inst[i.targetSymbol][0])) {
-                    const regexp = inst[i.targetSymbol][0];
-                    _.forIn(inst, (v, k) => {
-                        if (regexp.test(k)) {
-                            inst[k] = this.getMethodProxy(inst, v, this.getInterceptorInstance(i), k);
+                    var regexp_1 = inst[i.targetSymbol][0];
+                    _.forIn(inst, function (v, k) {
+                        if (regexp_1.test(k)) {
+                            inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
                         }
                     });
                     return false;
                 }
                 else {
-                    _.forIn(inst[i.targetSymbol], (s) => {
+                    _.forIn(inst[i.targetSymbol], function (s) {
                         if (inst[s]) {
                             if (typeof inst[s] !== 'function') {
-                                throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);
+                                throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));
                             }
-                            inst[s] = this.getMethodProxy(inst, inst[s], this.getInterceptorInstance(i), s);
+                            inst[s] = _this.getMethodProxy(inst, inst[s], _this.getInterceptorInstance(i), s);
                         }
                     });
                 }
@@ -533,18 +572,18 @@ export class Injector {
             }
             return true;
         });
-    }
+    };
     /**
      * Get interceptor instance.
      * @param i Interceptor class.
      * @returns INterceptor instance.
      */
-    getInterceptorInstance(i) {
+    Injector.prototype.getInterceptorInstance = function (i) {
         if (!i.interceptor[SINGLETON_KEY]) {
             return this.inject(i.interceptor);
         }
         return i.interceptor[SINGLETON_KEY];
-    }
+    };
     /**
      * Return wrapped method by interceptor.
      * @param context Execution context.
@@ -553,9 +592,15 @@ export class Injector {
      * @param propertyKey Property name.
      * @returns Wrapped function.
      */
-    getMethodProxy(context, base, interceptor, propertyKey) {
-        return (...args) => {
+    Injector.prototype.getMethodProxy = function (context, base, interceptor, propertyKey) {
+        return function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i - 0] = arguments[_i];
+            }
             return interceptor.invoke(new MethodInvocation(base, context, args, context[INJECTION_NAME_SYMBOL], propertyKey));
         };
-    }
-}
+    };
+    return Injector;
+}());
+Injector = Injector;

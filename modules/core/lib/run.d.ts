@@ -20,5 +20,5 @@ export interface RunnerArgs {
     component: new (props: any, context: any) => React.Component<any, any>;
     modules: Module[];
 }
-export declare function runner({component, modules}: RunnerArgs): any;
+export declare function runnable({component, modules}: RunnerArgs): new (props: any, context: any) => React.Component<any, {}>;
 export declare function run(opt: RunnerArgs, el: Node): void;

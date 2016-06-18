@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', 'react-dom', './component/context'], function(exports_1, context_1) {
+System.register(['react', './shims/lodash', 'react-dom', './component/context'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -31,8 +31,8 @@ System.register(['react', 'react-dom', './component/context'], function(exports_
         }
         return t;
     };
-    var React, react_dom_1, context_2;
-    function runner(_a) {
+    var React, lodash_1, react_dom_1, context_2;
+    function runnable(_a) {
         var component = _a.component, modules = _a.modules;
         var Renderer = (function (_super) {
             __extends(Renderer, _super);
@@ -42,7 +42,7 @@ System.register(['react', 'react-dom', './component/context'], function(exports_
             }
             Renderer.prototype.render = function () {
                 var C = component;
-                return React.createElement(C, __assign({}, this.model));
+                return React.createElement(C, __assign({}, lodash_1._.assign(this.model, this.props)));
             };
             Renderer.prototype.componentDidMount = function () {
                 this.context.connect(this.model);
@@ -64,9 +64,9 @@ System.register(['react', 'react-dom', './component/context'], function(exports_
             return class_1;
         }(React.Component));
     }
-    exports_1("runner", runner);
+    exports_1("runnable", runnable);
     function run(opt, el) {
-        var Root = runner(opt);
+        var Root = runnable(opt);
         react_dom_1.render(React.createElement(Root, null), el);
     }
     exports_1("run", run);
@@ -74,6 +74,9 @@ System.register(['react', 'react-dom', './component/context'], function(exports_
         setters:[
             function (React_1) {
                 React = React_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             },
             function (react_dom_1_1) {
                 react_dom_1 = react_dom_1_1;

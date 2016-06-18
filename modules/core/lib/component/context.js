@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lodash'], function(exports_1, context_1) {
+System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/service', '../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -23,15 +23,20 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var React, Rx_1, injector_1, io_1, lodash_1;
-    var ContextReactTypes, isImmutable, connect, Context;
+    var React, Rx_1, injector_1, io_1, service_1, lodash_1;
+    var ContextReactTypes, isImmutable, isEnumerable, connect, Context;
     /**
      * Decorator to set specified type as context type.
+     * @param target A class constructor.
      */
     function context(target) {
         target['contextTypes'] = ContextReactTypes;
     }
     exports_1("context", context);
+    /**
+     * Set context type to stateless component.
+     * @param component A stateless component.
+     */
     function setContext(component) {
         component['contextTypes'] = ContextReactTypes;
     }
@@ -49,6 +54,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
             },
             function (io_1_1) {
                 io_1 = io_1_1;
+            },
+            function (service_1_1) {
+                service_1 = service_1_1;
             },
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
@@ -68,10 +76,24 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
              * Check param is immutablejs object or not.
              */
             isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
+            isEnumerable = function (v) {
+                if (Object.getPrototypeOf) {
+                    if (Object.getPrototypeOf(v) !== Object.prototype) {
+                        return false;
+                    }
+                }
+                else {
+                    if (v.constructor && v.constructor !== Object) {
+                        return false;
+                    }
+                }
+                return true;
+            };
             /**
              * Call connect method of the ConnectableObservable for all properties of props.
+             * @param v The value to search
              */
-            connect = function (v, k) {
+            connect = function (v) {
                 if (!v) {
                     return;
                 }
@@ -81,7 +103,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                 if (isImmutable(v)) {
                     return v;
                 }
-                if (Object.getPrototypeOf(v) !== Object.prototype) {
+                if (!isEnumerable(v)) {
                     return;
                 }
                 lodash_1._.forIn(v, function (v, k) {
@@ -98,7 +120,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                         v.forEach(connect);
                     }
                     else if (lodash_1._.isObject(v)) {
-                        if (Object.getPrototypeOf(v) !== Object.prototype) {
+                        if (!isEnumerable(v)) {
                             return;
                         }
                         lodash_1._.forIn(v, connect);
@@ -106,7 +128,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                 });
             };
             /**
-             * @class
+             * React context provider.
              */
             Context = (function (_super) {
                 __extends(Context, _super);
@@ -114,9 +136,20 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                     _super.call(this, props, c);
                     var self = this;
                     var injector = new injector_1.Injector(props.modules);
-                    var ioModules = {};
-                    io_1.getIOModules().map(function (k) { return ioModules[k] = injector.get(k); });
-                    var services = injector.get(/Service$/);
+                    var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
+                        if (!binding.instance && binding.val) {
+                            return binding.val[io_1.IO_MARK];
+                        }
+                        else if (binding.instance) {
+                            return binding.instance[io_1.IO_MARK];
+                        }
+                    }), function (v, k) { return injector.get(k); });
+                    var services = lodash_1._.map(injector.find(function (binding) {
+                        if (binding.val) {
+                            return !!binding.val[service_1.SERVICE_MARK];
+                        }
+                        return;
+                    }), function (v, k) { return injector.get(k); });
                     this.contextObject = {
                         createProps: function () {
                             var args = [];
@@ -130,12 +163,10 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../shims/lod
                                     result = service.apply(void 0, [ioResposens, injector].concat(args));
                                 }
                                 else {
-                                    result = service.initialize();
+                                    result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                                 }
-                                if ('http' in result && ioModules['http']) {
-                                    lodash_1._.forIn(result['http'], function (v) { return ioModules['http'].wait(v); });
-                                }
-                                return lodash_1._.assign(props, result);
+                                lodash_1._.forIn(ioModules, function (io) { return io.subscribe(result); });
+                                return lodash_1._.assign(props, result['view'] || {});
                             }, {});
                         },
                         clean: function () {

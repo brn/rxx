@@ -91,8 +91,8 @@
     }
   },
   "devDependencies": {
-    "gulp-typedoc": "sierrasoftworks/gulp-typedoc#v1.8.10",
     "es6-module-loader": "^0.17.11",
+    "gulp-typedoc": "sierrasoftworks/gulp-typedoc#v1.8.10",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
     "karma-jsdom-launcher": "^3.0.0",
@@ -105,6 +105,7 @@
     "phantomjs": "^2.1.7",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "^2.1.7",
-    "retyped-whatwg-fetch-tsd-ambient": "0.0.0-0"
+    "retyped-whatwg-fetch-tsd-ambient": "0.0.0-0",
+    "typedoc-markdown-theme": "0.0.4"
   }
 }

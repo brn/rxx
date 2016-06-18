@@ -1,4 +1,0 @@
-# Interface MethodProxy
-Interceptor interface.
-## Index### Methods* [invoke](_di_method_proxy_.methodproxy.html#invoke)## Methods### invoke(methodInvocation: [MethodInvocation](../classes/_di_method_proxy_.methodinvocation.html)): anyCall interceptor.  * Defined in [di/method-proxy.tsx:100](https://github.com/brn/react-mvi/blob/master/modules/core/src/di/method-proxy.tsx#L100)#### Parameters| Name | Type | Description || ---- | ---- | ---- || methodInvocation | [MethodInvocation](../classes/_di_method_proxy_.methodinvocation.html)| Abstract expression of method invocation.. |#### Returns: any
-Generated using [TypeDoc](http://typedoc.io)

@@ -15,84 +15,101 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import { BindingPlaceholder, TemplatePlaceholder, InterceptPlaceholder } from './binding';
 import { _ } from '../shims/lodash';
 /**
- * モジュールのベース実装
+ * Base implementation of `Module`.
  */
-export class AbstractModule {
-    constructor() {
+var AbstractModule = (function () {
+    function AbstractModule() {
         /**
-         * バインディングのマップ
+         * Map of bindings.
          */
         this.bindings = {};
         /**
-         * テンプレートのマッピング
+         * Map of template.
          */
         this.templates = {};
         /**
-         * インターセプタのマッピング
+         * Map of interceptor.
          */
         this.intercepts = [];
     }
     /**
-     * バインディングのIdを定義する
-     * @param name バインディングのId
-     * @returns 実体定義クラス
+     * Define binding id.
+     * @param name Binding id.
+     * @returns Concrete class.
      */
-    bind(name) {
+    AbstractModule.prototype.bind = function (name) {
         return new BindingPlaceholder(name, this.bindings);
-    }
+    };
     /**
-     * テンプレートのIDを定義する
+     * Define template id.
+     * @param name Template binding id.
      */
-    template(name) {
+    AbstractModule.prototype.template = function (name) {
         return new TemplatePlaceholder(name, this.templates);
-    }
+    };
     /**
-     * インターセプトするシンボルを登録する
-     * @param targetSymbol インターセプトするsymbol
+     * Register interceptor Symbol.
+     * @param targetSymbol Symbol that set interceptor target.
      */
-    bindInterceptor(targetSymbol) {
-        const p = new InterceptPlaceholder(targetSymbol);
+    AbstractModule.prototype.bindInterceptor = function (targetSymbol) {
+        var p = new InterceptPlaceholder(targetSymbol);
         this.intercepts.push(p);
         return p;
-    }
+    };
     /**
-     * バインディングのマップを返す
-     * @returns バインディング定義
+     * Return binding map.
+     * @returns Binding definitions.
      */
-    getBindings() {
+    AbstractModule.prototype.getBindings = function () {
         return this.bindings;
-    }
+    };
     /**
-     * テンプレートのマップを返す
-     * @returns テンプレートのバインディング定義
+     * Return template map.
+     * @returns Template definitions.
      */
-    getTemplates() {
+    AbstractModule.prototype.getTemplates = function () {
         return this.templates;
-    }
+    };
     /**
-     * インターセプトするシンボルのリストを取得する
-     * @returns インターセプタのバインディング定義
+     * Get list of symbol that interceptor target.
+     * @returns Definition of binding of interceptor.
      */
-    getIntercepts() {
+    AbstractModule.prototype.getIntercepts = function () {
         return this.intercepts;
-    }
+    };
     /**
-     * 他のモジュールの設定を取り込む
-     * @param m モジュール
+     * Mixin other module configs.
+     * @param m Module.
      */
-    mixin(m) {
+    AbstractModule.prototype.mixin = function (m) {
         m.configure();
         _.extend(this.bindings, m.getBindings());
-    }
-}
+    };
+    return AbstractModule;
+}());
+AbstractModule = AbstractModule;
+/**
+ * Simple utility function that create module.
+ * @param fn The configure method body.
+ * @returns Module implementation.
+ */
 export function createModule(fn) {
-    return new (class extends AbstractModule {
-        configure() {
-            fn(this);
+    return new ((function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            _super.apply(this, arguments);
         }
-    }
-    );
+        class_1.prototype.configure = function () {
+            fn(this);
+        };
+        return class_1;
+    }(AbstractModule)));
 }

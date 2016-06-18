@@ -15,32 +15,33 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 import * as React from 'react';
 import { Subscriber, SUBSCRIBER_MARK } from './subscriber';
 /**
  * Convert string html tag to Subscriber.
  */
-const toSubscribable = (name) => {
-    const ret = (_a = class extends React.Component {
-            render() {
-                return (React.createElement(Subscriber, null, React.createElement(name, this.props)));
-            }
-        },
-        _a.displayName = `${name.charAt(0).toUpperCase()}${name.slice(1)}`,
-        _a);
+var toSubscribable = function (name) {
+    var ret = (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            _super.apply(this, arguments);
+        }
+        class_1.prototype.render = function () {
+            return (React.createElement(Subscriber, null, React.createElement(name, this.props)));
+        };
+        class_1.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1);
+        return class_1;
+    }(React.Component));
     ret[SUBSCRIBER_MARK] = true;
     return ret;
-    var _a;
 };
-export const Tags = {};
-`a abbr address area article aside audio b base bdi bdo big blockquote body br
-button canvas caption cite code col colgroup data datalist dd del details dfn
-dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5
-h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li
-link main map mark menu menuitem meta meter nav noscript object ol optgroup
-option output p param picture pre progress q rp rt ruby s samp script section
-select small source span strong style sub summary sup table tbody td textarea
-tfoot th thead time title tr track u ul var video wbr`.split(' ').forEach(tag => {
-    const exportName = `${tag.charAt(0).toUpperCase()}${tag.slice(1)}`;
+export var Tags = {};
+"a abbr address area article aside audio b base bdi bdo big blockquote body br\nbutton canvas caption cite code col colgroup data datalist dd del details dfn\ndialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5\nh6 head header hgroup hr html i iframe img input ins kbd keygen label legend li\nlink main map mark menu menuitem meta meter nav noscript object ol optgroup\noption output p param picture pre progress q rp rt ruby s samp script section\nselect small source span strong style sub summary sup table tbody td textarea\ntfoot th thead time title tr track u ul var video wbr".split(' ').forEach(function (tag) {
+    var exportName = "" + tag.charAt(0).toUpperCase() + tag.slice(1);
     Tags[exportName] = toSubscribable(tag);
 });

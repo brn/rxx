@@ -1,7 +1,7 @@
 SystemJS.config({
-  baseURL: (typeof __karma__ !== "undefined") ? "base" : "/",
+  baseURL: "/",
   paths: {
-    "github:*": "jspm_packages/github/*",
-    "npm:*": "jspm_packages/npm/*"
+    "github:": "jspm_packages/github/",
+    "npm:": "jspm_packages/npm/"
   }
 });

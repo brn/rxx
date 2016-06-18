@@ -16,16 +16,22 @@
  * @author Taketoshi Aono
  */
 
-/// <reference path="../_references.d.ts"/>
-
+/// <reference path="../../_references.ts"/>
 
 import 'core-js';
 import * as React from 'react';
 import {
+  render
+} from 'react-dom'
+import {
+  service
+} from '../service/service';
+import {
   createModule
 } from '../di/abstract-module';
 import {
-  run
+  run,
+  runnable
 } from '../run';
 import {
   Chai
@@ -48,16 +54,20 @@ describe('run.tsx', () => {
   
   describe('run', () => {
     it('create component with context.', () => {
-      const service = () => {
+      const service1 = service(() => {
         return {
-          test1: 'test1'
+          view: {
+            test1: 'test1'
+          }
         }
-      }
-      const service2 = () => {
+      })
+      const service2 = service(() => {
         return {
-          test2: 'test2'
+          view: {
+            test2: 'test2'
+          }
         }
-      }
+      });
 
       class App extends React.Component<any, any> {
         public render() {
@@ -66,7 +76,7 @@ describe('run.tsx', () => {
       }
 
       run({component: App, modules: [createModule(config => {
-        config.bind('testService').toInstance(service);
+        config.bind('testService').toInstance(service1);
         config.bind('test2Service').toInstance(service2);
       })]}, disposable.el);
       Chai.expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
@@ -74,4 +84,28 @@ describe('run.tsx', () => {
       disposable.dispose();
     });
   });
+
+
+  describe('runnable', () => {
+    it('get children props', () => {
+      const service1 = service(() => {
+        return {
+          view: {
+            test1: 'test1'
+          }
+        }
+      })
+
+      class App extends React.Component<any, any> {
+        public render() {
+          return <div id={this.props.test1}>{this.props.children}</div>
+        }
+      }
+
+      const Component = runnable({component: App, modules: [createModule(config => config.bind('testService').toInstance(service1))]});
+      render(<Component><div id="test2"></div></Component>, disposable.el);
+      Chai.expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
+      Chai.expect(!!disposable.el.querySelector('#test2')).to.be.eq(true);
+    })
+  })
 });

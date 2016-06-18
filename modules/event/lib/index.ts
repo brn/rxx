@@ -17,6 +17,8 @@
  */
 
 import {
+  io,
+  Disposable,
   IOResponse,
   SubjectStore,
   Event,
@@ -33,6 +35,7 @@ const MAX_HISTORY_LENGTH = 10;
 /**
  * Event publisher.
  */
+@io
 export class EventDispatcher implements Event {
   /**
    * Subject store.
@@ -52,6 +55,11 @@ export class EventDispatcher implements Event {
 
   public constructor() {
     this.res = new IOResponse(this.store);
+  }
+
+
+  public subscribe(props: {[key: string]: any}): Disposable {
+    return new Disposable();
   }
 
 

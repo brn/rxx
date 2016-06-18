@@ -17,125 +17,126 @@
 import { ClassType } from './classtype';
 import { MethodProxy } from './method-proxy';
 /**
- * バインディングの定義
+ * Binding definition.
  */
 export interface Binding {
     /**
-     * 設定された値
+     * Defined value.
      */
     val: any;
     /**
-     * シングルトンかどうか
+     * Singleton or not.
      */
     singleton: boolean;
     /**
-     * インスタンスを前もって作成するかどうか
+     * EagerSingleton or not.
      */
     eagerSingleton: boolean;
     /**
-     * 即値かどうか
+     * Immediate value or not.
      */
     instance: boolean;
     /**
-     * providerの設定
+     * Provider or not.
      */
     provider: boolean;
     /**
-     * templateの設定
+     * Template or not.
      */
     template: boolean;
 }
 /**
- * バインディング名から設定を引くための辞書
+ * Dictionary to look up config from bindings.
  */
 export interface BindingRelation {
     [index: string]: Binding;
 }
 /**
- * プロバイダのインターフェース
+ * The interface of Provider.
  */
 export interface Provider<T> {
     /**
-     * インスタンスを作成する
+     * Create instance.
+     * @return Create instance.
      */
     provide(): T;
 }
 /**
- * クラス型の追加設定
+ * Options for class type.
  */
 export declare class ClassTypeOption {
     private binding;
     constructor(binding: Binding);
     /**
-     * シングルトンにする
+     * Make class singleton.
      */
     asSingleton(): void;
     /**
-     * シングルトンにする
+     * Make class eager singleton.
      */
     asEagerSingleton(): void;
 }
 /**
- * バインディングと値をひもづける
+ * Link binding to value.
  */
 export declare class BindingPlaceholder {
     private id;
     private holder;
     /**
-     * @param id 名前
-     * @param holder バインディングのmap
+     * @param id Binding id.
+     * @param holder Bindings map.
      */
     constructor(id: string, holder: BindingRelation);
     /**
-     * クラスコンストラクタをIdと紐つける
-     * @param ctor コンストラクタ関数
-     * @returns 追加の設定クラス
+     * Link constructor function to binding id.
+     * @param ctor Constructor function.
+     * @returns Option.
      */
     to<T>(ctor: any): any;
     /**
-     * インスタンスとIdを紐つける
-     * @param value 即値
+     * Link instance to binding id.
+     * @param value Immediate value.
      */
     toInstance<T>(value: T): void;
     /**
-     * プロバイダとIdを紐つける
-     * @param value プロバイダのコンストラクタ
+     * Link Provider to binding id.
+     * @param value Provider constructor function.
      */
     toProvider<T>(value: ClassType<Provider<T>>): void;
 }
 /**
- * インターセプタと値を保持するクラス
+ * Hold interceptor and value.
  */
 export declare class InterceptPlaceholder {
     private targetSymbol;
     /**
-     * インターセプタ
+     * Interceptor function.
      */
     private interceptor;
     /**
-     * @param targetSymbol インターセプトするターゲットに設定されるsymbol
+     * @param targetSymbol The symbol that set to intercepted.
      */
     constructor(targetSymbol: symbol);
     /**
-     * バインドを行う
-     * @param methodProxyCtor MethodProxyのコンストラクタ
+     * Do binding.
+     * @param methodProxyCtor MethodProxy constructor funciton.
      */
     to(methodProxyCtor: new () => MethodProxy): void;
 }
 /**
- * テンプレート定義と値を保持するクラス
+ * Hold template definitions and values.
  */
 export declare class TemplatePlaceholder {
     private id;
     private holder;
     /**
-     * @param id templateのid
-     * @param holder バインディングを保持するオブジェクト
+     * @param id Template id.
+     * @param holder Object that hold bindings.
      */
     constructor(id: string, holder: BindingRelation);
     /**
-     * 値を紐つける
-     * @param ctor コンストラクタ
+     * Link template to binding id.
+     * @param ctor Constructor function.
      */
     to<T>(ctor: ClassType<T>): void;
 }

@@ -38,16 +38,6 @@ export const IO_MARK = Symbol('io');
 
 
 /**
- * Base class of io module.
- */
-export class IOModule {
-  constructor() {
-    this[IO_MARK] = true;
-  }
-}
-
-
-/**
  * Decorator for io module.
  */
 export function io<T extends Function>(target: T) {
@@ -163,11 +153,33 @@ export class SubjectStore {
 }
 
 
+export class Disposable {
+  private subscriptions: Subscription[] = [];
+
+  public addSubscription(subscription: Subscription) {
+    this.subscriptions.push(subscription);
+  }
+
+
+  public getSubscriptions() {return this.subscriptions;}
+
+
+  public dispose() {
+    _.forEach(this.subscriptions, subscription => subscription.unsubscribe());
+  }
+}
+
+
 /**
  * Interface for IO processor.
  */
 export interface IO {
   response: IOResponse;
+  /**
+   * Wait observable.
+   * @param request Disposable.
+   */
+  subscribe(props: {[key: string]: any}): Disposable;
   end(): void;
 }
 
@@ -197,35 +209,16 @@ export enum ResponseType {
 /**
  * Type for Http request options.
  */
-export type HttpConfig = {
+export interface HttpConfig {
   url: string;
-  key: string;
   method?: HttpMethod;
-  headers: any;
+  headers?: any;
   mode?: 'cors'|'same-origin'|'no-cors';
   json?: boolean;
   data?: string|Blob|FormData,
   responseType?: ResponseType
   sendToken?: boolean
 };
-
-
-/**
- * Interface for Http IO.
- */
-export interface Http extends IO {
-  /**
-   * Wait Http request observable.
-   * @param request Disposable.
-   */
-  wait(request: Observable<HttpConfig>): Subscription;
-
-
-  /**
-   * Dispose all subscriptions.
-   */
-  end(): void;
-}
 
 
 /**
@@ -299,7 +292,6 @@ export enum StorageType {
  */
 export interface StorageOptions {
   type: StorageType;
-  key: string;
   name: string;
   value: any;
   method: StorageMethod;
@@ -330,4 +322,4 @@ export interface StorageIO extends IO {
 }
 
 
-export interface BasicIOTypes {http: Http, event: Event, storage: StorageIO};
+export interface BasicIOTypes {http: IO, event: Event, storage: StorageIO};

@@ -20,9 +20,9 @@ System.register(['../shims/lodash'], function(exports_1, context_1) {
     var __moduleName = context_1 && context_1.id;
     var lodash_1;
     /**
-     * 指定されたキーで設定用の配列を初期化する
-     * @param target 対象のオブジェクト
-     * @param key キー
+     * Initialize array by specified key.
+     * @param target Target object.
+     * @param key A key.
      */
     function initList(target, key) {
         if (!target[key]) {
@@ -30,10 +30,10 @@ System.register(['../shims/lodash'], function(exports_1, context_1) {
         }
     }
     /**
-     * 指定された正規表現にマッチした、全てのメソッドをインターセプトするためのデコレータ
-     * @param key インターセプトするためのマーク
-     * @param regexp メソッドを指定するための正規表現
-     * @returns クラスデコレータ
+     * Intercept methods that are specified by regular expression.
+     * @param key Symbol to intercept.
+     * @param regexp Regular expression that specify methods.
+     * @returns Class decorator.
      */
     function interceptAll(key, regexp) {
         return function (target) {
@@ -43,9 +43,9 @@ System.register(['../shims/lodash'], function(exports_1, context_1) {
     }
     exports_1("interceptAll", interceptAll);
     /**
-     * メソッドをインターセプトするためのデコレータ
-     * @param key インターセプトするためのマーク
-     * @returns メソッドデコレータ
+     * Specifiy injector to intercept method.
+     * @param key Symbol to intercept.
+     * @returns Method decorator.
      */
     function intercept(key) {
         return function (target, propertyKey) {

@@ -19,19 +19,20 @@
 
 import {
   ContextReactTypes,
+  ContextType,
   setContext
 } from './context';
 import * as React from 'react';
 
 
 /**
- * render関数の型
+ * Render function type.
  */
 export type Render<Props> = (props: Props, context?: any) => React.ReactElement<any>;
 
 
 /**
- * stateless関数の引数型
+ * component function args type.
  */
 export type StatelessComponentConfig<Props> = {
   render: Render<Props>,
@@ -44,19 +45,19 @@ export type StatelessComponentConfig<Props> = {
 
 
 /**
- * statelessなCompositeComponentを作成する
- * @param render render関数か、各種lifecycleメソッドが定義されたオブジェクト
+ * Create stateless CompositeComponent with context that type is `ContextReactType`.
+ * @param render Render function or object that implements each lifecycle methods.
  */
-export function component<Props>(render: (StatelessComponentConfig<Props>|Render<Props>), componentName?: string) {
+export function component<Props>(render: (StatelessComponentConfig<Props>|Render<Props>), componentName?: string): new(props: Props, context: ContextType) => React.Component<Props, {}> {
   /**
-   * render関数かどうかを判定する
+   * Check whether render is function or not.
    */
   function isRender(v: any): v is Render<Props> {
     return typeof v === 'function';
   }
 
   /**
-   * 引数で渡された関数、オブジェクトから生成したCompositeComponent
+   * React.Component that is created from passed function or object.
    */
   const ret = class extends React.Component<Props, {}> {
     public render() {

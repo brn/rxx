@@ -15,6 +15,7 @@
  * @author Taketoshi Aono
  */
 import { ClassType } from './classtype';
+import { Binding } from './binding';
 import { Module } from './module';
 /**
  * The key to hold dependency name.
@@ -124,7 +125,8 @@ export declare class Injector {
      */
     injectOnce<T>(ctor: ClassType<T>, params?: any): T;
     /**
-     * Create child injector of passed injector.
+     * Create child injector.
+     * Child injector is binded parent modules and self modules.
      * @param modules The new module to add.
      */
     createChildInjector(modules: Module[]): Injector;
@@ -150,6 +152,20 @@ export declare class Injector {
      * @return List of dependent names.
      */
     keys(): string[];
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    find(predicate: (binding: Binding, key: string) => boolean): {
+        [key: string]: Binding;
+    };
+    /**
+     * Find bindings.
+     * @param predicate Predicate callback.
+     */
+    findFromSelf(predicate: (binding: Binding, key: string) => boolean): {
+        [key: string]: Binding;
+    };
     /**
      * Create instance and resolve bindings.
      * @param ctor Constructor function.

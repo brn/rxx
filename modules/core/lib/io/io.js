@@ -19,7 +19,7 @@ System.register(['rxjs/Subject', '../shims/symbol', '../shims/lodash'], function
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Subject_1, symbol_1, lodash_1;
-    var IO_MARK, IOModule, IO_MODULES, appendIOModuleKey, getIOModules, IOResponse, SubjectStore, HttpMethod, ResponseType, StorageMethod, StorageType;
+    var IO_MARK, IO_MODULES, appendIOModuleKey, getIOModules, IOResponse, SubjectStore, Disposable, HttpMethod, ResponseType, StorageMethod, StorageType;
     /**
      * Decorator for io module.
      */
@@ -40,16 +40,6 @@ System.register(['rxjs/Subject', '../shims/symbol', '../shims/lodash'], function
             }],
         execute: function() {
             exports_1("IO_MARK", IO_MARK = symbol_1.Symbol('io'));
-            /**
-             * Base class of io module.
-             */
-            IOModule = (function () {
-                function IOModule() {
-                    this[IO_MARK] = true;
-                }
-                return IOModule;
-            }());
-            exports_1("IOModule", IOModule);
             IO_MODULES = ['http', 'event', 'storage'];
             exports_1("appendIOModuleKey", appendIOModuleKey = function (name) {
                 if (IO_MODULES.indexOf(name) === -1) {
@@ -143,6 +133,20 @@ System.register(['rxjs/Subject', '../shims/symbol', '../shims/lodash'], function
                 return SubjectStore;
             }());
             exports_1("SubjectStore", SubjectStore);
+            Disposable = (function () {
+                function Disposable() {
+                    this.subscriptions = [];
+                }
+                Disposable.prototype.addSubscription = function (subscription) {
+                    this.subscriptions.push(subscription);
+                };
+                Disposable.prototype.getSubscriptions = function () { return this.subscriptions; };
+                Disposable.prototype.dispose = function () {
+                    lodash_1._.forEach(this.subscriptions, function (subscription) { return subscription.unsubscribe(); });
+                };
+                return Disposable;
+            }());
+            exports_1("Disposable", Disposable);
             /**
              * The methods of the Http request.
              */
@@ -163,6 +167,7 @@ System.register(['rxjs/Subject', '../shims/symbol', '../shims/lodash'], function
                 ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
             })(ResponseType || (ResponseType = {}));
             exports_1("ResponseType", ResponseType);
+            ;
             /**
              * The methods of the StorageIO.
              */

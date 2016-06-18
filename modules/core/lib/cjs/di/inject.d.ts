@@ -1,9 +1,9 @@
 /**
- * DIの設定キー
+ * DI config key.
  */
 export declare const injectionTargetSymbol: any;
 /**
- * dynamicデコレータのキー
+ * Dynamic decorator key.
  */
 export declare const dynamicTargetSymbol: any;
 /**

@@ -60,7 +60,7 @@ class Test1 {
 
 describe('Injector', () => {
   describe('#inject', () => {
-    it('依存性か解決されたインスタンスを生成する', () => {
+    it('Create instance that has resolved dependencies', () => {
       class Target1 {}
       class Target2 {}
       class Target3 {}
@@ -86,7 +86,7 @@ describe('Injector', () => {
     });
 
 
-    it('入れ子になった依存性を全て解決した状態のインスタンスを生成する', () => {
+    it('Create instance that has resolved nested dependencies.', () => {
       class Binded {
         @inject()
         public targetB1;
@@ -182,7 +182,7 @@ describe('Injector', () => {
       expect(result.targetA4.targetE3).equal(12);
     });
 
-    it('singletonのバインディングは一度しか生成しない', () => {
+    it('Singleton binding create once.', () => {
       let targetId = 0;
 
       class Target {
@@ -239,7 +239,7 @@ describe('Injector', () => {
       expect(inst.test()).eq(2);
     });
 
-    it('入れ子の依存にインターセプタを適用する', () => {
+    it('Apply interceptor to nested dependnecies.', () => {
       const testInterceptor = Symbol('__test__');
 
 

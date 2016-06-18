@@ -30,9 +30,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 var React = require('react');
+var lodash_1 = require('./shims/lodash');
 var react_dom_1 = require('react-dom');
 var context_1 = require('./component/context');
-function runner(_a) {
+function runnable(_a) {
     var component = _a.component, modules = _a.modules;
     var Renderer = (function (_super) {
         __extends(Renderer, _super);
@@ -42,7 +43,7 @@ function runner(_a) {
         }
         Renderer.prototype.render = function () {
             var C = component;
-            return React.createElement(C, __assign({}, this.model));
+            return React.createElement(C, __assign({}, lodash_1._.assign(this.model, this.props)));
         };
         Renderer.prototype.componentDidMount = function () {
             this.context.connect(this.model);
@@ -64,9 +65,9 @@ function runner(_a) {
         return class_1;
     }(React.Component));
 }
-exports.runner = runner;
+exports.runnable = runnable;
 function run(opt, el) {
-    var Root = runner(opt);
+    var Root = runnable(opt);
     react_dom_1.render(React.createElement(Root, null), el);
 }
 exports.run = run;

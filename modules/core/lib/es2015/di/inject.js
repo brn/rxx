@@ -17,13 +17,13 @@
  */
 import { Symbol } from '../shims/symbol';
 /**
- * DIの設定キー
+ * DI config key.
  */
-export const injectionTargetSymbol = Symbol('__injections__');
+export var injectionTargetSymbol = Symbol('__injections__');
 /**
- * dynamicデコレータのキー
+ * Dynamic decorator key.
  */
-export const dynamicTargetSymbol = Symbol('__dynamic_injections__');
+export var dynamicTargetSymbol = Symbol('__dynamic_injections__');
 /**
  * diの設定を保持する配列を初期化する
  * @param target 対象のオブジェクト
@@ -40,7 +40,7 @@ function addInjection(target, symbol) {
  * @returns メソッドデコレータ
  */
 export function inject(name) {
-    return (target, propertyKey) => {
+    return function (target, propertyKey) {
         addInjection(target, injectionTargetSymbol);
         if (name) {
             target[injectionTargetSymbol].push([name, propertyKey]);
@@ -56,7 +56,7 @@ export function inject(name) {
  * @returns パラメータデコレータ
  */
 export function param(name) {
-    return (target, propertyKey, parameterIndex) => {
+    return function (target, propertyKey, parameterIndex) {
         addInjection(target, injectionTargetSymbol);
         target[injectionTargetSymbol][parameterIndex] = [name, name];
     };

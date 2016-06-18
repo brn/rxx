@@ -1,3 +1,0 @@
-# External module "env"
-## Index### Interfaces* [Process](../interfaces/_env_.process.html)### Functions* [getProcess](_env_.html#getprocess)## Functions### getProcess(): [Process](../interfaces/_env_.process.html)  * Defined in [env.tsx:27](https://github.com/brn/react-mvi/blob/master/modules/core/src/env.tsx#L27)#### Returns: [Process](../interfaces/_env_.process.html)
-Generated using [TypeDoc](http://typedoc.io)

@@ -17,9 +17,9 @@
  */
 import { _ } from '../shims/lodash';
 /**
- * 指定されたキーで設定用の配列を初期化する
- * @param target 対象のオブジェクト
- * @param key キー
+ * Initialize array by specified key.
+ * @param target Target object.
+ * @param key A key.
  */
 function initList(target, key) {
     if (!target[key]) {
@@ -27,24 +27,24 @@ function initList(target, key) {
     }
 }
 /**
- * 指定された正規表現にマッチした、全てのメソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @param regexp メソッドを指定するための正規表現
- * @returns クラスデコレータ
+ * Intercept methods that are specified by regular expression.
+ * @param key Symbol to intercept.
+ * @param regexp Regular expression that specify methods.
+ * @returns Class decorator.
  */
 export function interceptAll(key, regexp) {
-    return (target) => {
+    return function (target) {
         initList(target.prototype, key);
         target.prototype[key].push(regexp);
     };
 }
 /**
- * メソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @returns メソッドデコレータ
+ * Specifiy injector to intercept method.
+ * @param key Symbol to intercept.
+ * @returns Method decorator.
  */
 export function intercept(key) {
-    return (target, propertyKey) => {
+    return function (target, propertyKey) {
         if (target[key] && _.isRegExp(target[key][0])) {
             throw new Error('Cannot intercept already annotated with @interceptAll');
         }

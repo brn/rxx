@@ -19,12 +19,6 @@ import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 export declare const IO_MARK: any;
 /**
- * Base class of io module.
- */
-export declare class IOModule {
-    constructor();
-}
-/**
  * Decorator for io module.
  */
 export declare function io<T extends Function>(target: T): void;
@@ -76,11 +70,24 @@ export declare class SubjectStore {
      */
     end(): void;
 }
+export declare class Disposable {
+    private subscriptions;
+    addSubscription(subscription: Subscription): void;
+    getSubscriptions(): Subscription[];
+    dispose(): void;
+}
 /**
  * Interface for IO processor.
  */
 export interface IO {
     response: IOResponse;
+    /**
+     * Wait observable.
+     * @param request Disposable.
+     */
+    subscribe(props: {
+        [key: string]: any;
+    }): Disposable;
     end(): void;
 }
 /**
@@ -104,30 +111,15 @@ export declare enum ResponseType {
 /**
  * Type for Http request options.
  */
-export declare type HttpConfig = {
+export interface HttpConfig {
     url: string;
-    key: string;
     method?: HttpMethod;
-    headers: any;
+    headers?: any;
     mode?: 'cors' | 'same-origin' | 'no-cors';
     json?: boolean;
     data?: string | Blob | FormData;
     responseType?: ResponseType;
     sendToken?: boolean;
-};
-/**
- * Interface for Http IO.
- */
-export interface Http extends IO {
-    /**
-     * Wait Http request observable.
-     * @param request Disposable.
-     */
-    wait(request: Observable<HttpConfig>): Subscription;
-    /**
-     * Dispose all subscriptions.
-     */
-    end(): void;
 }
 /**
  * Interface for Event IO
@@ -186,7 +178,6 @@ export declare enum StorageType {
  */
 export interface StorageOptions {
     type: StorageType;
-    key: string;
     name: string;
     value: any;
     method: StorageMethod;
@@ -212,7 +203,7 @@ export interface StorageIO extends IO {
     wait(ob: Observable<StorageOptions>): void;
 }
 export interface BasicIOTypes {
-    http: Http;
+    http: IO;
     event: Event;
     storage: StorageIO;
 }

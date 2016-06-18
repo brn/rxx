@@ -24,18 +24,18 @@ var __extends = (this && this.__extends) || function (d, b) {
 var context_1 = require('./context');
 var React = require('react');
 /**
- * statelessなCompositeComponentを作成する
- * @param render render関数か、各種lifecycleメソッドが定義されたオブジェクト
+ * Create stateless CompositeComponent with context that type is `ContextReactType`.
+ * @param render Render function or object that implements each lifecycle methods.
  */
 function component(render, componentName) {
     /**
-     * render関数かどうかを判定する
+     * Check whether render is function or not.
      */
     function isRender(v) {
         return typeof v === 'function';
     }
     /**
-     * 引数で渡された関数、オブジェクトから生成したCompositeComponent
+     * React.Component that is created from passed function or object.
      */
     var ret = (function (_super) {
         __extends(class_1, _super);

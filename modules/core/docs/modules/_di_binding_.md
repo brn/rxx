@@ -1,3 +1,0 @@
-# External module "di/binding"
-## Index### Classes* [BindingPlaceholder](../classes/_di_binding_.bindingplaceholder.html)* [ClassTypeOption](../classes/_di_binding_.classtypeoption.html)* [InterceptPlaceholder](../classes/_di_binding_.interceptplaceholder.html)* [TemplatePlaceholder](../classes/_di_binding_.templateplaceholder.html)### Interfaces* [Binding](../interfaces/_di_binding_.binding.html)* [BindingRelation](../interfaces/_di_binding_.bindingrelation.html)* [Provider](../interfaces/_di_binding_.provider.html)
-Generated using [TypeDoc](http://typedoc.io)

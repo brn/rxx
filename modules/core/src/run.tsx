@@ -19,6 +19,9 @@
 
 import * as React from 'react';
 import {
+  _
+} from './shims/lodash';
+import {
   render
 } from 'react-dom';
 import {
@@ -37,7 +40,7 @@ export interface RunnerArgs {
 }
 
 
-export function runner({component, modules}: RunnerArgs) {
+export function runnable({component, modules}: RunnerArgs): new(props: any, context: any) => React.Component<any, {}> {
   class Renderer extends React.Component<any, {}> {
     private model;
 
@@ -52,7 +55,7 @@ export function runner({component, modules}: RunnerArgs) {
 
     public render() {
       const C = component;
-      return <C {...this.model}/>
+      return <C {..._.assign(this.model, this.props)}/>
     }
 
 
@@ -78,7 +81,7 @@ export function runner({component, modules}: RunnerArgs) {
 }
 
 
-export function run(opt: RunnerArgs, el: Node) {
-  const Root = runner(opt);
+export function run(opt: RunnerArgs, el: Node): void {
+  const Root = runnable(opt);
   render(<Root/>, el as Element);
 }

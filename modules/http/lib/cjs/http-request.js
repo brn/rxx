@@ -30,6 +30,7 @@ var core_1 = require('@react-mvi/core');
 exports.IOResponse = core_1.IOResponse;
 exports.HttpMethod = core_1.HttpMethod;
 exports.ResponseType = core_1.ResponseType;
+var Rx_1 = require('rxjs/Rx');
 var query_string_1 = require('./shims/query-string');
 var promise_1 = require('./shims/promise');
 var fetch_1 = require('./shims/fetch');
@@ -51,28 +52,49 @@ var HttpRequest = (function () {
      * @override
      * @param request Observable that send request.
      */
-    HttpRequest.prototype.wait = function (request) {
+    HttpRequest.prototype.subscribe = function (props) {
         var _this = this;
-        return request.subscribe(function (config) {
-            var subjects = _this.store.get(config.key);
-            (function () {
-                switch (config.method) {
-                    case core_1.HttpMethod.GET:
-                        return _this.get(config);
-                    case core_1.HttpMethod.POST:
-                        return _this.post(config);
-                    case core_1.HttpMethod.PUT:
-                        return _this.put(config);
-                    default:
-                        return _this.get(config);
+        var disp = new core_1.Disposable();
+        if (props['http']) {
+            var _loop_1 = function(reqKey) {
+                var req = props['http'][reqKey];
+                disp.addSubscription(req.subscribe(function (config) {
+                    var subjects = _this.store.get(reqKey);
+                    (function () {
+                        switch (config.method) {
+                            case core_1.HttpMethod.GET:
+                                return _this.get(config);
+                            case core_1.HttpMethod.POST:
+                                return _this.post(config);
+                            case core_1.HttpMethod.PUT:
+                                return _this.put(config);
+                            default:
+                                return _this.get(config);
+                        }
+                    })()
+                        .then(function (res) {
+                        _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
+                    }).catch(function (err) {
+                        if (err && typeof err.json === 'function') {
+                            _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
+                        }
+                        else {
+                            subjects.forEach(function (subject) { return subject.error(err); });
+                        }
+                    });
+                }));
+            };
+            for (var reqKey in props['http']) {
+                _loop_1(reqKey);
+            }
+            for (var reqKey in props['http']) {
+                var req = props['http'][reqKey];
+                if (req instanceof Rx_1.ConnectableObservable || typeof req.connect === 'function') {
+                    req.connect();
                 }
-            })()
-                .then(function (res) {
-                _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
-            }).catch(function (err) {
-                _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
-            });
-        });
+            }
+        }
+        return disp;
     };
     /**
      * Dispose all subscriptions.
@@ -202,6 +224,10 @@ var HttpRequest = (function () {
         __metadata('design:paramtypes', [Number, fetch_1.Response]), 
         __metadata('design:returntype', promise_1.Promise)
     ], HttpRequest.prototype, "getResponse", null);
+    HttpRequest = __decorate([
+        core_1.io, 
+        __metadata('design:paramtypes', [])
+    ], HttpRequest);
     return HttpRequest;
 }());
 exports.HttpRequest = HttpRequest;

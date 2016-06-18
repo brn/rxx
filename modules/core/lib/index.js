@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./component/context', './component/subscriber', './component/tags', './component/utils', './run', './io/io', './utils', './di/index', './shims/symbol'], function(exports_1, context_1) {
+System.register(['./component/context', './component/subscriber', './component/tags', './component/utils', './run', './service/service', './io/io', './utils', './di/index', './shims/symbol'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function exportStar_1(m) {
@@ -41,6 +41,9 @@ System.register(['./component/context', './component/subscriber', './component/t
             },
             function (run_1_1) {
                 exportStar_1(run_1_1);
+            },
+            function (service_1_1) {
+                exportStar_1(service_1_1);
             },
             function (io_1_1) {
                 exportStar_1(io_1_1);

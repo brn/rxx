@@ -15,15 +15,14 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { IOResponse, Http, HttpConfig, HttpMethod, ResponseType } from '@react-mvi/core';
-import { Observable, Subscription } from 'rxjs/Rx';
+import { IO, IOResponse, HttpConfig, HttpMethod, ResponseType, Disposable } from '@react-mvi/core';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
 export declare const HTTP_INTERCEPT: any;
 export declare const HTTP_REQUEST_INTERCEPT: any;
 /**
  * Http request sender.
  */
-export declare class HttpRequest implements Http {
+export declare class HttpRequest implements IO {
     /**
      * Response.
      */
@@ -41,7 +40,9 @@ export declare class HttpRequest implements Http {
      * @override
      * @param request Observable that send request.
      */
-    wait(request: Observable<HttpConfig>): Subscription;
+    subscribe(props: {
+        [key: string]: any;
+    }): Disposable;
     /**
      * Dispose all subscriptions.
      * @override

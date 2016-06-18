@@ -23,12 +23,12 @@ import {
 
 
 /**
- * DIの設定キー
+ * DI config key.
  */
 export const injectionTargetSymbol = Symbol('__injections__');
 
 /**
- * dynamicデコレータのキー
+ * Dynamic decorator key.
  */
 export const dynamicTargetSymbol   = Symbol('__dynamic_injections__');
 

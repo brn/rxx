@@ -2,3 +2,4 @@ jspm_packages
 node_modules
 post-install.lock
 .karma.pid
+*.log

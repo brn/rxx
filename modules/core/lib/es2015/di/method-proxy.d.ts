@@ -15,7 +15,7 @@
  * @author Taketoshi Aono
  */
 /**
- * メソッド呼び出しの抽象表現
+ * Abstract expression for method invocation.
  */
 export declare class MethodInvocation {
     private method;
@@ -24,50 +24,50 @@ export declare class MethodInvocation {
     private contextName;
     private propertyKey;
     /**
-     * @param method 関数本体
-     * @param context 呼び出しコンテキスト
-     * @param args 引数
-     * @param contextName 実行コンテキストの名前
-     * @param propertyKey 呼び出しプロパティ名
+     * @param method Function body.
+     * @param context Calling context.
+     * @param args Arguments.
+     * @param contextName The name of execution context.
+     * @param propertyKey Property name.
      */
     constructor(method: Function, context: any, args: any[], contextName: string, propertyKey: string);
     /**
-     * 関数呼び出しを実行する
-     * @returns 実行結果
+     * Execute function.
+     * @returns Execute result.
      */
     proceed(): any;
     /**
-     * 引数を取得する
-     * @returns 引数リスト
+     * Get arguments.
+     * @returns Arguments.
      */
     getArguments(): any[];
     /**
-     * 実行コンテキストを取得する
-     * @returns 実行コンテキスト
+     * Get context.
+     * @returns Execution context.
      */
     getContext(): any;
     /**
-     * インスタンス名を取得する
-     * @returns string
+     * Get instance name.
+     * @returns string A instance name.
      */
     getInstanceName(): string;
     /**
-     * プロパティ名を取得する
-     * @returns string
+     * Get property name.
+     * @returns string A property name.
      */
     getPropertyName(): string;
     /**
-     * コンテキスト名とプロパティ名を繋いだ名前を返す。
+     * Return joined name of context and property.
      */
     getFullQualifiedName(): string;
 }
 /**
- * インターセプタのインターフェース
+ * Interceptor interface.
  */
 export interface MethodProxy {
     /**
-     * インターセプタを呼び出す。
-     * @param methodInvocation インターセプトしたメソッドの抽象表現
+     * Call interceptor.
+     * @param methodInvocation Abstract expression of method invocation..
      */
     invoke(methodInvocation: MethodInvocation): any;
 }

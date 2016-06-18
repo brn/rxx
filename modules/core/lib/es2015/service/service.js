@@ -15,3 +15,9 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+import { Symbol } from '../shims/symbol';
+export var SERVICE_MARK = Symbol('__react_mvi_service__');
+export function service(target) {
+    target[SERVICE_MARK] = true;
+    return target;
+}

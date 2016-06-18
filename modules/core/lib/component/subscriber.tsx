@@ -16,7 +16,6 @@
  * @author Taketoshi Aono
  */
 
-
 import * as React from 'react';
 import {
   Observable,
@@ -115,12 +114,15 @@ export class Subscriber extends React.Component<any, any> {
    */
   private mutableTree = null;
 
+  private hasObservable = false;
+
 
   constructor(p, c) {
     super(p, c);
+    this.hasObservable = this.areThereObservableInChildren(<EmptyRoot>{this.props.children}</EmptyRoot>);
     // State has virtual dom tree that are covered by this component.
     this.state = {
-      vdom: null
+      vdom: this.hasObservable? null: this.props.children
     };
   }
 
@@ -138,8 +140,10 @@ export class Subscriber extends React.Component<any, any> {
    * Subscribe all observable that embeded in vdom trees.
    */
   public componentWillMount() {
-    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null)
-    this.subscribeAll();
+    if (this.hasObservable) {
+      this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null)
+      this.subscribeAll();
+    }
   }
 
 
@@ -148,8 +152,13 @@ export class Subscriber extends React.Component<any, any> {
    */
   public componentWillReceiveProps(nextProps) {
     this.disposeAll();
-    this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null);
-    this.subscribeAll();
+    this.hasObservable = this.areThereObservableInChildren(<EmptyRoot>{nextProps.children}</EmptyRoot>);
+    if (this.hasObservable) {
+      this.mutableTree = this.cloneChildren(<EmptyRoot>{nextProps.children}</EmptyRoot>, null, null);
+      this.subscribeAll();
+    } else {
+      this.setState({vdom: nextProps.children});
+    }
   }
 
 
@@ -194,7 +203,7 @@ export class Subscriber extends React.Component<any, any> {
    */
   private updateChildren(el: React.ReactElement<any>, value: any, index: number) {
     if (el.props.children && _.isArray(el.props.children)) {
-      if (_.isArray(value) && _.every(value, v => v['$$typeof'] === REACT_ELEMENT_TYPEOF)) {
+      if (_.isArray(value)) {
         el.props.children = el.props.children.slice(0, index).concat(value);
       } else {
         el.props.children[index] = value;
@@ -228,6 +237,23 @@ export class Subscriber extends React.Component<any, any> {
       _owner: el['_owner']
     } as React.ReactElement<any>;
   }
+
+
+  /**
+   * Clone all children trees that has mutable props, mutable children, recursively from root.
+   * @param el Root React.ReactElement.
+   */
+  private areThereObservableInChildren(el: React.ReactElement<any>) {
+    const target = el.props? (el.props.children? (!_.isArray(el.props.children)? [el.props.children]: el.props.children): []): [];
+    return _.some(target, (child: React.ReactElement<any>|Observable<any>, i) => {
+      if (child instanceof Observable) {
+        return true;
+      }
+      return this.areThereObservableInChildren(child as React.ReactElement<any>);
+    }) || _.some(_.omit(el.props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
+      return v instanceof Observable;
+    });
+}
 
 
   /**

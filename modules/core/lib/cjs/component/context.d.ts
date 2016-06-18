@@ -48,9 +48,12 @@ export interface ContextProps {
     modules: Module[];
 }
 /**
- * @class
+ * React context provider.
  */
 export declare class Context extends React.Component<ContextProps, {}> {
+    /**
+     * Context object.
+     */
     private contextObject;
     constructor(props: any, c: any);
     render(): any;
@@ -65,6 +68,11 @@ export declare class Context extends React.Component<ContextProps, {}> {
 }
 /**
  * Decorator to set specified type as context type.
+ * @param target A class constructor.
  */
 export declare function context<T extends Function>(target: T): void;
+/**
+ * Set context type to stateless component.
+ * @param component A stateless component.
+ */
 export declare function setContext(component: any): void;

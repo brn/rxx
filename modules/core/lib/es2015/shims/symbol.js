@@ -15,15 +15,21 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-const HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
-export const Symbol = HAS_SYMBOL ? window['Symbol'] : (key) => {
+/**
+ * Check browser has Symbol implementations.
+ */
+var HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
+/**
+ * Shim of Symbol.
+ */
+export var Symbol = HAS_SYMBOL ? window['Symbol'] : function (key) {
     return key;
 };
 if (!HAS_SYMBOL) {
-    const GLOBAL_SYMBOL_MAP = {};
-    Symbol.for = (key) => {
-        if (!GLOBAL_SYMBOL_MAP[key]) {
-            GLOBAL_SYMBOL_MAP[key] = key;
+    var GLOBAL_SYMBOL_MAP_1 = {};
+    Symbol.for = function (key) {
+        if (!GLOBAL_SYMBOL_MAP_1[key]) {
+            GLOBAL_SYMBOL_MAP_1[key] = key;
         }
         return key;
     };

@@ -18,11 +18,11 @@
 "use strict";
 var symbol_1 = require('../shims/symbol');
 /**
- * DIの設定キー
+ * DI config key.
  */
 exports.injectionTargetSymbol = symbol_1.Symbol('__injections__');
 /**
- * dynamicデコレータのキー
+ * Dynamic decorator key.
  */
 exports.dynamicTargetSymbol = symbol_1.Symbol('__dynamic_injections__');
 /**

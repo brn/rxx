@@ -24,6 +24,7 @@ import {
   graceful
 }                   from '@react-mvi/testing';
 import {
+  IO_MARK,
   Injector,
   createModule,
   MethodInvocation,
@@ -207,9 +208,9 @@ describe('HttpRequest', () => {
   });
 
 
-  const waitRequest = (opt, inst) => {
+  const waitRequest = (opt, inst, key) => {
     const subject = new Subject();
-    inst.wait(subject);
+    inst.subscribe({http: {[key]: subject}});
     subject.next(opt);
   };
 
@@ -221,7 +222,7 @@ describe('HttpRequest', () => {
       request.response.for('test').subscribe(graceful(v => {
         expect(v).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
     });
 
@@ -231,7 +232,7 @@ describe('HttpRequest', () => {
       request.response.for('test').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', data: {test: 1}, key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', data: {test: 1}, responseType: ResponseType.JSON}, request, 'test');
       server.respond();
     });
 
@@ -241,7 +242,7 @@ describe('HttpRequest', () => {
       request.response.for('test').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
-      waitRequest({url: '/test/ng', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
     });
     
@@ -251,7 +252,7 @@ describe('HttpRequest', () => {
       request.response.for('test').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
     });
 
@@ -261,7 +262,7 @@ describe('HttpRequest', () => {
       request.response.for('test').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
-      waitRequest({url: '/test/ng', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
     });
 
@@ -270,7 +271,7 @@ describe('HttpRequest', () => {
       const injector = initGetResponse(false);
       const request = injector.get('http');
       request.response.for('test').subscribe(res => {called = true});
-      waitRequest({url: '/test/ok', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
       expect(called).to.be.false;
     });
@@ -280,7 +281,7 @@ describe('HttpRequest', () => {
       const injector = initGetErrorResponse(false);
       const request = injector.get('http');
       request.response.for('test').subscribe(() => {}, res => {called = true});
-      waitRequest({url: '/test/ng', key: 'test', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
       expect(called).to.be.false;
     });
@@ -293,7 +294,7 @@ describe('HttpRequest', () => {
       request.response.for('test-post').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
     });
 
@@ -304,7 +305,7 @@ describe('HttpRequest', () => {
       request.response.for('test-post').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', data: {success: true}, form: true, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', data: {success: true}, form: true, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
     });
 
@@ -314,7 +315,7 @@ describe('HttpRequest', () => {
       request.response.for('test-post').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
-      waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
     });
 
@@ -324,7 +325,7 @@ describe('HttpRequest', () => {
       request.response.for('test-post').subscribe(graceful(res => {
         expect(res).to.be.deep.equal({success: true});
       }, done));
-      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
     });
 
@@ -334,7 +335,7 @@ describe('HttpRequest', () => {
       request.response.for('test-post').subscribe(() => {}, graceful(res => {
         expect(res).to.be.deep.equal({success: false});
       }, done));
-      waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
     });
 
@@ -343,7 +344,7 @@ describe('HttpRequest', () => {
       const injector = initPostResponse(false);
       const request = injector.get('http');
       request.response.for('test-post').subscribe(res => {called = true});
-      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
       expect(called).to.be.false;
     });
@@ -353,7 +354,7 @@ describe('HttpRequest', () => {
       const injector = initPostErrorResponse(false);
       const request = injector.get('http');
       request.response.for('test-post').subscribe(() => {}, res => {called = true});
-      waitRequest({url: '/test/ng', data: {success: true}, method: HttpMethod.POST, key: 'test-post', responseType: ResponseType.JSON}, request);
+      waitRequest({url: '/test/ng', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
       expect(called).to.be.false;
     });

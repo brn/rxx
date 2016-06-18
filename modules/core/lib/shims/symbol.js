@@ -22,7 +22,13 @@ System.register([], function(exports_1, context_1) {
     return {
         setters:[],
         execute: function() {
+            /**
+             * Check browser has Symbol implementations.
+             */
             HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
+            /**
+             * Shim of Symbol.
+             */
             exports_1("Symbol", Symbol = HAS_SYMBOL ? window['Symbol'] : function (key) {
                 return key;
             });

@@ -1,13 +1,13 @@
 /**
- * 指定された正規表現にマッチした、全てのメソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @param regexp メソッドを指定するための正規表現
- * @returns クラスデコレータ
+ * Intercept methods that are specified by regular expression.
+ * @param key Symbol to intercept.
+ * @param regexp Regular expression that specify methods.
+ * @returns Class decorator.
  */
 export declare function interceptAll(key: symbol, regexp: RegExp): <T extends Function>(target: T) => void;
 /**
- * メソッドをインターセプトするためのデコレータ
- * @param key インターセプトするためのマーク
- * @returns メソッドデコレータ
+ * Specifiy injector to intercept method.
+ * @param key Symbol to intercept.
+ * @returns Method decorator.
  */
 export declare function intercept(key: symbol): (target: Object, propertyKey: string | symbol) => void;

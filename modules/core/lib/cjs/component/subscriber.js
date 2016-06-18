@@ -83,9 +83,11 @@ var Subscriber = (function (_super) {
          * Cloned mutable children tree.
          */
         this.mutableTree = null;
+        this.hasObservable = false;
+        this.hasObservable = this.areThereObservableInChildren(React.createElement(EmptyRoot, null, this.props.children));
         // State has virtual dom tree that are covered by this component.
         this.state = {
-            vdom: null
+            vdom: this.hasObservable ? null : this.props.children
         };
     }
     /**
@@ -99,16 +101,24 @@ var Subscriber = (function (_super) {
      * Subscribe all observable that embeded in vdom trees.
      */
     Subscriber.prototype.componentWillMount = function () {
-        this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children), null, null);
-        this.subscribeAll();
+        if (this.hasObservable) {
+            this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children), null, null);
+            this.subscribeAll();
+        }
     };
     /**
      * Reset all subscriptions and re subscribe all observables.
      */
     Subscriber.prototype.componentWillReceiveProps = function (nextProps) {
         this.disposeAll();
-        this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, this.props.children), null, null);
-        this.subscribeAll();
+        this.hasObservable = this.areThereObservableInChildren(React.createElement(EmptyRoot, null, nextProps.children));
+        if (this.hasObservable) {
+            this.mutableTree = this.cloneChildren(React.createElement(EmptyRoot, null, nextProps.children), null, null);
+            this.subscribeAll();
+        }
+        else {
+            this.setState({ vdom: nextProps.children });
+        }
     };
     /**
      * Subscribe changes of observables.
@@ -150,7 +160,7 @@ var Subscriber = (function (_super) {
      */
     Subscriber.prototype.updateChildren = function (el, value, index) {
         if (el.props.children && lodash_1._.isArray(el.props.children)) {
-            if (lodash_1._.isArray(value) && lodash_1._.every(value, function (v) { return v['$$typeof'] === REACT_ELEMENT_TYPEOF; })) {
+            if (lodash_1._.isArray(value)) {
                 el.props.children = el.props.children.slice(0, index).concat(value);
             }
             else {
@@ -183,6 +193,22 @@ var Subscriber = (function (_super) {
             key: el.key,
             _owner: el['_owner']
         };
+    };
+    /**
+     * Clone all children trees that has mutable props, mutable children, recursively from root.
+     * @param el Root React.ReactElement.
+     */
+    Subscriber.prototype.areThereObservableInChildren = function (el) {
+        var _this = this;
+        var target = el.props ? (el.props.children ? (!lodash_1._.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [];
+        return lodash_1._.some(target, function (child, i) {
+            if (child instanceof Rx_1.Observable) {
+                return true;
+            }
+            return _this.areThereObservableInChildren(child);
+        }) || lodash_1._.some(lodash_1._.omit(el.props, 'children'), function (v, k) {
+            return v instanceof Rx_1.Observable;
+        });
     };
     /**
      * Clone all children trees that has mutable props, mutable children, recursively from root.

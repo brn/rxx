@@ -15,12 +15,23 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
+System.register(['../shims/symbol'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
+    var symbol_1;
+    var SERVICE_MARK;
+    function service(target) {
+        target[SERVICE_MARK] = true;
+        return target;
+    }
+    exports_1("service", service);
     return {
-        setters:[],
+        setters:[
+            function (symbol_1_1) {
+                symbol_1 = symbol_1_1;
+            }],
         execute: function() {
+            exports_1("SERVICE_MARK", SERVICE_MARK = symbol_1.Symbol('__react_mvi_service__'));
         }
     }
 });

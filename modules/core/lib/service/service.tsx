@@ -17,7 +17,24 @@
  */
 
 
+import {
+  Symbol
+} from '../shims/symbol';
+import {
+  Injector
+} from '../di/injector';
+
+
+export const SERVICE_MARK = Symbol('__react_mvi_service__');
+
+
+export function service<T extends Function>(target: T) {
+  target[SERVICE_MARK] = true;
+  return target;
+}
+
+
 export interface Service<IOS, T> {
-  (ios: IOS, ...args: any[]): T;
-  initialize(): T;
+  (ios: IOS, injector: Injector, ...args: any[]): T;
+  initialize?(ios: IOS, injector: Injector, ...args: any[]): T;
 }

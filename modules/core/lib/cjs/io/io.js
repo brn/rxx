@@ -21,16 +21,6 @@ var symbol_1 = require('../shims/symbol');
 var lodash_1 = require('../shims/lodash');
 exports.IO_MARK = symbol_1.Symbol('io');
 /**
- * Base class of io module.
- */
-var IOModule = (function () {
-    function IOModule() {
-        this[exports.IO_MARK] = true;
-    }
-    return IOModule;
-}());
-exports.IOModule = IOModule;
-/**
  * Decorator for io module.
  */
 function io(target) {
@@ -130,6 +120,20 @@ var SubjectStore = (function () {
     return SubjectStore;
 }());
 exports.SubjectStore = SubjectStore;
+var Disposable = (function () {
+    function Disposable() {
+        this.subscriptions = [];
+    }
+    Disposable.prototype.addSubscription = function (subscription) {
+        this.subscriptions.push(subscription);
+    };
+    Disposable.prototype.getSubscriptions = function () { return this.subscriptions; };
+    Disposable.prototype.dispose = function () {
+        lodash_1._.forEach(this.subscriptions, function (subscription) { return subscription.unsubscribe(); });
+    };
+    return Disposable;
+}());
+exports.Disposable = Disposable;
 /**
  * The methods of the Http request.
  */
@@ -150,6 +154,7 @@ var HttpMethod = exports.HttpMethod;
     ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
 })(exports.ResponseType || (exports.ResponseType = {}));
 var ResponseType = exports.ResponseType;
+;
 /**
  * The methods of the StorageIO.
  */
