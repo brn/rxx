@@ -26,53 +26,77 @@ import * as React from 'react';
  * Create stateless CompositeComponent with context that type is `ContextReactType`.
  * @param render Render function or object that implements each lifecycle methods.
  */
-export function component(render, componentName) {
+export function component(component, componentName) {
+    /**
+     * Check whether render is React.Component or not.
+     */
+    function isComponent(maybeComponent) {
+        return typeof maybeComponent === 'function' && typeof maybeComponent.prototype.render === 'function';
+    }
     /**
      * Check whether render is function or not.
      */
     function isRender(v) {
         return typeof v === 'function';
     }
-    /**
-     * React.Component that is created from passed function or object.
-     */
-    var ret = (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            _super.apply(this, arguments);
+    var ret;
+    if (isComponent(component)) {
+        var Renderer = component;
+        ret = (function (_super) {
+            __extends(class_1, _super);
+            function class_1() {
+                _super.apply(this, arguments);
+            }
+            class_1.contextTypes = ContextReactTypes;
+            return class_1;
+        }(Renderer));
+        if (Renderer['name']) {
+            ret['displayName'] = Renderer['name'];
         }
-        class_1.prototype.render = function () {
-            return isRender(render) ? render.call(this, this.props, this.context) : render.render.call(this, this.props, this.context);
-        };
-        class_1.prototype.componentWillMount = function () {
-            if (!isRender(render) && render.componentWillMount) {
-                render.componentWillMount.call(this);
+    }
+    else {
+        var renderer_1 = component;
+        /**
+         * React.Component that is created from passed function or object.
+         */
+        ret = (function (_super) {
+            __extends(class_2, _super);
+            function class_2() {
+                _super.apply(this, arguments);
             }
-        };
-        class_1.prototype.componentDidMount = function () {
-            if (!isRender(render) && render.componentDidMount) {
-                render.componentDidMount.call(this);
-            }
-        };
-        class_1.prototype.componentDidUpdate = function () {
-            if (!isRender(render) && render.componentDidUpdate) {
-                render.componentDidUpdate.call(this);
-            }
-        };
-        class_1.prototype.componentWillUnmount = function () {
-            if (!isRender(render) && render.componentWillUnmount) {
-                render.componentWillUnmount.call(this);
-            }
-        };
-        class_1.prototype.shouldComponentUpdate = function (nextProps) {
-            if (!isRender(render) && render.shouldComponentUpdate) {
-                return render.shouldComponentUpdate.call(this, nextProps);
-            }
-            return true;
-        };
-        class_1.contextTypes = ContextReactTypes;
-        return class_1;
-    }(React.Component));
+            class_2.prototype.render = function () {
+                return isRender(renderer_1) ? renderer_1.call(this, this.props, this.context) : renderer_1.render.call(this, this.props, this.context);
+            };
+            class_2.prototype.componentWillMount = function () {
+                if (!isRender(renderer_1) && renderer_1.componentWillMount) {
+                    renderer_1.componentWillMount.call(this);
+                }
+            };
+            class_2.prototype.componentDidMount = function () {
+                if (!isRender(renderer_1) && renderer_1.componentDidMount) {
+                    renderer_1.componentDidMount.call(this);
+                }
+            };
+            class_2.prototype.componentDidUpdate = function () {
+                if (!isRender(renderer_1) && renderer_1.componentDidUpdate) {
+                    renderer_1.componentDidUpdate.call(this);
+                }
+            };
+            class_2.prototype.componentWillUnmount = function () {
+                if (!isRender(renderer_1) && renderer_1.componentWillUnmount) {
+                    renderer_1.componentWillUnmount.call(this);
+                }
+            };
+            class_2.prototype.shouldComponentUpdate = function (nextProps) {
+                if (!isRender(renderer_1) && renderer_1.shouldComponentUpdate) {
+                    return renderer_1.shouldComponentUpdate.call(this, nextProps);
+                }
+                return true;
+            };
+            class_2.contextTypes = ContextReactTypes;
+            return class_2;
+        }(React.Component));
+    }
     if (componentName) {
         ret['displayName'] = componentName;
     }

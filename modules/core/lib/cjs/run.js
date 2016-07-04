@@ -34,7 +34,7 @@ var lodash_1 = require('./shims/lodash');
 var react_dom_1 = require('react-dom');
 var context_1 = require('./component/context');
 function runnable(_a) {
-    var component = _a.component, modules = _a.modules;
+    var component = _a.component, modules = _a.modules, injector = _a.injector;
     var Renderer = (function (_super) {
         __extends(Renderer, _super);
         function Renderer(p, c) {
@@ -57,7 +57,7 @@ function runnable(_a) {
             _super.apply(this, arguments);
         }
         class_1.prototype.render = function () {
-            return (React.createElement(context_1.Context, {modules: modules}, 
+            return (React.createElement(context_1.Context, {modules: modules, injector: injector}, 
                 React.createElement(Renderer, __assign({}, this.props))
             ));
         };

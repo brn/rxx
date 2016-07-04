@@ -28,6 +28,9 @@ import {
   Module
 } from './di/module';
 import {
+  Injector
+} from './di/injector';
+import {
   Context,
   ContextType,
   ContextReactTypes
@@ -36,11 +39,12 @@ import {
 
 export interface RunnerArgs {
   component: new(props: any, context: any) => React.Component<any, any>;
-  modules: Module[]
+  injector?: Injector;
+  modules?: Module[];
 }
 
 
-export function runnable({component, modules}: RunnerArgs): new(props: any, context: any) => React.Component<any, {}> {
+export function runnable({component, modules, injector}: RunnerArgs): new(props: any, context: any) => React.Component<any, {}> {
   class Renderer extends React.Component<any, {}> {
     private model;
 
@@ -71,7 +75,7 @@ export function runnable({component, modules}: RunnerArgs): new(props: any, cont
   return class extends React.Component<any, {}> {
     public render() {
       return (
-        <Context modules={modules}><Renderer {...this.props}/></Context>
+        <Context modules={modules} injector={injector}><Renderer {...this.props}/></Context>
       );
     }
 

@@ -48,7 +48,15 @@ export type StatelessComponentConfig<Props> = {
  * Create stateless CompositeComponent with context that type is `ContextReactType`.
  * @param render Render function or object that implements each lifecycle methods.
  */
-export function component<Props>(render: (StatelessComponentConfig<Props>|Render<Props>), componentName?: string): new(props: Props, context: ContextType) => React.Component<Props, {}> {
+export function component<Props>(component: (StatelessComponentConfig<Props>|Render<Props>|React.ComponentClass<Props>), componentName?: string): new(props: Props, context: ContextType) => React.Component<Props, {}> {
+  /**
+   * Check whether render is React.Component or not.
+   */
+  function isComponent(maybeComponent: any): maybeComponent is React.ComponentClass<Props> {
+    return typeof maybeComponent === 'function' && typeof maybeComponent.prototype.render === 'function';
+  }
+
+
   /**
    * Check whether render is function or not.
    */
@@ -56,51 +64,65 @@ export function component<Props>(render: (StatelessComponentConfig<Props>|Render
     return typeof v === 'function';
   }
 
-  /**
-   * React.Component that is created from passed function or object.
-   */
-  const ret = class extends React.Component<Props, {}> {
-    public render() {
-      return isRender(render)? render.call(this, this.props, this.context): render.render.call(this, this.props, this.context);
-    }
+  let ret: React.ComponentClass<Props>;
 
-    public componentWillMount() {
-      if (!isRender(render) && render.componentWillMount) {
-        render.componentWillMount.call(this);
+
+  if (isComponent(component)) {
+    const Renderer: React.ComponentClass<Props> = component as React.ComponentClass<Props>;
+    ret = class extends Renderer {
+      static contextTypes = ContextReactTypes as any;
+    }
+    if (Renderer['name']) {
+      ret['displayName'] = Renderer['name'];
+    }
+  } else {
+    const renderer = component as StatelessComponentConfig<Props>|Render<Props>;
+    /**
+     * React.Component that is created from passed function or object.
+     */
+    ret = class extends React.Component<Props, {}> {
+      public render() {
+        return isRender(renderer)? renderer.call(this, this.props, this.context): renderer.render.call(this, this.props, this.context);
       }
-    }
 
-    public componentDidMount() {
-      if (!isRender(render) && render.componentDidMount) {
-        render.componentDidMount.call(this);
+      public componentWillMount() {
+        if (!isRender(renderer) && renderer.componentWillMount) {
+          renderer.componentWillMount.call(this);
+        }
       }
-    }
 
-    public componentDidUpdate() {
-      if (!isRender(render) && render.componentDidUpdate) {
-        render.componentDidUpdate.call(this);
+      public componentDidMount() {
+        if (!isRender(renderer) && renderer.componentDidMount) {
+          renderer.componentDidMount.call(this);
+        }
       }
-    }
 
-    public componentWillUnmount() {
-      if (!isRender(render) && render.componentWillUnmount) {
-        render.componentWillUnmount.call(this);
+      public componentDidUpdate() {
+        if (!isRender(renderer) && renderer.componentDidUpdate) {
+          renderer.componentDidUpdate.call(this);
+        }
       }
-    }
 
-    public shouldComponentUpdate(nextProps) {
-      if (!isRender(render) && render.shouldComponentUpdate) {
-        return render.shouldComponentUpdate.call(this, nextProps);
+      public componentWillUnmount() {
+        if (!isRender(renderer) && renderer.componentWillUnmount) {
+          renderer.componentWillUnmount.call(this);
+        }
       }
-      return true;
-    }
 
-    static contextTypes = ContextReactTypes
-  } as any;
+      public shouldComponentUpdate(nextProps) {
+        if (!isRender(renderer) && renderer.shouldComponentUpdate) {
+          return renderer.shouldComponentUpdate.call(this, nextProps);
+        }
+        return true;
+      }
+
+      static contextTypes = ContextReactTypes
+    } as any;
+  }
 
 
   if (componentName) {
     ret['displayName'] = componentName;
   }
-  return ret;
+  return ret as any;
 }

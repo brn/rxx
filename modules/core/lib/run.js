@@ -33,7 +33,7 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
     };
     var React, lodash_1, react_dom_1, context_2;
     function runnable(_a) {
-        var component = _a.component, modules = _a.modules;
+        var component = _a.component, modules = _a.modules, injector = _a.injector;
         var Renderer = (function (_super) {
             __extends(Renderer, _super);
             function Renderer(p, c) {
@@ -56,7 +56,7 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
                 _super.apply(this, arguments);
             }
             class_1.prototype.render = function () {
-                return (React.createElement(context_2.Context, {modules: modules}, 
+                return (React.createElement(context_2.Context, {modules: modules, injector: injector}, 
                     React.createElement(Renderer, __assign({}, this.props))
                 ));
             };

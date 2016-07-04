@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
+System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -27,7 +27,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, Rx_1, query_string_1, promise_1, fetch_1;
+    var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1;
     var HTTP_INTERCEPT, HTTP_REQUEST_INTERCEPT, HttpRequest;
     return {
         setters:[
@@ -36,6 +36,9 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/
             },
             function (Rx_1_1) {
                 Rx_1 = Rx_1_1;
+            },
+            function (http_response_1_1) {
+                http_response_1 = http_response_1_1;
             },
             function (query_string_1_1) {
                 query_string_1 = query_string_1_1;
@@ -89,13 +92,26 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/
                                     }
                                 })()
                                     .then(function (res) {
-                                    _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
-                                }).catch(function (err) {
-                                    if (err && typeof err.json === 'function') {
-                                        _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
+                                    var handler = function (result) {
+                                        var response = new http_response_1.HttpResponse(res.ok, res.status, res.ok ? result : null, res.ok ? null : result);
+                                        subjects.forEach(function (subject) { return subject.next(response); });
+                                    };
+                                    if (res.ok) {
+                                        _this.getResponse(config.responseType, res).then(handler);
                                     }
                                     else {
-                                        subjects.forEach(function (subject) { return subject.error(err); });
+                                        _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+                                    }
+                                }).catch(function (err) {
+                                    var handler = function (result) {
+                                        var response = new http_response_1.HttpResponse(false, err && err.status ? err.status : 500, null, result);
+                                        subjects.forEach(function (subject) { return subject.next(response); });
+                                    };
+                                    if (err && typeof err.json === 'function') {
+                                        _this.getResponse(config.responseType, err).then(handler);
+                                    }
+                                    else {
+                                        handler(err);
                                     }
                                 });
                             }));
@@ -209,6 +225,19 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './shims/query-string', './shims/
                         default:
                             return res.text();
                     }
+                };
+                HttpRequest.prototype.getResponseTypeFromHeader = function (res) {
+                    var mime = res.headers.get('content-type');
+                    if (mime.indexOf('text/plain') > -1) {
+                        return core_1.ResponseType.TEXT;
+                    }
+                    if (mime.indexOf('text/json') > -1 || mime.indexOf('application/json') > -1) {
+                        return core_1.ResponseType.JSON;
+                    }
+                    if (/^(?:image|audio|video|(?:application\/zip)|(?:application\/octet-stream))/.test(mime)) {
+                        return core_1.ResponseType.BLOB;
+                    }
+                    return core_1.ResponseType.TEXT;
                 };
                 __decorate([
                     core_1.intercept(HTTP_REQUEST_INTERCEPT), 

@@ -6,7 +6,6 @@ SystemJS.config({
   },
   devConfig: {
     "map": {
-      "@react-mvi/testing": "npm:@react-mvi/testing@0.0.16",
       "babel-runtime": "npm:babel-runtime@5.8.38",
       "chai": "npm:chai@3.5.0",
       "core-js": "npm:core-js@1.2.6",
@@ -14,50 +13,8 @@ SystemJS.config({
       "ts": "github:frankwallis/plugin-typescript@4.0.16"
     },
     "packages": {
-      "npm:@react-mvi/testing@0.0.16": {
-        "map": {
-          "chai": "npm:chai@3.5.0",
-          "mocha": "npm:mocha@2.5.1",
-          "sinon": "npm:sinon@1.17.4"
-        }
-      },
       "npm:babel-runtime@5.8.38": {
         "map": {}
-      },
-      "npm:chai@3.5.0": {
-        "map": {
-          "assertion-error": "npm:assertion-error@1.0.1",
-          "deep-eql": "npm:deep-eql@0.1.3",
-          "type-detect": "npm:type-detect@1.0.0"
-        }
-      },
-      "npm:deep-eql@0.1.3": {
-        "map": {
-          "type-detect": "npm:type-detect@0.1.1"
-        }
-      },
-      "npm:formatio@1.1.1": {
-        "map": {
-          "samsam": "npm:samsam@1.1.2"
-        }
-      },
-      "npm:mocha@2.5.1": {
-        "map": {
-          "css": "github:systemjs/plugin-css@0.1.22"
-        }
-      },
-      "npm:sinon@1.17.4": {
-        "map": {
-          "formatio": "npm:formatio@1.1.1",
-          "lolex": "npm:lolex@1.3.2",
-          "samsam": "npm:samsam@1.1.2",
-          "util": "npm:util@0.10.3"
-        }
-      },
-      "npm:util@0.10.3": {
-        "map": {
-          "inherits": "npm:inherits@2.0.1"
-        }
       }
     }
   },
@@ -96,7 +53,8 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.38",
+    "@react-mvi/testing": "npm:@react-mvi/testing@0.0.16",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.42",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -128,7 +86,7 @@ SystemJS.config({
   packages: {
     "github:jspm/nodelibs-buffer@0.2.0-alpha": {
       "map": {
-        "buffer-browserify": "npm:buffer@4.6.0"
+        "buffer-browserify": "npm:buffer@4.7.0"
       }
     },
     "github:jspm/nodelibs-crypto@0.2.0-alpha": {
@@ -218,13 +176,6 @@ SystemJS.config({
     "npm:buffer-shims@1.0.0": {
       "map": {}
     },
-    "npm:buffer@4.6.0": {
-      "map": {
-        "base64-js": "npm:base64-js@1.1.2",
-        "ieee754": "npm:ieee754@1.1.6",
-        "isarray": "npm:isarray@1.0.0"
-      }
-    },
     "npm:cipher-base@1.0.2": {
       "map": {
         "inherits": "npm:inherits@2.0.1"
@@ -274,7 +225,7 @@ SystemJS.config({
     },
     "npm:d@0.1.1": {
       "map": {
-        "es5-ext": "npm:es5-ext@0.10.11"
+        "es5-ext": "npm:es5-ext@0.10.12"
       }
     },
     "npm:des.js@1.0.0": {
@@ -298,23 +249,17 @@ SystemJS.config({
         "iconv-lite": "npm:iconv-lite@0.4.13"
       }
     },
-    "npm:es5-ext@0.10.11": {
-      "map": {
-        "es6-iterator": "npm:es6-iterator@2.0.0",
-        "es6-symbol": "npm:es6-symbol@3.0.2"
-      }
-    },
     "npm:es6-iterator@2.0.0": {
       "map": {
         "d": "npm:d@0.1.1",
-        "es5-ext": "npm:es5-ext@0.10.11",
+        "es5-ext": "npm:es5-ext@0.10.12",
         "es6-symbol": "npm:es6-symbol@3.0.2"
       }
     },
     "npm:es6-symbol@3.0.2": {
       "map": {
         "d": "npm:d@0.1.1",
-        "es5-ext": "npm:es5-ext@0.10.11"
+        "es5-ext": "npm:es5-ext@0.10.12"
       }
     },
     "npm:evp_bytestokey@1.0.0": {
@@ -504,10 +449,71 @@ SystemJS.config({
         "hash.js": "npm:hash.js@1.0.3"
       }
     },
-    "npm:@react-mvi/core@0.3.3-beta.38": {
+    "npm:es5-ext@0.10.12": {
+      "map": {
+        "es6-symbol": "npm:es6-symbol@3.1.0",
+        "es6-iterator": "npm:es6-iterator@2.0.0"
+      }
+    },
+    "npm:es6-symbol@3.1.0": {
+      "map": {
+        "d": "npm:d@0.1.1",
+        "es5-ext": "npm:es5-ext@0.10.12"
+      }
+    },
+    "npm:buffer@4.7.0": {
+      "map": {
+        "isarray": "npm:isarray@1.0.0",
+        "ieee754": "npm:ieee754@1.1.6",
+        "base64-js": "npm:base64-js@1.1.2"
+      }
+    },
+    "npm:@react-mvi/core@0.3.3-beta.42": {
       "map": {
         "core-js": "npm:core-js@2.4.0",
         "ts": "github:frankwallis/plugin-typescript@4.0.16"
+      }
+    },
+    "npm:@react-mvi/testing@0.0.16": {
+      "map": {
+        "chai": "npm:chai@3.5.0",
+        "mocha": "npm:mocha@2.5.1",
+        "sinon": "npm:sinon@1.17.4"
+      }
+    },
+    "npm:chai@3.5.0": {
+      "map": {
+        "assertion-error": "npm:assertion-error@1.0.2",
+        "deep-eql": "npm:deep-eql@0.1.3",
+        "type-detect": "npm:type-detect@1.0.0"
+      }
+    },
+    "npm:deep-eql@0.1.3": {
+      "map": {
+        "type-detect": "npm:type-detect@0.1.1"
+      }
+    },
+    "npm:formatio@1.1.1": {
+      "map": {
+        "samsam": "npm:samsam@1.1.3"
+      }
+    },
+    "npm:mocha@2.5.1": {
+      "map": {
+        "css": "github:systemjs/plugin-css@0.1.23"
+      }
+    },
+    "npm:sinon@1.17.4": {
+      "map": {
+        "formatio": "npm:formatio@1.1.1",
+        "lolex": "npm:lolex@1.3.2",
+        "samsam": "npm:samsam@1.1.2",
+        "util": "npm:util@0.10.3"
+      }
+    },
+    "npm:util@0.10.3": {
+      "map": {
+        "inherits": "npm:inherits@2.0.1"
       }
     }
   }

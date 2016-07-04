@@ -134,8 +134,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                 __extends(Context, _super);
                 function Context(props, c) {
                     _super.call(this, props, c);
+                    this.disposables = [];
                     var self = this;
-                    var injector = new injector_1.Injector(props.modules);
+                    var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
                     var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
                         if (!binding.instance && binding.val) {
                             return binding.val[io_1.IO_MARK];
@@ -165,7 +166,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                                 else {
                                     result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                                 }
-                                lodash_1._.forIn(ioModules, function (io) { return io.subscribe(result); });
+                                self.disposables = self.disposables.concat(lodash_1._.map(ioModules, function (io) { return io.subscribe(result); }));
                                 return lodash_1._.assign(props, result['view'] || {});
                             }, {});
                         },
@@ -179,6 +180,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                 }
                 Context.prototype.render = function () {
                     return this.props.children;
+                };
+                Context.prototype.componentWillUnmount = function () {
+                    lodash_1._.forEach(this.disposables, function (disposable) { return disposable.dispose(); });
                 };
                 Context.prototype.getChildContext = function () {
                     return this.contextObject;

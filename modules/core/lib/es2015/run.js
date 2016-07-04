@@ -33,7 +33,7 @@ import { _ } from './shims/lodash';
 import { render } from 'react-dom';
 import { Context, ContextReactTypes } from './component/context';
 export function runnable(_a) {
-    var component = _a.component, modules = _a.modules;
+    var component = _a.component, modules = _a.modules, injector = _a.injector;
     var Renderer = (function (_super) {
         __extends(Renderer, _super);
         function Renderer(p, c) {
@@ -56,7 +56,7 @@ export function runnable(_a) {
             _super.apply(this, arguments);
         }
         class_1.prototype.render = function () {
-            return (React.createElement(Context, {modules: modules}, 
+            return (React.createElement(Context, {modules: modules, injector: injector}, 
                 React.createElement(Renderer, __assign({}, this.props))
             ));
         };

@@ -306,6 +306,7 @@ var Injector = (function () {
                     results[k] = v;
                 }
             });
+            return true;
         });
         return results;
     };
@@ -319,6 +320,7 @@ var Injector = (function () {
             if (predicate(v, k)) {
                 results[k] = v;
             }
+            return true;
         });
         return results;
     };

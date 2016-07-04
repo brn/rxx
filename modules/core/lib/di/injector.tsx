@@ -368,6 +368,7 @@ export class Injector {
           results[k] = v;
         }
       });
+      return true;
     });
     return results;
   }
@@ -383,6 +384,7 @@ export class Injector {
       if (predicate(v, k)) {
         results[k] = v;
       }
+      return true;
     });
     return results;
   }

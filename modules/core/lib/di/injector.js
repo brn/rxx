@@ -322,6 +322,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                                 results[k] = v;
                             }
                         });
+                        return true;
                     });
                     return results;
                 };
@@ -335,6 +336,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         if (predicate(v, k)) {
                             results[k] = v;
                         }
+                        return true;
                     });
                     return results;
                 };

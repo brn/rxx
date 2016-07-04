@@ -39,6 +39,9 @@ import {
   HTTP_REQUEST_INTERCEPT
 }                   from '../http-request';
 import {
+  HttpResponse
+}                   from '../http-response';
+import {
   expect
 }                   from 'chai';
 import {
@@ -218,9 +221,11 @@ describe('HttpRequest', () => {
   describe('HttpRequest#get()', () => {
     it('Send get request(200)', done => {
       const injector = initGetResponse(true);
-      const request = injector.get('http');
-      request.response.for('test').subscribe(graceful(v => {
-        expect(v).to.be.deep.equal({success: true});
+      const request: HttpRequest = injector.get('http');
+      request.response.for('test').subscribe(graceful((v: HttpResponse<{success: boolean}, void>) => {
+        expect(v.ok).to.be.eq(true);
+        expect(v.status).to.be.eq(200);
+        expect(v.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
@@ -229,8 +234,10 @@ describe('HttpRequest', () => {
     it('Send get request(200, with parameter)', done => {
       const injector = initGetResponse(true, 'test=1');
       const request = injector.get('http');
-      request.response.for('test').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({success: true});
+      request.response.for('test').subscribe(graceful((v: HttpResponse<{success: boolean}, void>) => {
+        expect(v.ok).to.be.eq(true);
+        expect(v.status).to.be.eq(200);
+        expect(v.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', data: {test: 1}, responseType: ResponseType.JSON}, request, 'test');
       server.respond();
@@ -239,8 +246,10 @@ describe('HttpRequest', () => {
     it('Send get request (400)', done => {
       const injector = initGetErrorResponse(true);
       const request = injector.get('http');
-      request.response.for('test').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({success: false});
+      request.response.for('test').subscribe(graceful((res: HttpResponse<void, {success: boolean}>) => {
+        expect(res.ok).to.be.eq(false);
+        expect(res.status).to.be.eq(400);
+        expect(res.error).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
@@ -249,8 +258,10 @@ describe('HttpRequest', () => {
     it('Apply interceptor (200)', done => {
       const injector = initGetResponse(true);
       const request = injector.get('http');
-      request.response.for('test').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({success: true});
+      request.response.for('test').subscribe(graceful((res: HttpResponse<{success: boolean}, void>) => {
+        expect(res.ok).to.be.eq(true);
+        expect(res.status).to.be.eq(200);
+        expect(res.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
@@ -259,8 +270,10 @@ describe('HttpRequest', () => {
     it('Apply interceptor (400)', done => {
       const injector = initGetErrorResponse(true);
       const request = injector.get('http');
-      request.response.for('test').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({success: false});
+      request.response.for('test').subscribe(graceful((res: HttpResponse<void, {success: boolean}>) => {
+        expect(res.ok).to.be.eq(false);
+        expect(res.status).to.be.eq(400);
+        expect(res.error).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
@@ -280,7 +293,7 @@ describe('HttpRequest', () => {
       let called = false;
       const injector = initGetErrorResponse(false);
       const request = injector.get('http');
-      request.response.for('test').subscribe(() => {}, res => {called = true});
+      request.response.for('test').subscribe(res => {called = true});
       waitRequest({url: '/test/ng', responseType: ResponseType.JSON}, request, 'test');
       server.respond();
       expect(called).to.be.false;
@@ -291,8 +304,10 @@ describe('HttpRequest', () => {
     it('Send post request.(200)', done => {
       const injector = initPostResponse(true);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({success: true});
+      request.response.for('test-post').subscribe(graceful((res: HttpResponse<{success: boolean}, void>) => {
+        expect(res.ok).to.be.eq(true);
+        expect(res.status).to.be.eq(200);
+        expect(res.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
@@ -302,8 +317,10 @@ describe('HttpRequest', () => {
     it('Send post request.(200, form)', done => {
       const injector = initFormResponse(true);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({success: true});
+      request.response.for('test-post').subscribe(graceful((res: HttpResponse<{success: boolean}, void>) => {
+        expect(res.ok).to.be.eq(true);
+        expect(res.status).to.be.eq(200);
+        expect(res.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', data: {success: true}, form: true, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
@@ -312,8 +329,10 @@ describe('HttpRequest', () => {
     it('Send post request.(400)', done => {
       const injector = initPostErrorResponse(true);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({success: false});
+      request.response.for('test-post').subscribe(graceful((res: HttpResponse<void, {success: boolean}>) => {
+        expect(res.ok).to.be.eq(false);
+        expect(res.status).to.be.eq(400);
+        expect(res.error).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
@@ -322,8 +341,10 @@ describe('HttpRequest', () => {
     it('Apply interceptor.(200)', done => {
       const injector = initPostResponse(true);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(graceful(res => {
-        expect(res).to.be.deep.equal({success: true});
+      request.response.for('test-post').subscribe(graceful((res: HttpResponse<{success: boolean}, void>) => {
+        expect(res.ok).to.be.eq(true);
+        expect(res.status).to.be.eq(200);
+        expect(res.response).to.be.deep.equal({success: true});
       }, done));
       waitRequest({url: '/test/ok', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
@@ -332,8 +353,10 @@ describe('HttpRequest', () => {
     it('Apply interceptor.(400)', done => {
       const injector = initPostErrorResponse(true);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(() => {}, graceful(res => {
-        expect(res).to.be.deep.equal({success: false});
+      request.response.for('test-post').subscribe(graceful((res: HttpResponse<void, {success: boolean}>) => {
+        expect(res.ok).to.be.eq(false);
+        expect(res.status).to.be.eq(400);
+        expect(res.error).to.be.deep.equal({success: false});
       }, done));
       waitRequest({url: '/test/ng', data: {success: false}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
@@ -353,7 +376,7 @@ describe('HttpRequest', () => {
       let called = false;
       const injector = initPostErrorResponse(false);
       const request = injector.get('http');
-      request.response.for('test-post').subscribe(() => {}, res => {called = true});
+      request.response.for('test-post').subscribe(res => {called = true});
       waitRequest({url: '/test/ng', data: {success: true}, method: HttpMethod.POST, responseType: ResponseType.JSON}, request, 'test-post');
       server.respond();
       expect(called).to.be.false;

@@ -98,8 +98,9 @@ var Context = (function (_super) {
     __extends(Context, _super);
     function Context(props, c) {
         _super.call(this, props, c);
+        this.disposables = [];
         var self = this;
-        var injector = new Injector(props.modules);
+        var injector = props.injector ? props.injector : new Injector(props.modules);
         var ioModules = _.mapValues(injector.find(function (binding) {
             if (!binding.instance && binding.val) {
                 return binding.val[IO_MARK];
@@ -129,7 +130,7 @@ var Context = (function (_super) {
                     else {
                         result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                     }
-                    _.forIn(ioModules, function (io) { return io.subscribe(result); });
+                    self.disposables = self.disposables.concat(_.map(ioModules, function (io) { return io.subscribe(result); }));
                     return _.assign(props, result['view'] || {});
                 }, {});
             },
@@ -143,6 +144,9 @@ var Context = (function (_super) {
     }
     Context.prototype.render = function () {
         return this.props.children;
+    };
+    Context.prototype.componentWillUnmount = function () {
+        _.forEach(this.disposables, function (disposable) { return disposable.dispose(); });
     };
     Context.prototype.getChildContext = function () {
         return this.contextObject;

@@ -38,6 +38,9 @@ import {
   ConnectableObservable
 } from 'rxjs/Rx';
 import {
+  HttpResponse
+} from './http-response';
+import {
   querystring as qs
 } from './shims/query-string';
 import {
@@ -106,12 +109,24 @@ export class HttpRequest implements IO {
             }
           })()
             .then(res => {
-              this.getResponse(config.responseType, res).then(res => subjects.forEach(subject => subject.next(res)));
-            }).catch(err => {
-              if (err && typeof err.json === 'function') {
-                this.getResponse(config.responseType, err).then(err => subjects.forEach(subject => subject.error(err)));
+              const handler = result => {
+                const response = new HttpResponse(res.ok, res.status, res.ok? result: null, res.ok? null: result);
+                subjects.forEach(subject => subject.next(response));
+              };
+              if (res.ok) {
+                this.getResponse(config.responseType, res).then(handler);
               } else {
-                subjects.forEach(subject => subject.error(err))
+                this.getResponse(this.getResponseTypeFromHeader(res), res).then(handler);
+              }
+            }).catch(err => {
+              const handler = result => {
+                const response = new HttpResponse(false, err && err.status? err.status: 500, null, result);
+                subjects.forEach(subject => subject.next(response));
+              };
+              if (err && typeof err.json === 'function') {
+                this.getResponse(config.responseType, err).then(handler);
+              } else {
+                handler(err);
               }
             });
         }));
@@ -233,5 +248,20 @@ export class HttpRequest implements IO {
     default:
       return res.text();
     }
+  }
+
+
+  private getResponseTypeFromHeader(res: Response) {
+    const mime = res.headers.get('content-type');
+    if (mime.indexOf('text/plain') > -1) {
+      return ResponseType.TEXT;
+    }
+    if (mime.indexOf('text/json') > -1 || mime.indexOf('application/json') > -1) {
+      return ResponseType.JSON;
+    }
+    if (/^(?:image|audio|video|(?:application\/zip)|(?:application\/octet-stream))/.test(mime)) {
+      return ResponseType.BLOB;
+    }
+    return ResponseType.TEXT;
   }
 }

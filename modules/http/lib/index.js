@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./http-request'], function(exports_1, context_1) {
+System.register(['./http-request', './http-response'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     function exportStar_1(m) {
@@ -29,6 +29,9 @@ System.register(['./http-request'], function(exports_1, context_1) {
         setters:[
             function (http_request_1_1) {
                 exportStar_1(http_request_1_1);
+            },
+            function (http_response_1_1) {
+                exportStar_1(http_response_1_1);
             }],
         execute: function() {
         }

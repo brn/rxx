@@ -16,9 +16,11 @@
  */
 import * as React from 'react';
 import { Module } from './di/module';
+import { Injector } from './di/injector';
 export interface RunnerArgs {
     component: new (props: any, context: any) => React.Component<any, any>;
-    modules: Module[];
+    injector?: Injector;
+    modules?: Module[];
 }
-export declare function runnable({component, modules}: RunnerArgs): new (props: any, context: any) => React.Component<any, {}>;
+export declare function runnable({component, modules, injector}: RunnerArgs): new (props: any, context: any) => React.Component<any, {}>;
 export declare function run(opt: RunnerArgs, el: Node): void;

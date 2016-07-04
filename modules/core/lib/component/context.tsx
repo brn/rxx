@@ -34,7 +34,8 @@ import {
   StorageIO,
   getIOModules,
   BasicIOTypes,
-  IO_MARK
+  IO_MARK,
+  Disposable
 }                 from '../io/io';
 import {
   SERVICE_MARK,
@@ -136,7 +137,8 @@ const connect = (v: any) => {
  * Required props for Context Component.
  */
 export interface ContextProps {
-  modules: Module[]
+  injector?: Injector;
+  modules?: Module[]
 }
 
 
@@ -150,10 +152,13 @@ export class Context extends React.Component<ContextProps, {}> {
   private contextObject: ContextType;
 
 
+  private disposables: Disposable[] = [];
+
+
   public constructor(props, c) {
     super(props, c);
     const self = this;
-    const injector = new Injector(props.modules);
+    const injector = props.injector? props.injector: new Injector(props.modules);
 
     const ioModules: IOTypes = _.mapValues(injector.find(binding => {
       if (!binding.instance && binding.val) {
@@ -181,7 +186,7 @@ export class Context extends React.Component<ContextProps, {}> {
             result = service.initialize(ioResposens, injector, ...args);
           }
 
-          _.forIn(ioModules, io => io.subscribe(result));
+          self.disposables = self.disposables.concat(_.map(ioModules, io => io.subscribe(result)));
           
           return _.assign(props, result['view'] || {});
         }, {});
@@ -198,6 +203,11 @@ export class Context extends React.Component<ContextProps, {}> {
 
   public render(): any {
     return this.props.children;
+  }
+
+
+  public componentWillUnmount() {
+    _.forEach(this.disposables, disposable => disposable.dispose());
   }
 
 

@@ -26,6 +26,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { io, IOResponse, SubjectStore, HttpMethod, ResponseType, Symbol, intercept, Disposable } from '@react-mvi/core';
 import { ConnectableObservable } from 'rxjs/Rx';
+import { HttpResponse } from './http-response';
 import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
 import { fetch, Response } from './shims/fetch';
@@ -69,13 +70,26 @@ var HttpRequest = (function () {
                         }
                     })()
                         .then(function (res) {
-                        _this.getResponse(config.responseType, res).then(function (res) { return subjects.forEach(function (subject) { return subject.next(res); }); });
-                    }).catch(function (err) {
-                        if (err && typeof err.json === 'function') {
-                            _this.getResponse(config.responseType, err).then(function (err) { return subjects.forEach(function (subject) { return subject.error(err); }); });
+                        var handler = function (result) {
+                            var response = new HttpResponse(res.ok, res.status, res.ok ? result : null, res.ok ? null : result);
+                            subjects.forEach(function (subject) { return subject.next(response); });
+                        };
+                        if (res.ok) {
+                            _this.getResponse(config.responseType, res).then(handler);
                         }
                         else {
-                            subjects.forEach(function (subject) { return subject.error(err); });
+                            _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+                        }
+                    }).catch(function (err) {
+                        var handler = function (result) {
+                            var response = new HttpResponse(false, err && err.status ? err.status : 500, null, result);
+                            subjects.forEach(function (subject) { return subject.next(response); });
+                        };
+                        if (err && typeof err.json === 'function') {
+                            _this.getResponse(config.responseType, err).then(handler);
+                        }
+                        else {
+                            handler(err);
                         }
                     });
                 }));
@@ -189,6 +203,19 @@ var HttpRequest = (function () {
             default:
                 return res.text();
         }
+    };
+    HttpRequest.prototype.getResponseTypeFromHeader = function (res) {
+        var mime = res.headers.get('content-type');
+        if (mime.indexOf('text/plain') > -1) {
+            return ResponseType.TEXT;
+        }
+        if (mime.indexOf('text/json') > -1 || mime.indexOf('application/json') > -1) {
+            return ResponseType.JSON;
+        }
+        if (/^(?:image|audio|video|(?:application\/zip)|(?:application\/octet-stream))/.test(mime)) {
+            return ResponseType.BLOB;
+        }
+        return ResponseType.TEXT;
     };
     __decorate([
         intercept(HTTP_REQUEST_INTERCEPT), 

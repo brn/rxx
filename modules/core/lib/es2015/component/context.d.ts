@@ -45,7 +45,8 @@ export declare const ContextReactTypes: {
  * Required props for Context Component.
  */
 export interface ContextProps {
-    modules: Module[];
+    injector?: Injector;
+    modules?: Module[];
 }
 /**
  * React context provider.
@@ -55,8 +56,10 @@ export declare class Context extends React.Component<ContextProps, {}> {
      * Context object.
      */
     private contextObject;
+    private disposables;
     constructor(props: any, c: any);
     render(): any;
+    componentWillUnmount(): void;
     getChildContext(): ContextType;
     static readonly childContextTypes: {
         createProps: React.Requireable<any>;

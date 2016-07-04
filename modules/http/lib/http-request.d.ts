@@ -87,4 +87,5 @@ export declare class HttpRequest implements IO {
      * @returns
      */
     private getResponse(responseType, res);
+    private getResponseTypeFromHeader(res);
 }
