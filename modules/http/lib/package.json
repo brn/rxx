@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/http",
-  "version": "0.3.3-beta.36",
+  "version": "0.3.3-beta.38",
   "description": "Http IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -29,10 +29,10 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "jspm": {
     "dependencies": {
+      "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
       "query-string": "npm:query-string@^4.1.0"
     },
     "devDependencies": {
-      "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "chai": "npm:chai@^3.5.0",
       "core-js": "npm:core-js@^1.1.4",

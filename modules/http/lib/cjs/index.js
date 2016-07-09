@@ -21,3 +21,4 @@ function __export(m) {
 }
 __export(require('./http-request'));
 __export(require('./http-response'));
+__export(require('./http-request-mock'));

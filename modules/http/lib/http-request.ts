@@ -48,7 +48,8 @@ import {
 } from './shims/promise';
 import {
   fetch,
-  Response
+  Response,
+  Fetch
 } from './shims/fetch';
 
 
@@ -159,6 +160,11 @@ export class HttpRequest implements IO {
   }
 
 
+  protected get fetch(): Fetch {
+    return fetch;
+  }
+
+
   /**
    * Send GET request.
    * @data url Target url.
@@ -167,7 +173,7 @@ export class HttpRequest implements IO {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private get({url, headers = {}, data = null, mode}: HttpConfig): Promise<Response> {
-    return fetch(data? `${url}?${qs.stringify(data)}`: url, {
+    return this.fetch(data? `${url}?${qs.stringify(data)}`: url, {
       method: 'GET',
       headers,
       mode: mode || 'same-origin'
@@ -183,7 +189,7 @@ export class HttpRequest implements IO {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private post({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
-    return fetch(url, {
+    return this.fetch(url, {
       headers,
       method: 'POST',
       mode: mode || 'same-origin',
@@ -200,7 +206,7 @@ export class HttpRequest implements IO {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private put({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
-    return fetch(url, {
+    return this.fetch(url, {
       headers: headers,
       method: 'PUT',
       mode: mode || 'same-origin',
@@ -217,7 +223,7 @@ export class HttpRequest implements IO {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private delete<T>({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
-    return fetch(url, {
+    return this.fetch(url, {
       headers: headers,
       method: 'DELETE',
       mode: mode || 'same-origin',

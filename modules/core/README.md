@@ -7,6 +7,9 @@ inspired by
 [react-combinators](https://github.com/milankinen/react-combinators)  
 [react-reactive-toolkit](https://github.com/milankinen/react-reactive-toolkit)
 
+Guide
+[Basic Guide](./DOCS/basic_guide.md)
+
 ## Requirements
 
 - jspm > 0.17.0-beta.16

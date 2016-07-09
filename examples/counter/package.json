@@ -1,46 +1,29 @@
 {
-  "name": "@react-mvi/http",
-  "version": "0.3.3-beta.38",
-  "description": "Http IO module for React MVI.",
+  "name": "counter",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp --cwd",
-    "patch-and-publish": "gulp publish --cwd",
-    "test": "gulp test --cwd",
-    "pre-publish": "gulp pre-publish --cwd"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brn/react-mvi.git"
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "jspm": "^0.17.0-beta.22"
   },
-  "keywords": [
-    "react-mvi",
-    "react.js",
-    "react",
-    "reactive",
-    "rxjs",
-    "rfp"
-  ],
-  "author": "Taketoshi Aono",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/brn/react-mvi/issues"
-  },
-  "homepage": "https://github.com/brn/react-mvi#readme",
   "jspm": {
+    "name": "counter",
+    "main": "counter.js",
     "dependencies": {
-      "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
-      "query-string": "npm:query-string@^4.1.0"
-    },
-    "devDependencies": {
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "chai": "npm:chai@^3.5.0",
-      "core-js": "npm:core-js@^1.1.4",
-      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.11",
+      "@react-mvi/event": "npm:@react-mvi/event@^0.3.3-beta.20",
+      "@react-mvi/http": "npm:@react-mvi/http@^0.3.3-beta.38",
       "ts": "github:frankwallis/plugin-typescript@^4.0.16"
     },
-    "jspmNodeConversion": false,
-    "main": "index.js",
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
+    },
     "peerDependencies": {
       "@react-mvi/core": "npm:@react-mvi/core@^0.3.3-beta.42",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
@@ -59,9 +42,9 @@
       "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
-      "react": "npm:react@^15.1.0",
-      "react-dom": "npm:react-dom@^15.1.0",
-      "rxjs": "npm:rxjs@^5.0.0-beta.8",
+      "react": "npm:react@^15.2.1",
+      "react-dom": "npm:react-dom@^15.2.1",
+      "rxjs": "npm:rxjs@^5.0.0-beta.10",
       "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
       "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
       "url": "github:jspm/nodelibs-url@^0.2.0-alpha",
@@ -71,13 +54,6 @@
       "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
     },
     "overrides": {
-      "npm:babel-runtime@5.8.38": {
-        "main": false,
-        "dependencies": {},
-        "optionalDependencies": {
-          "core-js": "^1.2.0"
-        }
-      },
       "npm:browserify-zlib@0.1.4": {
         "dependencies": {
           "readable-stream": "^2.0.2",
@@ -127,14 +103,8 @@
       }
     }
   },
-  "peerDependencies": {
-    "@react-mvi/core": "^0.3.3-beta.3"
-  },
   "devDependencies": {
-    "@react-mvi/testing": "0.0.5",
-    "typescript": "^1.9.0-dev.20160526-1.0"
-  },
-  "dependencies": {
-    "@react-mvi/core": "^0.3.3-beta.42"
+    "rxjs": "^5.0.0-beta.10",
+    "serve-static": "^1.11.1"
   }
 }

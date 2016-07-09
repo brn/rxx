@@ -16,6 +16,7 @@
  * @author Taketoshi Aono
  */
 import { IO, IOResponse, HttpConfig, HttpMethod, ResponseType, Disposable } from '@react-mvi/core';
+import { Fetch } from './shims/fetch';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
 export declare const HTTP_INTERCEPT: any;
 export declare const HTTP_REQUEST_INTERCEPT: any;
@@ -52,6 +53,7 @@ export declare class HttpRequest implements IO {
      * Return response observable.
      */
     readonly response: IOResponse;
+    protected readonly fetch: Fetch;
     /**
      * Send GET request.
      * @data url Target url.

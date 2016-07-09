@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;src/http-request&quot; | react-mvi</title>
+	<title>&quot;src/http-request-mock&quot; | react-mvi</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -57,10 +57,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_src_http_request_.html">&quot;src/http-request&quot;</a>
+					<a href="_src_http_request_mock_.html">&quot;src/http-request-mock&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;src/http-request&quot;</h1>
+			<h1>External module &quot;src/http-request-mock&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -74,40 +74,127 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_src_http_request_.httprequest.html" class="tsd-kind-icon">Http<wbr>Request</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_src_http_request_mock_.httprequestmock.html" class="tsd-kind-icon">Http<wbr>Request<wbr>Mock</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
-							<h3>Variables</h3>
+							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_src_http_request_.html#http_intercept" class="tsd-kind-icon">HTTP_<wbr>INTERCEPT</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_src_http_request_.html#http_request_intercept" class="tsd-kind-icon">HTTP_<wbr>REQUEST_<wbr>INTERCEPT</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_src_http_request_mock_.html#httpmockargs" class="tsd-kind-icon">Http<wbr>Mock<wbr>Args</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="http_intercept" class="tsd-anchor"></a>
-					<h3>HTTP_<wbr>INTERCEPT</h3>
-					<div class="tsd-signature tsd-kind-icon">HTTP_<wbr>INTERCEPT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+					<a name="httpmockargs" class="tsd-anchor"></a>
+					<h3>Http<wbr>Mock<wbr>Args</h3>
+					<div class="tsd-signature tsd-kind-icon">Http<wbr>Mock<wbr>Args<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/http/src/http-request.ts#L59">src/http-request.ts:59</a></li>
+							<li>Defined in src/http-request-mock.ts:30</li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
-					<a name="http_request_intercept" class="tsd-anchor"></a>
-					<h3>HTTP_<wbr>REQUEST_<wbr>INTERCEPT</h3>
-					<div class="tsd-signature tsd-kind-icon">HTTP_<wbr>REQUEST_<wbr>INTERCEPT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/http/src/http-request.ts#L60">src/http-request.ts:60</a></li>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Config for HttpRequestMock.
+							If when undefined property was passed, return sended parameter as is.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> get<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Specify get method return value.</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-siganture">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable tsd-is-not-exported">
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<h4 class="tsd-parameters-title">Parameters</h4>
+												<ul class="tsd-parameters">
+													<li>
+														<h5>uri: <span class="tsd-signature-type">string</span></h5>
+													</li>
+													<li>
+														<h5>req: <a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a></h5>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> post<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Specify post method return value.</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-siganture">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable tsd-is-not-exported">
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<h4 class="tsd-parameters-title">Parameters</h4>
+												<ul class="tsd-parameters">
+													<li>
+														<h5>uri: <span class="tsd-signature-type">string</span></h5>
+													</li>
+													<li>
+														<h5>req: <a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a></h5>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> put<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Specify put method return value.</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-siganture">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable tsd-is-not-exported">
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>uri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<h4 class="tsd-parameters-title">Parameters</h4>
+												<ul class="tsd-parameters">
+													<li>
+														<h5>uri: <span class="tsd-signature-type">string</span></h5>
+													</li>
+													<li>
+														<h5>req: <a href="../interfaces/_src_shims_fetch_.requestinit.html" class="tsd-signature-type">RequestInit</a></h5>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_shims_fetch_.response.html" class="tsd-signature-type">Response</a></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
 						</ul>
-					</aside>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -118,20 +205,17 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_src_http_request_.html">"src/http-<wbr>request"</a>
+						<a href="_src_http_request_mock_.html">"src/http-<wbr>request-<wbr>mock"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_src_http_request_.httprequest.html" class="tsd-kind-icon">Http<wbr>Request</a>
+						<a href="../classes/_src_http_request_mock_.httprequestmock.html" class="tsd-kind-icon">Http<wbr>Request<wbr>Mock</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_src_http_request_.html#http_intercept" class="tsd-kind-icon">HTTP_<wbr>INTERCEPT</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="_src_http_request_.html#http_request_intercept" class="tsd-kind-icon">HTTP_<wbr>REQUEST_<wbr>INTERCEPT</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="_src_http_request_mock_.html#httpmockargs" class="tsd-kind-icon">Http<wbr>Mock<wbr>Args</a>
 					</li>
 				</ul>
 			</nav>

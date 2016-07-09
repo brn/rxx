@@ -123,6 +123,13 @@ var HttpRequest = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(HttpRequest.prototype, "fetch", {
+        get: function () {
+            return fetch;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Send GET request.
      * @data url Target url.
@@ -131,7 +138,7 @@ var HttpRequest = (function () {
      */
     HttpRequest.prototype.get = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? null : _c, mode = _a.mode;
-        return fetch(data ? url + "?" + qs.stringify(data) : url, {
+        return this.fetch(data ? url + "?" + qs.stringify(data) : url, {
             method: 'GET',
             headers: headers,
             mode: mode || 'same-origin'
@@ -145,7 +152,7 @@ var HttpRequest = (function () {
      */
     HttpRequest.prototype.post = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
-        return fetch(url, {
+        return this.fetch(url, {
             headers: headers,
             method: 'POST',
             mode: mode || 'same-origin',
@@ -160,7 +167,7 @@ var HttpRequest = (function () {
      */
     HttpRequest.prototype.put = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
-        return fetch(url, {
+        return this.fetch(url, {
             headers: headers,
             method: 'PUT',
             mode: mode || 'same-origin',
@@ -175,7 +182,7 @@ var HttpRequest = (function () {
      */
     HttpRequest.prototype.delete = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
-        return fetch(url, {
+        return this.fetch(url, {
             headers: headers,
             method: 'DELETE',
             mode: mode || 'same-origin',
