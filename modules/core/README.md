@@ -8,7 +8,7 @@ inspired by
 [react-reactive-toolkit](https://github.com/milankinen/react-reactive-toolkit)
 
 Guide
-[Basic Guide](./DOCS/basic_guide.md)
+[Basic Guide](./docs/basic_guide.md)
 
 ## Requirements
 
