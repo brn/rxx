@@ -63,12 +63,10 @@ tsconfig.json
     "baseDir": ".",
     "baseURL": ".",
     "paths": {
-      "@react-mvi/core": [
-        "jspm_packages/npm/@react-mvi/core*"
-      ],
-      "rxjs": [
-        "jspm_packages/npm/rxjs/*"
-      ]
+      "@react-mvi/core": ["jspm_packages/npm/@react-mvi/core@0.3.3-beta.45/index.tsx"],
+      "@react-mvi/http": ["jspm_packages/npm/@react-mvi/http@0.3.3-beta.41/index.ts"],
+      "@react-mvi/event": ["jspm_packages/npm/@react-mvi/event@0.3.3-beta.23/index.ts"],
+      "rxjs/*": ["jspm_packages/npm/rxjs@5.0.0-beta.10/*"]
     }
   }
 }
