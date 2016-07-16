@@ -23,6 +23,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var subscriber_1 = require('./subscriber');
+var lodash_1 = require('../shims/lodash');
 /**
  * Convert string html tag to Subscriber.
  */
@@ -33,7 +34,7 @@ var toSubscribable = function (name) {
             _super.apply(this, arguments);
         }
         class_1.prototype.render = function () {
-            return (React.createElement(subscriber_1.Subscriber, null, React.createElement(name, this.props)));
+            return (React.createElement(subscriber_1.Subscriber, null, React.createElement(name, lodash_1._.assign(lodash_1._.omit(this.props, 'ref'), { ref: 'element' }))));
         };
         class_1.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1);
         return class_1;
@@ -42,7 +43,7 @@ var toSubscribable = function (name) {
     return ret;
 };
 exports.Tags = {};
-"a abbr address area article aside audio b base bdi bdo big blockquote body br\nbutton canvas caption cite code col colgroup data datalist dd del details dfn\ndialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5\nh6 head header hgroup hr html i iframe img input ins kbd keygen label legend li\nlink main map mark menu menuitem meta meter nav noscript object ol optgroup\noption output p param picture pre progress q rp rt ruby s samp script section\nselect small source span strong style sub summary sup table tbody td textarea\ntfoot th thead time title tr track u ul var video wbr".split(' ').forEach(function (tag) {
+"a abbr address area article aside audio b base bdi bdo big blockquote body br\nbutton canvas caption cite code col colgroup data datalist dd del details dfn\ndialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5\nh6 head header hgroup hr html i iframe img input ins kbd keygen label legend li\nlink main map mark menu menuitem meta meter nav noscript object ol optgroup\noption output p param picture pre progress q rp rt ruby s samp script section\nselect small source span strong style sub summary sup table tbody td textarea\ntfoot th thead time title tr track u ul var video wbr".replace(/\n/g, ' ').split(' ').forEach(function (tag) {
     var exportName = "" + tag.charAt(0).toUpperCase() + tag.slice(1);
     exports.Tags[exportName] = toSubscribable(tag);
 });

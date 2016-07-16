@@ -22,6 +22,9 @@ import {
   Subscriber,
   SUBSCRIBER_MARK
 } from './subscriber';
+import {
+  _
+} from '../shims/lodash';
 
 
 /**
@@ -32,7 +35,7 @@ const toSubscribable = (name: string) => {
     public render() {
       return (
         <Subscriber>
-          {React.createElement(name, this.props)}
+          {React.createElement(name, _.assign(_.omit(this.props, 'ref'), {ref: 'element'}))}
         </Subscriber>
       )
     }
@@ -180,7 +183,7 @@ h6 head header hgroup hr html i iframe img input ins kbd keygen label legend li
 link main map mark menu menuitem meta meter nav noscript object ol optgroup
 option output p param picture pre progress q rp rt ruby s samp script section
 select small source span strong style sub summary sup table tbody td textarea
-tfoot th thead time title tr track u ul var video wbr`.split(' ').forEach(tag => {
+tfoot th thead time title tr track u ul var video wbr`.replace(/\n/g, ' ').split(' ').forEach(tag => {
   const exportName = `${tag.charAt(0).toUpperCase()}${tag.slice(1)}`;
   Tags[exportName] = toSubscribable(tag);
 });

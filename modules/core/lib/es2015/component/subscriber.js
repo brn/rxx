@@ -23,6 +23,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 import * as React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { getProcess } from '../env';
+import { isDefined } from '../utils';
 import { Symbol } from '../shims/symbol';
 import { _ } from '../shims/lodash';
 var process = getProcess();
@@ -199,7 +200,7 @@ var Subscriber = (function (_super) {
      */
     Subscriber.prototype.areThereObservableInChildren = function (el) {
         var _this = this;
-        var target = el.props ? (el.props.children ? (!_.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [];
+        var target = _.filter(el.props ? (el.props.children ? (!_.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return isDefined(v); });
         return _.some(target, function (child, i) {
             if (child instanceof Observable) {
                 return true;
@@ -216,7 +217,7 @@ var Subscriber = (function (_super) {
     Subscriber.prototype.cloneChildren = function (el, parent, index) {
         var _this = this;
         var newElement = this.createMutableElement(el);
-        var target = newElement.props.children ? (!_.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [];
+        var target = _.filter(newElement.props.children ? (!_.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [], function (v) { return isDefined(v); });
         var children = _.map(target, function (child, i) {
             if (child instanceof Observable) {
                 _this.bindings.push(new ObservableBinding(function (value) {

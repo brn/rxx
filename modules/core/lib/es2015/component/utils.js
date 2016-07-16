@@ -20,13 +20,15 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { ContextReactTypes } from './context';
 import * as React from 'react';
+import { ContextReactTypes } from './context';
+import { _ } from './../shims/lodash';
 /**
  * Create stateless CompositeComponent with context that type is `ContextReactType`.
  * @param render Render function or object that implements each lifecycle methods.
  */
-export function component(component, componentName) {
+export function component(component, componentName, additionalContext) {
+    if (additionalContext === void 0) { additionalContext = {}; }
     /**
      * Check whether render is React.Component or not.
      */
@@ -47,7 +49,7 @@ export function component(component, componentName) {
             function class_1() {
                 _super.apply(this, arguments);
             }
-            class_1.contextTypes = ContextReactTypes;
+            class_1.contextTypes = _.assign(ContextReactTypes, additionalContext);
             return class_1;
         }(Renderer));
         if (Renderer['name']) {
@@ -93,7 +95,7 @@ export function component(component, componentName) {
                 }
                 return true;
             };
-            class_2.contextTypes = ContextReactTypes;
+            class_2.contextTypes = _.assign(ContextReactTypes, additionalContext);
             return class_2;
         }(React.Component));
     }

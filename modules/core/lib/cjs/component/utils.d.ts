@@ -14,8 +14,8 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { ContextType } from './context';
 import * as React from 'react';
+import { ContextType } from './context';
 /**
  * Render function type.
  */
@@ -35,4 +35,4 @@ export declare type StatelessComponentConfig<Props> = {
  * Create stateless CompositeComponent with context that type is `ContextReactType`.
  * @param render Render function or object that implements each lifecycle methods.
  */
-export declare function component<Props>(component: (StatelessComponentConfig<Props> | Render<Props> | React.ComponentClass<Props>), componentName?: string): new (props: Props, context: ContextType) => React.Component<Props, {}>;
+export declare function component<Props, C>(component: (StatelessComponentConfig<Props> | Render<Props> | React.ComponentClass<Props>), componentName?: string, additionalContext?: C): new (props: Props, context: ContextType & C) => React.Component<Props, {}>;

@@ -94,7 +94,7 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.42",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.45",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -364,7 +364,7 @@ SystemJS.config({
     },
     "npm:parse-asn1@5.0.0": {
       "map": {
-        "asn1.js": "npm:asn1.js@4.6.2",
+        "asn1.js": "npm:asn1.js@4.8.0",
         "browserify-aes": "npm:browserify-aes@1.0.6",
         "create-hash": "npm:create-hash@1.1.2",
         "evp_bytestokey": "npm:evp_bytestokey@1.0.0",
@@ -461,13 +461,6 @@ SystemJS.config({
     "npm:util-deprecate@1.0.2": {
       "map": {}
     },
-    "npm:asn1.js@4.6.2": {
-      "map": {
-        "bn.js": "npm:bn.js@4.11.4",
-        "inherits": "npm:inherits@2.0.1",
-        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
-      }
-    },
     "github:frankwallis/plugin-typescript@4.0.16": {
       "map": {
         "typescript": "npm:typescript@1.8.10"
@@ -503,7 +496,14 @@ SystemJS.config({
         "ieee754": "npm:ieee754@1.1.6"
       }
     },
-    "npm:@react-mvi/core@0.3.3-beta.42": {
+    "npm:asn1.js@4.8.0": {
+      "map": {
+        "bn.js": "npm:bn.js@4.11.4",
+        "inherits": "npm:inherits@2.0.1",
+        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
+      }
+    },
+    "npm:@react-mvi/core@0.3.3-beta.45": {
       "map": {
         "core-js": "npm:core-js@2.4.0",
         "ts": "github:frankwallis/plugin-typescript@4.0.16"

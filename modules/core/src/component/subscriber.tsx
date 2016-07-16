@@ -29,6 +29,9 @@ import {
   getProcess
 } from '../env';
 import {
+  isDefined
+} from '../utils';
+import {
   Symbol
 } from '../shims/symbol';
 import {
@@ -244,7 +247,7 @@ export class Subscriber extends React.Component<any, any> {
    * @param el Root React.ReactElement.
    */
   private areThereObservableInChildren(el: React.ReactElement<any>) {
-    const target = el.props? (el.props.children? (!_.isArray(el.props.children)? [el.props.children]: el.props.children): []): [];
+    const target = _.filter(el.props? (el.props.children? (!_.isArray(el.props.children)? [el.props.children]: el.props.children): []): [], v => isDefined(v));
     return _.some(target, (child: React.ReactElement<any>|Observable<any>, i) => {
       if (child instanceof Observable) {
         return true;
@@ -262,7 +265,7 @@ export class Subscriber extends React.Component<any, any> {
    */
   private cloneChildren(el: React.ReactElement<any>, parent: React.ReactElement<any>, index: number) {
     const newElement = this.createMutableElement(el);
-    const target = newElement.props.children? (!_.isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [];
+    const target = _.filter(newElement.props.children? (!_.isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [], v => isDefined(v));
     const children = _.map(target, (child: React.ReactElement<any>|Observable<any>, i) => {
       if (child instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {

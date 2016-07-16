@@ -10522,11 +10522,18 @@
 									"kind": 131072,
 									"kindString": "Type parameter",
 									"flags": {}
+								},
+								{
+									"id": 1514,
+									"name": "C",
+									"kind": 131072,
+									"kindString": "Type parameter",
+									"flags": {}
 								}
 							],
 							"parameters": [
 								{
-									"id": 1514,
+									"id": 1515,
 									"name": "component",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -10537,14 +10544,14 @@
 											{
 												"type": "reflection",
 												"declaration": {
-													"id": 1515,
+													"id": 1516,
 													"name": "__type",
 													"kind": 65536,
 													"kindString": "Type literal",
 													"flags": {},
 													"children": [
 														{
-															"id": 1516,
+															"id": 1517,
 															"name": "render",
 															"kind": 32,
 															"kindString": "Variable",
@@ -10558,7 +10565,7 @@
 															}
 														},
 														{
-															"id": 1519,
+															"id": 1520,
 															"name": "componentDidMount",
 															"kind": 64,
 															"kindString": "Function",
@@ -10568,7 +10575,7 @@
 															},
 															"signatures": [
 																{
-																	"id": 1520,
+																	"id": 1521,
 																	"name": "componentDidMount",
 																	"kind": 4096,
 																	"kindString": "Call signature",
@@ -10581,7 +10588,7 @@
 															]
 														},
 														{
-															"id": 1523,
+															"id": 1524,
 															"name": "componentDidUpdate",
 															"kind": 64,
 															"kindString": "Function",
@@ -10591,7 +10598,7 @@
 															},
 															"signatures": [
 																{
-																	"id": 1524,
+																	"id": 1525,
 																	"name": "componentDidUpdate",
 																	"kind": 4096,
 																	"kindString": "Call signature",
@@ -10604,7 +10611,7 @@
 															]
 														},
 														{
-															"id": 1517,
+															"id": 1518,
 															"name": "componentWillMount",
 															"kind": 64,
 															"kindString": "Function",
@@ -10614,7 +10621,7 @@
 															},
 															"signatures": [
 																{
-																	"id": 1518,
+																	"id": 1519,
 																	"name": "componentWillMount",
 																	"kind": 4096,
 																	"kindString": "Call signature",
@@ -10627,7 +10634,7 @@
 															]
 														},
 														{
-															"id": 1521,
+															"id": 1522,
 															"name": "componentWillUnmount",
 															"kind": 64,
 															"kindString": "Function",
@@ -10637,7 +10644,7 @@
 															},
 															"signatures": [
 																{
-																	"id": 1522,
+																	"id": 1523,
 																	"name": "componentWillUnmount",
 																	"kind": 4096,
 																	"kindString": "Call signature",
@@ -10650,7 +10657,7 @@
 															]
 														},
 														{
-															"id": 1525,
+															"id": 1526,
 															"name": "shouldComponentUpdate",
 															"kind": 64,
 															"kindString": "Function",
@@ -10660,14 +10667,14 @@
 															},
 															"signatures": [
 																{
-																	"id": 1526,
+																	"id": 1527,
 																	"name": "shouldComponentUpdate",
 																	"kind": 4096,
 																	"kindString": "Call signature",
 																	"flags": {},
 																	"parameters": [
 																		{
-																			"id": 1527,
+																			"id": 1528,
 																			"name": "props",
 																			"kind": 32768,
 																			"kindString": "Parameter",
@@ -10691,18 +10698,18 @@
 															"title": "Variables",
 															"kind": 32,
 															"children": [
-																1516
+																1517
 															]
 														},
 														{
 															"title": "Functions",
 															"kind": 64,
 															"children": [
-																1519,
-																1523,
-																1517,
-																1521,
-																1525
+																1520,
+																1524,
+																1518,
+																1522,
+																1526
 															]
 														}
 													]
@@ -10711,21 +10718,21 @@
 											{
 												"type": "reflection",
 												"declaration": {
-													"id": 1528,
+													"id": 1529,
 													"name": "__type",
 													"kind": 65536,
 													"kindString": "Type literal",
 													"flags": {},
 													"signatures": [
 														{
-															"id": 1529,
+															"id": 1530,
 															"name": "__call",
 															"kind": 4096,
 															"kindString": "Call signature",
 															"flags": {},
 															"parameters": [
 																{
-																	"id": 1530,
+																	"id": 1531,
 																	"name": "props",
 																	"kind": 32768,
 																	"kindString": "Parameter",
@@ -10736,7 +10743,7 @@
 																	}
 																},
 																{
-																	"id": 1531,
+																	"id": 1532,
 																	"name": "context",
 																	"kind": 32768,
 																	"kindString": "Parameter",
@@ -10771,7 +10778,7 @@
 									}
 								},
 								{
-									"id": 1532,
+									"id": 1533,
 									"name": "componentName",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -10782,12 +10789,24 @@
 										"type": "instrinct",
 										"name": "string"
 									}
+								},
+								{
+									"id": 1534,
+									"name": "additionalContext",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "typeParameter",
+										"name": "C"
+									},
+									"defaultValue": " ({} as any)"
 								}
 							],
 							"type": {
 								"type": "reflection",
 								"declaration": {
-									"id": 1533,
+									"id": 1535,
 									"name": "__type",
 									"kind": 65536,
 									"kindString": "Type literal",
@@ -10817,7 +10836,7 @@
 			]
 		},
 		{
-			"id": 1553,
+			"id": 1555,
 			"name": "\"node_modules/@react-mvi/core/di/abstract-module\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -10828,7 +10847,7 @@
 			"originalName": "/Users/a12360/GitHub/react-mvi/modules/event/node_modules/@react-mvi/core/di/abstract-module.tsx",
 			"children": [
 				{
-					"id": 1554,
+					"id": 1556,
 					"name": "AbstractModule",
 					"kind": 128,
 					"kindString": "Class",
@@ -10841,7 +10860,7 @@
 					},
 					"children": [
 						{
-							"id": 1555,
+							"id": 1557,
 							"name": "bindings",
 							"kind": 1024,
 							"kindString": "Property",
@@ -10860,7 +10879,7 @@
 							}
 						},
 						{
-							"id": 1557,
+							"id": 1559,
 							"name": "intercepts",
 							"kind": 1024,
 							"kindString": "Property",
@@ -10881,7 +10900,7 @@
 							"defaultValue": " []"
 						},
 						{
-							"id": 1556,
+							"id": 1558,
 							"name": "templates",
 							"kind": 1024,
 							"kindString": "Property",
@@ -10900,7 +10919,7 @@
 							}
 						},
 						{
-							"id": 1558,
+							"id": 1560,
 							"name": "bind",
 							"kind": 2048,
 							"kindString": "Method",
@@ -10911,7 +10930,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1559,
+									"id": 1561,
 									"name": "bind",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -10922,7 +10941,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1560,
+											"id": 1562,
 											"name": "name",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -10945,7 +10964,7 @@
 							]
 						},
 						{
-							"id": 1564,
+							"id": 1566,
 							"name": "bindInterceptor",
 							"kind": 2048,
 							"kindString": "Method",
@@ -10956,7 +10975,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1565,
+									"id": 1567,
 									"name": "bindInterceptor",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -10966,7 +10985,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1566,
+											"id": 1568,
 											"name": "targetSymbol",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -10989,7 +11008,7 @@
 							]
 						},
 						{
-							"id": 1573,
+							"id": 1575,
 							"name": "configure",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11000,7 +11019,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1574,
+									"id": 1576,
 									"name": "configure",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11032,7 +11051,7 @@
 							}
 						},
 						{
-							"id": 1567,
+							"id": 1569,
 							"name": "getBindings",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11043,7 +11062,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1568,
+									"id": 1570,
 									"name": "getBindings",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11071,7 +11090,7 @@
 							}
 						},
 						{
-							"id": 1571,
+							"id": 1573,
 							"name": "getIntercepts",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11082,7 +11101,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1572,
+									"id": 1574,
 									"name": "getIntercepts",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11111,7 +11130,7 @@
 							}
 						},
 						{
-							"id": 1569,
+							"id": 1571,
 							"name": "getTemplates",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11122,7 +11141,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1570,
+									"id": 1572,
 									"name": "getTemplates",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11150,7 +11169,7 @@
 							}
 						},
 						{
-							"id": 1575,
+							"id": 1577,
 							"name": "mixin",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11161,7 +11180,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1576,
+									"id": 1578,
 									"name": "mixin",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11171,7 +11190,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1577,
+											"id": 1579,
 											"name": "m",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -11182,7 +11201,7 @@
 											"type": {
 												"type": "reference",
 												"name": "AbstractModule",
-												"id": 1554
+												"id": 1556
 											}
 										}
 									],
@@ -11194,7 +11213,7 @@
 							]
 						},
 						{
-							"id": 1561,
+							"id": 1563,
 							"name": "template",
 							"kind": 2048,
 							"kindString": "Method",
@@ -11205,7 +11224,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1562,
+									"id": 1564,
 									"name": "template",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -11215,7 +11234,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1563,
+											"id": 1565,
 											"name": "name",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -11243,23 +11262,23 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								1555,
 								1557,
-								1556
+								1559,
+								1558
 							]
 						},
 						{
 							"title": "Methods",
 							"kind": 2048,
 							"children": [
-								1558,
-								1564,
-								1573,
-								1567,
-								1571,
-								1569,
+								1560,
+								1566,
 								1575,
-								1561
+								1569,
+								1573,
+								1571,
+								1577,
+								1563
 							]
 						}
 					],
@@ -11272,7 +11291,7 @@
 					]
 				},
 				{
-					"id": 1578,
+					"id": 1580,
 					"name": "createModule",
 					"kind": 64,
 					"kindString": "Function",
@@ -11282,7 +11301,7 @@
 					},
 					"signatures": [
 						{
-							"id": 1579,
+							"id": 1581,
 							"name": "createModule",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -11293,7 +11312,7 @@
 							},
 							"parameters": [
 								{
-									"id": 1580,
+									"id": 1582,
 									"name": "fn",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -11304,21 +11323,21 @@
 									"type": {
 										"type": "reflection",
 										"declaration": {
-											"id": 1581,
+											"id": 1583,
 											"name": "__type",
 											"kind": 65536,
 											"kindString": "Type literal",
 											"flags": {},
 											"signatures": [
 												{
-													"id": 1582,
+													"id": 1584,
 													"name": "__call",
 													"kind": 4096,
 													"kindString": "Call signature",
 													"flags": {},
 													"parameters": [
 														{
-															"id": 1583,
+															"id": 1585,
 															"name": "config",
 															"kind": 32768,
 															"kindString": "Parameter",
@@ -11326,7 +11345,7 @@
 															"type": {
 																"type": "reference",
 																"name": "AbstractModule",
-																"id": 1554
+																"id": 1556
 															}
 														}
 													],
@@ -11354,14 +11373,14 @@
 					"title": "Classes",
 					"kind": 128,
 					"children": [
-						1554
+						1556
 					]
 				},
 				{
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						1578
+						1580
 					]
 				}
 			]
@@ -14462,7 +14481,7 @@
 			]
 		},
 		{
-			"id": 1596,
+			"id": 1598,
 			"name": "\"node_modules/@react-mvi/core/di/index\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -16746,7 +16765,7 @@
 			]
 		},
 		{
-			"id": 1584,
+			"id": 1586,
 			"name": "\"node_modules/@react-mvi/core/di/intercept\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -16757,7 +16776,7 @@
 			"originalName": "/Users/a12360/GitHub/react-mvi/modules/event/node_modules/@react-mvi/core/di/intercept.tsx",
 			"children": [
 				{
-					"id": 1585,
+					"id": 1587,
 					"name": "initList",
 					"kind": 64,
 					"kindString": "Function",
@@ -16766,7 +16785,7 @@
 					},
 					"signatures": [
 						{
-							"id": 1586,
+							"id": 1588,
 							"name": "initList",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -16776,7 +16795,7 @@
 							},
 							"parameters": [
 								{
-									"id": 1587,
+									"id": 1589,
 									"name": "target",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -16790,7 +16809,7 @@
 									}
 								},
 								{
-									"id": 1588,
+									"id": 1590,
 									"name": "key",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -16812,7 +16831,7 @@
 					]
 				},
 				{
-					"id": 1593,
+					"id": 1595,
 					"name": "intercept",
 					"kind": 64,
 					"kindString": "Function",
@@ -16822,7 +16841,7 @@
 					},
 					"signatures": [
 						{
-							"id": 1594,
+							"id": 1596,
 							"name": "intercept",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -16833,7 +16852,7 @@
 							},
 							"parameters": [
 								{
-									"id": 1595,
+									"id": 1597,
 									"name": "key",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -16855,7 +16874,7 @@
 					]
 				},
 				{
-					"id": 1589,
+					"id": 1591,
 					"name": "interceptAll",
 					"kind": 64,
 					"kindString": "Function",
@@ -16865,7 +16884,7 @@
 					},
 					"signatures": [
 						{
-							"id": 1590,
+							"id": 1592,
 							"name": "interceptAll",
 							"kind": 4096,
 							"kindString": "Call signature",
@@ -16876,7 +16895,7 @@
 							},
 							"parameters": [
 								{
-									"id": 1591,
+									"id": 1593,
 									"name": "key",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -16890,7 +16909,7 @@
 									}
 								},
 								{
-									"id": 1592,
+									"id": 1594,
 									"name": "regexp",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -16917,9 +16936,9 @@
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						1585,
-						1593,
-						1589
+						1587,
+						1595,
+						1591
 					]
 				}
 			]
@@ -17594,7 +17613,7 @@
 						{
 							"type": "reference",
 							"name": "AbstractModule",
-							"id": 1554
+							"id": 1556
 						}
 					]
 				}
@@ -17751,7 +17770,7 @@
 			]
 		},
 		{
-			"id": 1597,
+			"id": 1599,
 			"name": "\"node_modules/@react-mvi/core/index\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -19510,7 +19529,7 @@
 						{
 							"type": "reference",
 							"name": "EventDispatcher",
-							"id": 1599
+							"id": 1601
 						}
 					]
 				},
@@ -20348,7 +20367,7 @@
 						{
 							"type": "reference",
 							"name": "EventDispatcher",
-							"id": 1599
+							"id": 1601
 						}
 					],
 					"signatures": [
@@ -20452,7 +20471,7 @@
 			]
 		},
 		{
-			"id": 1534,
+			"id": 1536,
 			"name": "\"node_modules/@react-mvi/core/run\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -20463,7 +20482,7 @@
 			"originalName": "/Users/a12360/GitHub/react-mvi/modules/event/node_modules/@react-mvi/core/run.tsx",
 			"children": [
 				{
-					"id": 1535,
+					"id": 1537,
 					"name": "RunnerArgs",
 					"kind": 256,
 					"kindString": "Interface",
@@ -20473,7 +20492,7 @@
 					},
 					"children": [
 						{
-							"id": 1536,
+							"id": 1538,
 							"name": "component",
 							"kind": 1024,
 							"kindString": "Property",
@@ -20484,7 +20503,7 @@
 							"type": {
 								"type": "reflection",
 								"declaration": {
-									"id": 1537,
+									"id": 1539,
 									"name": "__type",
 									"kind": 65536,
 									"kindString": "Type literal",
@@ -20493,7 +20512,7 @@
 							}
 						},
 						{
-							"id": 1538,
+							"id": 1540,
 							"name": "injector",
 							"kind": 1024,
 							"kindString": "Property",
@@ -20509,7 +20528,7 @@
 							}
 						},
 						{
-							"id": 1539,
+							"id": 1541,
 							"name": "modules",
 							"kind": 1024,
 							"kindString": "Property",
@@ -20531,15 +20550,15 @@
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								1536,
 								1538,
-								1539
+								1540,
+								1541
 							]
 						}
 					]
 				},
 				{
-					"id": 1549,
+					"id": 1551,
 					"name": "run",
 					"kind": 64,
 					"kindString": "Function",
@@ -20549,14 +20568,14 @@
 					},
 					"signatures": [
 						{
-							"id": 1550,
+							"id": 1552,
 							"name": "run",
 							"kind": 4096,
 							"kindString": "Call signature",
 							"flags": {},
 							"parameters": [
 								{
-									"id": 1551,
+									"id": 1553,
 									"name": "opt",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -20564,11 +20583,11 @@
 									"type": {
 										"type": "reference",
 										"name": "RunnerArgs",
-										"id": 1535
+										"id": 1537
 									}
 								},
 								{
-									"id": 1552,
+									"id": 1554,
 									"name": "el",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -20587,7 +20606,7 @@
 					]
 				},
 				{
-					"id": 1540,
+					"id": 1542,
 					"name": "runnable",
 					"kind": 64,
 					"kindString": "Function",
@@ -20597,14 +20616,14 @@
 					},
 					"signatures": [
 						{
-							"id": 1541,
+							"id": 1543,
 							"name": "runnable",
 							"kind": 4096,
 							"kindString": "Call signature",
 							"flags": {},
 							"parameters": [
 								{
-									"id": 1542,
+									"id": 1544,
 									"name": "__namedParameters",
 									"kind": 32768,
 									"kindString": "Parameter",
@@ -20613,14 +20632,14 @@
 									"type": {
 										"type": "reflection",
 										"declaration": {
-											"id": 1543,
+											"id": 1545,
 											"name": "__type",
 											"kind": 65536,
 											"kindString": "Type literal",
 											"flags": {},
 											"children": [
 												{
-													"id": 1544,
+													"id": 1546,
 													"name": "component",
 													"kind": 32,
 													"kindString": "Variable",
@@ -20630,7 +20649,7 @@
 													"type": {
 														"type": "reflection",
 														"declaration": {
-															"id": 1545,
+															"id": 1547,
 															"name": "__type",
 															"kind": 65536,
 															"kindString": "Type literal",
@@ -20639,7 +20658,7 @@
 													}
 												},
 												{
-													"id": 1547,
+													"id": 1549,
 													"name": "injector",
 													"kind": 32,
 													"kindString": "Variable",
@@ -20653,7 +20672,7 @@
 													}
 												},
 												{
-													"id": 1546,
+													"id": 1548,
 													"name": "modules",
 													"kind": 32,
 													"kindString": "Variable",
@@ -20678,9 +20697,9 @@
 													"title": "Variables",
 													"kind": 32,
 													"children": [
-														1544,
-														1547,
-														1546
+														1546,
+														1549,
+														1548
 													]
 												}
 											]
@@ -20691,7 +20710,7 @@
 							"type": {
 								"type": "reflection",
 								"declaration": {
-									"id": 1548,
+									"id": 1550,
 									"name": "__type",
 									"kind": 65536,
 									"kindString": "Type literal",
@@ -20707,15 +20726,15 @@
 					"title": "Interfaces",
 					"kind": 256,
 					"children": [
-						1535
+						1537
 					]
 				},
 				{
 					"title": "Functions",
 					"kind": 64,
 					"children": [
-						1549,
-						1540
+						1551,
+						1542
 					]
 				}
 			]
@@ -23586,7 +23605,7 @@
 			]
 		},
 		{
-			"id": 1598,
+			"id": 1600,
 			"name": "\"src/index\"",
 			"kind": 1,
 			"kindString": "External module",
@@ -23596,7 +23615,7 @@
 			"originalName": "/Users/a12360/GitHub/react-mvi/modules/event/src/index.ts",
 			"children": [
 				{
-					"id": 1599,
+					"id": 1601,
 					"name": "EventDispatcher",
 					"kind": 128,
 					"kindString": "Class",
@@ -23618,7 +23637,7 @@
 					],
 					"children": [
 						{
-							"id": 1603,
+							"id": 1605,
 							"name": "constructor",
 							"kind": 512,
 							"kindString": "Constructor",
@@ -23628,7 +23647,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1604,
+									"id": 1606,
 									"name": "new EventDispatcher",
 									"kind": 16384,
 									"kindString": "Constructor signature",
@@ -23636,13 +23655,13 @@
 									"type": {
 										"type": "reference",
 										"name": "EventDispatcher",
-										"id": 1599
+										"id": 1601
 									}
 								}
 							]
 						},
 						{
-							"id": 1602,
+							"id": 1604,
 							"name": "history",
 							"kind": 1024,
 							"kindString": "Property",
@@ -23666,7 +23685,7 @@
 							"defaultValue": " []"
 						},
 						{
-							"id": 1601,
+							"id": 1603,
 							"name": "res",
 							"kind": 1024,
 							"kindString": "Property",
@@ -23684,7 +23703,7 @@
 							}
 						},
 						{
-							"id": 1600,
+							"id": 1602,
 							"name": "store",
 							"kind": 1024,
 							"kindString": "Property",
@@ -23703,7 +23722,7 @@
 							"defaultValue": " new SubjectStore()"
 						},
 						{
-							"id": 1636,
+							"id": 1638,
 							"name": "response",
 							"kind": 262144,
 							"kindString": "Accessor",
@@ -23722,7 +23741,7 @@
 							},
 							"getSignature": [
 								{
-									"id": 1637,
+									"id": 1639,
 									"name": "__get",
 									"kind": 524288,
 									"kindString": "Get signature",
@@ -23750,7 +23769,7 @@
 							}
 						},
 						{
-							"id": 1620,
+							"id": 1622,
 							"name": "asCallback",
 							"kind": 2048,
 							"kindString": "Method",
@@ -23760,7 +23779,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1621,
+									"id": 1623,
 									"name": "asCallback",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -23776,7 +23795,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1622,
+											"id": 1624,
 											"name": "key",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -23790,7 +23809,7 @@
 											}
 										},
 										{
-											"id": 1623,
+											"id": 1625,
 											"name": "v",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -23809,21 +23828,21 @@
 									"type": {
 										"type": "reflection",
 										"declaration": {
-											"id": 1624,
+											"id": 1626,
 											"name": "__type",
 											"kind": 65536,
 											"kindString": "Type literal",
 											"flags": {},
 											"signatures": [
 												{
-													"id": 1625,
+													"id": 1627,
 													"name": "__call",
 													"kind": 4096,
 													"kindString": "Call signature",
 													"flags": {},
 													"parameters": [
 														{
-															"id": 1626,
+															"id": 1628,
 															"name": "args",
 															"kind": 32768,
 															"kindString": "Parameter",
@@ -23858,7 +23877,7 @@
 							}
 						},
 						{
-							"id": 1627,
+							"id": 1629,
 							"name": "asc",
 							"kind": 2048,
 							"kindString": "Method",
@@ -23868,7 +23887,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1628,
+									"id": 1630,
 									"name": "asc",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -23884,7 +23903,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1629,
+											"id": 1631,
 											"name": "key",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -23898,7 +23917,7 @@
 											}
 										},
 										{
-											"id": 1630,
+											"id": 1632,
 											"name": "v",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -23917,21 +23936,21 @@
 									"type": {
 										"type": "reflection",
 										"declaration": {
-											"id": 1631,
+											"id": 1633,
 											"name": "__type",
 											"kind": 65536,
 											"kindString": "Type literal",
 											"flags": {},
 											"signatures": [
 												{
-													"id": 1632,
+													"id": 1634,
 													"name": "__call",
 													"kind": 4096,
 													"kindString": "Call signature",
 													"flags": {},
 													"parameters": [
 														{
-															"id": 1633,
+															"id": 1635,
 															"name": "args",
 															"kind": 32768,
 															"kindString": "Parameter",
@@ -23966,7 +23985,7 @@
 							}
 						},
 						{
-							"id": 1634,
+							"id": 1636,
 							"name": "end",
 							"kind": 2048,
 							"kindString": "Method",
@@ -23976,7 +23995,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1635,
+									"id": 1637,
 									"name": "end",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -24008,7 +24027,7 @@
 							}
 						},
 						{
-							"id": 1611,
+							"id": 1613,
 							"name": "fire",
 							"kind": 2048,
 							"kindString": "Method",
@@ -24018,7 +24037,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1612,
+									"id": 1614,
 									"name": "fire",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -24034,7 +24053,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1613,
+											"id": 1615,
 											"name": "key",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24048,7 +24067,7 @@
 											}
 										},
 										{
-											"id": 1614,
+											"id": 1616,
 											"name": "args",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24082,7 +24101,7 @@
 							}
 						},
 						{
-							"id": 1605,
+							"id": 1607,
 							"name": "subscribe",
 							"kind": 2048,
 							"kindString": "Method",
@@ -24092,14 +24111,14 @@
 							},
 							"signatures": [
 								{
-									"id": 1606,
+									"id": 1608,
 									"name": "subscribe",
 									"kind": 4096,
 									"kindString": "Call signature",
 									"flags": {},
 									"parameters": [
 										{
-											"id": 1607,
+											"id": 1609,
 											"name": "props",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24107,21 +24126,21 @@
 											"type": {
 												"type": "reflection",
 												"declaration": {
-													"id": 1608,
+													"id": 1610,
 													"name": "__type",
 													"kind": 65536,
 													"kindString": "Type literal",
 													"flags": {},
 													"indexSignature": [
 														{
-															"id": 1609,
+															"id": 1611,
 															"name": "__index",
 															"kind": 8192,
 															"kindString": "Index signature",
 															"flags": {},
 															"parameters": [
 																{
-																	"id": 1610,
+																	"id": 1612,
 																	"name": "key",
 																	"kind": 32768,
 																	"kindString": "Parameter",
@@ -24156,7 +24175,7 @@
 							}
 						},
 						{
-							"id": 1615,
+							"id": 1617,
 							"name": "throttle",
 							"kind": 2048,
 							"kindString": "Method",
@@ -24166,7 +24185,7 @@
 							},
 							"signatures": [
 								{
-									"id": 1616,
+									"id": 1618,
 									"name": "throttle",
 									"kind": 4096,
 									"kindString": "Call signature",
@@ -24182,7 +24201,7 @@
 									},
 									"parameters": [
 										{
-											"id": 1617,
+											"id": 1619,
 											"name": "time",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24196,7 +24215,7 @@
 											}
 										},
 										{
-											"id": 1618,
+											"id": 1620,
 											"name": "key",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24210,7 +24229,7 @@
 											}
 										},
 										{
-											"id": 1619,
+											"id": 1621,
 											"name": "args",
 											"kind": 32768,
 											"kindString": "Parameter",
@@ -24249,35 +24268,35 @@
 							"title": "Constructors",
 							"kind": 512,
 							"children": [
-								1603
+								1605
 							]
 						},
 						{
 							"title": "Properties",
 							"kind": 1024,
 							"children": [
-								1602,
-								1601,
-								1600
+								1604,
+								1603,
+								1602
 							]
 						},
 						{
 							"title": "Accessors",
 							"kind": 262144,
 							"children": [
-								1636
+								1638
 							]
 						},
 						{
 							"title": "Methods",
 							"kind": 2048,
 							"children": [
-								1620,
-								1627,
-								1634,
-								1611,
-								1605,
-								1615
+								1622,
+								1629,
+								1636,
+								1613,
+								1607,
+								1617
 							]
 						}
 					],
@@ -24290,7 +24309,7 @@
 					]
 				},
 				{
-					"id": 1638,
+					"id": 1640,
 					"name": "MAX_HISTORY_LENGTH",
 					"kind": 32,
 					"kindString": "Variable",
@@ -24310,14 +24329,14 @@
 					"title": "Classes",
 					"kind": 128,
 					"children": [
-						1599
+						1601
 					]
 				},
 				{
 					"title": "Variables",
 					"kind": 32,
 					"children": [
-						1638
+						1640
 					]
 				}
 			]
@@ -24332,24 +24351,24 @@
 				944,
 				1047,
 				1491,
-				1553,
+				1555,
 				205,
 				1,
-				1596,
+				1598,
 				283,
 				512,
-				1584,
+				1586,
 				175,
 				270,
 				937,
-				1597,
+				1599,
 				648,
-				1534,
+				1536,
 				819,
 				296,
 				280,
 				837,
-				1598
+				1600
 			]
 		}
 	]

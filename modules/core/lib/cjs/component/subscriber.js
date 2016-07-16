@@ -24,6 +24,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var Rx_1 = require('rxjs/Rx');
 var env_1 = require('../env');
+var utils_1 = require('../utils');
 var symbol_1 = require('../shims/symbol');
 var lodash_1 = require('../shims/lodash');
 var process = env_1.getProcess();
@@ -200,7 +201,7 @@ var Subscriber = (function (_super) {
      */
     Subscriber.prototype.areThereObservableInChildren = function (el) {
         var _this = this;
-        var target = el.props ? (el.props.children ? (!lodash_1._.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [];
+        var target = lodash_1._.filter(el.props ? (el.props.children ? (!lodash_1._.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return utils_1.isDefined(v); });
         return lodash_1._.some(target, function (child, i) {
             if (child instanceof Rx_1.Observable) {
                 return true;
@@ -217,7 +218,7 @@ var Subscriber = (function (_super) {
     Subscriber.prototype.cloneChildren = function (el, parent, index) {
         var _this = this;
         var newElement = this.createMutableElement(el);
-        var target = newElement.props.children ? (!lodash_1._.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [];
+        var target = lodash_1._.filter(newElement.props.children ? (!lodash_1._.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [], function (v) { return utils_1.isDefined(v); });
         var children = lodash_1._.map(target, function (child, i) {
             if (child instanceof Rx_1.Observable) {
                 _this.bindings.push(new ObservableBinding(function (value) {

@@ -17,12 +17,15 @@
  */
 
 
+import * as React from 'react';
 import {
   ContextReactTypes,
   ContextType,
   setContext
 } from './context';
-import * as React from 'react';
+import {
+  _
+} from './../shims/lodash';
 
 
 /**
@@ -48,7 +51,7 @@ export type StatelessComponentConfig<Props> = {
  * Create stateless CompositeComponent with context that type is `ContextReactType`.
  * @param render Render function or object that implements each lifecycle methods.
  */
-export function component<Props>(component: (StatelessComponentConfig<Props>|Render<Props>|React.ComponentClass<Props>), componentName?: string): new(props: Props, context: ContextType) => React.Component<Props, {}> {
+export function component<Props, C>(component: (StatelessComponentConfig<Props>|Render<Props>|React.ComponentClass<Props>), componentName?: string, additionalContext: C = ({} as any)): new(props: Props, context: ContextType & C) => React.Component<Props, {}> {
   /**
    * Check whether render is React.Component or not.
    */
@@ -70,7 +73,7 @@ export function component<Props>(component: (StatelessComponentConfig<Props>|Ren
   if (isComponent(component)) {
     const Renderer: React.ComponentClass<Props> = component as React.ComponentClass<Props>;
     ret = class extends Renderer {
-      static contextTypes = ContextReactTypes as any;
+      static contextTypes = _.assign(ContextReactTypes, additionalContext) as any;
     }
     if (Renderer['name']) {
       ret['displayName'] = Renderer['name'];
@@ -116,7 +119,7 @@ export function component<Props>(component: (StatelessComponentConfig<Props>|Ren
         return true;
       }
 
-      static contextTypes = ContextReactTypes
+      static contextTypes = _.assign(ContextReactTypes, additionalContext)
     } as any;
   }
 

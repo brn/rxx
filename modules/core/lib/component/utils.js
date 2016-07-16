@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./context', 'react'], function(exports_1, context_1) {
+System.register(['react', './context', './../shims/lodash'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -23,12 +23,13 @@ System.register(['./context', 'react'], function(exports_1, context_1) {
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var context_2, React;
+    var React, context_2, lodash_1;
     /**
      * Create stateless CompositeComponent with context that type is `ContextReactType`.
      * @param render Render function or object that implements each lifecycle methods.
      */
-    function component(component, componentName) {
+    function component(component, componentName, additionalContext) {
+        if (additionalContext === void 0) { additionalContext = {}; }
         /**
          * Check whether render is React.Component or not.
          */
@@ -49,7 +50,7 @@ System.register(['./context', 'react'], function(exports_1, context_1) {
                 function class_1() {
                     _super.apply(this, arguments);
                 }
-                class_1.contextTypes = context_2.ContextReactTypes;
+                class_1.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext);
                 return class_1;
             }(Renderer));
             if (Renderer['name']) {
@@ -95,7 +96,7 @@ System.register(['./context', 'react'], function(exports_1, context_1) {
                     }
                     return true;
                 };
-                class_2.contextTypes = context_2.ContextReactTypes;
+                class_2.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext);
                 return class_2;
             }(React.Component));
         }
@@ -107,11 +108,14 @@ System.register(['./context', 'react'], function(exports_1, context_1) {
     exports_1("component", component);
     return {
         setters:[
+            function (React_1) {
+                React = React_1;
+            },
             function (context_2_1) {
                 context_2 = context_2_1;
             },
-            function (React_1) {
-                React = React_1;
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
         }
