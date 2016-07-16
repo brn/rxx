@@ -8,7 +8,7 @@ inspired by
 
 ## Architecture
 
-![architecture](./mvi_clean_arc.png)
+![architecture](./images/mvi_clean_arc.png)
 
 ## Requirements
 
