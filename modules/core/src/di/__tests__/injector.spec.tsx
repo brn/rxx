@@ -212,7 +212,7 @@ describe('Injector', () => {
       expect(targetId).equal(1);
     });
 
-    it('インターセプタを適用する', () => {
+    it('Apply interceptor to simple dependency.', () => {
       const testInterceptor = Symbol('__test__');
 
       class TestClass {

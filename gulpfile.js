@@ -69,7 +69,7 @@ gulp.task('install', done => {
 
 gulp.task('clean', () => {
   try {fs.removeSync('./lib');} catch(e) {}
-  try {fs.removeSync('./docs');} catch(e) {}
+  try {fs.removeSync('./api-docs');} catch(e) {}
 });
 
 
@@ -79,8 +79,8 @@ gulp.task('docs', () => {
     .pipe(typedoc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
 
       // Output options (see typedoc docs)
-      out: "./docs",
-      json: "docs/json/docs.json",
+      out: "./api-docs",
+      json: "api-docs/json/docs.json",
 
       // TypeDoc options (see typedoc docs)
       name: "react-mvi",
