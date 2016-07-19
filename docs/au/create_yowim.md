@@ -54,6 +54,6 @@ export class MyIOClass extends Outlet {
 this.store.get(key).forEach
 ```
 
-First, io module must decorated by io decorator.
-Second, `this.store` is base class that was named _Outlet_ property and holds some Rx.Subject with keys.  
-If your service accessed IOResponse.for(key), at same time Rx.Subject made into Outlet.store with same key.
+First, io module must decorated by io decorator.  
+Second, `this.store` is base class _Outlet_ protected property and holds some Rx.Subject with keys.  
+If your service accessed IOResponse.for(key), at same time Rx.Subject is made inside of Outlet.store with same key.
