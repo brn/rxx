@@ -60,8 +60,8 @@ const Component = component(class extends React.Component<Props, {}> {
 
 It is easy, isn't it?  
 __component__ function accept two argument type.  
-One is function that is return React Component and this function called by props and context.  
-Two is class that extends React Component and that class has props and context in instance properties.  
+First is function that is return React Component and this function called by props and context.  
+Second is class that extends React Component and that class has props and context in instance properties.  
 
 That's all!  
 

@@ -50,7 +50,7 @@ So this class marked as service layer.
 ## Service arugments.
 
 Service layer accept two arguments.  
-One is Map of IOResponse.
+First is Map of IOResponse.
 Second is Injector.
 
 ### What is IOResponse?
