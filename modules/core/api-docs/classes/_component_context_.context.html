@@ -111,10 +111,10 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_component_context_.context.html#context" class="tsd-kind-icon">context</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_component_context_.context.html#contextobject" class="tsd-kind-icon">context<wbr>Object</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_component_context_.context.html#disposables" class="tsd-kind-icon">disposables</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_component_context_.context.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_component_context_.context.html#refs" class="tsd-kind-icon">refs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_component_context_.context.html#state" class="tsd-kind-icon">state</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_component_context_.context.html#subscription" class="tsd-kind-icon">subscription</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -149,7 +149,7 @@
 							<aside class="tsd-sources">
 								<p>Overwrites Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L155">component/context.tsx:155</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L153">component/context.tsx:153</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,7 +190,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Object<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_component_context_.contexttype.html" class="tsd-signature-type">ContextType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L152">component/context.tsx:152</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L151">component/context.tsx:151</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -198,16 +198,6 @@
 							<p>Context object.</p>
 						</div>
 					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="disposables" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> disposables</h3>
-					<div class="tsd-signature tsd-kind-icon">disposables<span class="tsd-signature-symbol">:</span> <a href="_io_io_.disposable.html" class="tsd-signature-type">Disposable</a><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L155">component/context.tsx:155</a></li>
-						</ul>
-					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="props" class="tsd-anchor"></a>
@@ -255,6 +245,16 @@
 						</ul>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="subscription" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> subscription</h3>
+					<div class="tsd-signature tsd-kind-icon">subscription<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Subscription</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L153">component/context.tsx:153</a></li>
+						</ul>
+					</aside>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
@@ -268,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L219">component/context.tsx:219</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L217">component/context.tsx:217</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
@@ -305,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L209">component/context.tsx:209</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L207">component/context.tsx:207</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -358,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L214">component/context.tsx:214</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L212">component/context.tsx:212</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_component_context_.contexttype.html" class="tsd-signature-type">ContextType</a></h4>
@@ -376,7 +376,7 @@
 							<aside class="tsd-sources">
 								<p>Overwrites Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L204">component/context.tsx:204</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/component/context.tsx#L202">component/context.tsx:202</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -569,9 +569,6 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_component_context_.context.html#contextobject" class="tsd-kind-icon">context<wbr>Object</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_component_context_.context.html#disposables" class="tsd-kind-icon">disposables</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_component_context_.context.html#props" class="tsd-kind-icon">props</a>
 							</li>
@@ -580,6 +577,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_component_context_.context.html#state" class="tsd-kind-icon">state</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_component_context_.context.html#subscription" class="tsd-kind-icon">subscription</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-static">
 								<a href="_component_context_.context.html#childcontexttypes" class="tsd-kind-icon">child<wbr>Context<wbr>Types</a>

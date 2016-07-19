@@ -15,7 +15,8 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { IO, IOResponse, HttpConfig, HttpMethod, ResponseType, Disposable } from '@react-mvi/core';
+import { IOResponse, HttpConfig, HttpMethod, ResponseType, Outlet } from '@react-mvi/core';
+import { Subscription } from 'rxjs/Rx';
 import { Fetch } from './shims/fetch';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
 export declare const HTTP_INTERCEPT: any;
@@ -23,19 +24,7 @@ export declare const HTTP_REQUEST_INTERCEPT: any;
 /**
  * Http request sender.
  */
-export declare class HttpRequest implements IO {
-    /**
-     * Response.
-     */
-    private res;
-    /**
-     * Subject holder.
-     */
-    private store;
-    /**
-     * @param filters Filter processoers.
-     */
-    constructor();
+export declare class HttpRequest extends Outlet {
     /**
      * Wait for request from observables.
      * @override
@@ -43,16 +32,7 @@ export declare class HttpRequest implements IO {
      */
     subscribe(props: {
         [key: string]: any;
-    }): Disposable;
-    /**
-     * Dispose all subscriptions.
-     * @override
-     */
-    end(): void;
-    /**
-     * Return response observable.
-     */
-    readonly response: IOResponse;
+    }): Subscription;
     protected readonly fetch: Fetch;
     /**
      * Send GET request.

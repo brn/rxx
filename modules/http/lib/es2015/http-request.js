@@ -15,6 +15,11 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -24,8 +29,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { io, IOResponse, SubjectStore, HttpMethod, ResponseType, Symbol, intercept, Disposable } from '@react-mvi/core';
-import { ConnectableObservable } from 'rxjs/Rx';
+import { IOResponse, HttpMethod, ResponseType, Symbol, intercept, Outlet } from '@react-mvi/core';
+import { Subscription, ConnectableObservable } from 'rxjs/Rx';
 import { HttpResponse } from './http-response';
 import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
@@ -36,13 +41,10 @@ export var HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__')
 /**
  * Http request sender.
  */
-var HttpRequest = (function () {
-    /**
-     * @param filters Filter processoers.
-     */
+var HttpRequest = (function (_super) {
+    __extends(HttpRequest, _super);
     function HttpRequest() {
-        this.store = new SubjectStore();
-        this.res = new IOResponse(this.store);
+        _super.apply(this, arguments);
     }
     /**
      * Wait for request from observables.
@@ -51,11 +53,11 @@ var HttpRequest = (function () {
      */
     HttpRequest.prototype.subscribe = function (props) {
         var _this = this;
-        var disp = new Disposable();
+        var subscription = new Subscription();
         if (props['http']) {
             var _loop_1 = function(reqKey) {
                 var req = props['http'][reqKey];
-                disp.addSubscription(req.subscribe(function (config) {
+                subscription.add(req.subscribe(function (config) {
                     var subjects = _this.store.get(reqKey);
                     (function () {
                         switch (config.method) {
@@ -104,25 +106,8 @@ var HttpRequest = (function () {
                 }
             }
         }
-        return disp;
+        return subscription;
     };
-    /**
-     * Dispose all subscriptions.
-     * @override
-     */
-    HttpRequest.prototype.end = function () {
-        this.store.end();
-    };
-    Object.defineProperty(HttpRequest.prototype, "response", {
-        /**
-         * Return response observable.
-         */
-        get: function () {
-            return this.res;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(HttpRequest.prototype, "fetch", {
         get: function () {
             return fetch;
@@ -254,10 +239,6 @@ var HttpRequest = (function () {
         __metadata('design:paramtypes', [Number, Response]), 
         __metadata('design:returntype', Promise)
     ], HttpRequest.prototype, "getResponse", null);
-    HttpRequest = __decorate([
-        io, 
-        __metadata('design:paramtypes', [])
-    ], HttpRequest);
     return HttpRequest;
-}());
+}(Outlet));
 HttpRequest = HttpRequest;

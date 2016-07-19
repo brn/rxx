@@ -22,8 +22,6 @@ export declare const IO_MARK: any;
  * Decorator for io module.
  */
 export declare function io<T extends Function>(target: T): void;
-export declare const appendIOModuleKey: (name: any) => void;
-export declare const getIOModules: () => string[];
 /**
  * Represent IO response.
  */
@@ -70,12 +68,6 @@ export declare class SubjectStore {
      */
     end(): void;
 }
-export declare class Disposable {
-    private subscriptions;
-    addSubscription(subscription: Subscription): void;
-    getSubscriptions(): Subscription[];
-    dispose(): void;
-}
 /**
  * Interface for IO processor.
  */
@@ -87,8 +79,16 @@ export interface IO {
      */
     subscribe(props: {
         [key: string]: any;
-    }): Disposable;
-    end(): void;
+    }): Subscription;
+}
+export declare abstract class Outlet implements IO {
+    protected store: SubjectStore;
+    private ioResponse;
+    constructor();
+    abstract subscribe(props: {
+        [key: string]: any;
+    }): Subscription;
+    readonly response: IOResponse;
 }
 /**
  * The methods of the Http request.
@@ -121,6 +121,15 @@ export interface HttpConfig {
     responseType?: ResponseType;
     sendToken?: boolean;
 }
+export interface HttpResponse<T, E> {
+    ok: boolean;
+    headers: {
+        [key: string]: string;
+    };
+    status: number;
+    response: T;
+    error: E;
+}
 /**
  * Interface for Event IO
  */
@@ -152,10 +161,6 @@ export interface Event extends IO {
      * @param args Event args
      */
     throttle(time: number, key: string, args: any): void;
-    /**
-     * Dispose all subscriptions.
-     */
-    end(): void;
 }
 /**
  * The methods of the StorageIO.

@@ -37,35 +37,36 @@ describe('event.tsx', () => {
   beforeEach(() => {
     instance = new EventDispatcher();
   });
-
-  afterEach(() => instance.end());
   
   describe('EventDispatcher', () => {
     describe('#fire()', () => {
       it('イベントを発火する', () => {
         let fired = false;
-        instance.response.for<boolean>('test').subscribe(v => {
+        const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;
         });
         instance.fire('test', true);
         expect(fired).to.be.eq(true);
+        disp.unsubscribe();
       });
     });
 
     describe('#asFunction()', () => {
       it('イベントを発火するコールバックを返す', () => {
         let fired = false;
-        instance.response.for<boolean>('test').subscribe(v => {
+        const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;
         });
         instance.asCallback('test', true)();
+        disp.unsubscribe();
       });
     });
 
     describe('#throttle', () => {
       it('指定時間経過後にイベントを発火する', done => {
-        instance.response.for('test').subscribe(graceful(v => {
+        const disp = instance.response.for('test').subscribe(graceful(v => {
           expect(v).to.be.eq(true);
+          disp.unsubscribe();
         }, done));
         instance.throttle(100, 'test', true);
       });

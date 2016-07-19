@@ -45,21 +45,6 @@ export function io<T extends Function>(target: T) {
 }
 
 
-const IO_MODULES = ['http', 'event', 'storage'];
-
-
-export const appendIOModuleKey = (name) => {
-  if (IO_MODULES.indexOf(name) === -1) {
-    IO_MODULES.push(name);
-    return;
-  }
-  throw new Error(`${name} is already registered as io module.`);
-}
-
-
-export const getIOModules = (): string[] => IO_MODULES.slice();
-
-
 /**
  * Represent IO response.
  */
@@ -153,23 +138,6 @@ export class SubjectStore {
 }
 
 
-export class Disposable {
-  private subscriptions: Subscription[] = [];
-
-  public addSubscription(subscription: Subscription) {
-    this.subscriptions.push(subscription);
-  }
-
-
-  public getSubscriptions() {return this.subscriptions;}
-
-
-  public dispose() {
-    _.forEach(this.subscriptions, subscription => subscription.unsubscribe());
-  }
-}
-
-
 /**
  * Interface for IO processor.
  */
@@ -179,8 +147,27 @@ export interface IO {
    * Wait observable.
    * @param request Disposable.
    */
-  subscribe(props: {[key: string]: any}): Disposable;
-  end(): void;
+  subscribe(props: {[key: string]: any}): Subscription;
+}
+
+
+@io
+export abstract class Outlet implements IO {
+  protected store = new SubjectStore();
+  private ioResponse: IOResponse;
+
+
+  public constructor() {
+    this.ioResponse = new IOResponse(this.store);
+  }
+
+
+  public abstract subscribe(props: {[key: string]: any}): Subscription;
+
+
+  public get response() {
+    return this.ioResponse;
+  }
 }
 
 
@@ -221,6 +208,15 @@ export interface HttpConfig {
 };
 
 
+export interface HttpResponse<T, E> {
+  ok: boolean;
+  headers: {[key: string]: string};
+  status: number;
+  response: T;
+  error: E;
+}
+
+
 /**
  * Interface for Event IO
  */
@@ -258,12 +254,6 @@ export interface Event extends IO {
    * @param args Event args
    */
   throttle(time: number, key: string, args: any): void;
-
-
-  /**
-   * Dispose all subscriptions.
-   */
-  end(): void;
 }
 
 

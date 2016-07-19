@@ -8,7 +8,7 @@ SystemJS.config({
     "map": {
       "babel-runtime": "npm:babel-runtime@5.8.38",
       "chai": "npm:chai@3.5.0",
-      "core-js": "npm:core-js@1.2.6",
+      "core-js": "npm:core-js@1.2.7",
       "plugin-babel": "npm:systemjs-plugin-babel@0.0.11",
       "ts": "github:frankwallis/plugin-typescript@4.0.16"
     },
@@ -54,7 +54,7 @@ SystemJS.config({
   ],
   map: {
     "@react-mvi/testing": "npm:@react-mvi/testing@0.0.16",
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.3-beta.45",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.4",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -86,7 +86,7 @@ SystemJS.config({
   packages: {
     "github:jspm/nodelibs-buffer@0.2.0-alpha": {
       "map": {
-        "buffer-browserify": "npm:buffer@4.7.0"
+        "buffer-browserify": "npm:buffer@4.7.1"
       }
     },
     "github:jspm/nodelibs-crypto@0.2.0-alpha": {
@@ -152,13 +152,13 @@ SystemJS.config({
     },
     "npm:browserify-rsa@4.0.1": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "randombytes": "npm:randombytes@2.0.3"
       }
     },
     "npm:browserify-sign@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "browserify-rsa": "npm:browserify-rsa@4.0.1",
         "create-hash": "npm:create-hash@1.1.2",
         "create-hmac": "npm:create-hmac@1.1.4",
@@ -181,17 +181,12 @@ SystemJS.config({
         "inherits": "npm:inherits@2.0.1"
       }
     },
-    "npm:core-js@1.2.6": {
-      "map": {
-        "systemjs-json": "github:systemjs/plugin-json@0.1.2"
-      }
-    },
     "npm:core-util-is@1.0.2": {
       "map": {}
     },
     "npm:create-ecdh@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "elliptic": "npm:elliptic@6.3.1"
       }
     },
@@ -236,7 +231,7 @@ SystemJS.config({
     },
     "npm:diffie-hellman@5.0.2": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "miller-rabin": "npm:miller-rabin@4.0.0",
         "randombytes": "npm:randombytes@2.0.3"
       }
@@ -269,7 +264,7 @@ SystemJS.config({
     },
     "npm:fbjs@0.8.3": {
       "map": {
-        "core-js": "npm:core-js@1.2.6",
+        "core-js": "npm:core-js@1.2.7",
         "immutable": "npm:immutable@3.8.1",
         "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
         "loose-envify": "npm:loose-envify@1.2.0",
@@ -304,7 +299,7 @@ SystemJS.config({
     },
     "npm:miller-rabin@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "brorand": "npm:brorand@1.0.5"
       }
     },
@@ -341,7 +336,7 @@ SystemJS.config({
     },
     "npm:public-encrypt@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "browserify-rsa": "npm:browserify-rsa@4.0.1",
         "create-hash": "npm:create-hash@1.1.2",
         "parse-asn1": "npm:parse-asn1@5.0.0",
@@ -437,7 +432,7 @@ SystemJS.config({
     "npm:elliptic@6.3.1": {
       "map": {
         "inherits": "npm:inherits@2.0.1",
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "brorand": "npm:brorand@1.0.5",
         "hash.js": "npm:hash.js@1.0.3"
       }
@@ -452,13 +447,6 @@ SystemJS.config({
       "map": {
         "d": "npm:d@0.1.1",
         "es5-ext": "npm:es5-ext@0.10.12"
-      }
-    },
-    "npm:buffer@4.7.0": {
-      "map": {
-        "isarray": "npm:isarray@1.0.0",
-        "ieee754": "npm:ieee754@1.1.6",
-        "base64-js": "npm:base64-js@1.1.2"
       }
     },
     "npm:@react-mvi/testing@0.0.16": {
@@ -505,15 +493,22 @@ SystemJS.config({
     },
     "npm:asn1.js@4.8.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "inherits": "npm:inherits@2.0.1",
         "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
       }
     },
-    "npm:@react-mvi/core@0.3.3-beta.45": {
+    "npm:@react-mvi/core@0.3.4": {
       "map": {
-        "core-js": "npm:core-js@2.4.0",
+        "core-js": "npm:core-js@2.4.1",
         "ts": "github:frankwallis/plugin-typescript@4.0.16"
+      }
+    },
+    "npm:buffer@4.7.1": {
+      "map": {
+        "ieee754": "npm:ieee754@1.1.6",
+        "isarray": "npm:isarray@1.0.0",
+        "base64-js": "npm:base64-js@1.1.2"
       }
     }
   }

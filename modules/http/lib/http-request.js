@@ -18,6 +18,11 @@
 System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
+    var __extends = (this && this.__extends) || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -58,13 +63,10 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
             /**
              * Http request sender.
              */
-            HttpRequest = (function () {
-                /**
-                 * @param filters Filter processoers.
-                 */
+            HttpRequest = (function (_super) {
+                __extends(HttpRequest, _super);
                 function HttpRequest() {
-                    this.store = new core_1.SubjectStore();
-                    this.res = new core_1.IOResponse(this.store);
+                    _super.apply(this, arguments);
                 }
                 /**
                  * Wait for request from observables.
@@ -73,11 +75,11 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  */
                 HttpRequest.prototype.subscribe = function (props) {
                     var _this = this;
-                    var disp = new core_1.Disposable();
+                    var subscription = new Rx_1.Subscription();
                     if (props['http']) {
                         var _loop_1 = function(reqKey) {
                             var req = props['http'][reqKey];
-                            disp.addSubscription(req.subscribe(function (config) {
+                            subscription.add(req.subscribe(function (config) {
                                 var subjects = _this.store.get(reqKey);
                                 (function () {
                                     switch (config.method) {
@@ -126,25 +128,8 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                             }
                         }
                     }
-                    return disp;
+                    return subscription;
                 };
-                /**
-                 * Dispose all subscriptions.
-                 * @override
-                 */
-                HttpRequest.prototype.end = function () {
-                    this.store.end();
-                };
-                Object.defineProperty(HttpRequest.prototype, "response", {
-                    /**
-                     * Return response observable.
-                     */
-                    get: function () {
-                        return this.res;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
                 Object.defineProperty(HttpRequest.prototype, "fetch", {
                     get: function () {
                         return fetch_1.fetch;
@@ -276,12 +261,8 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     __metadata('design:paramtypes', [Number, fetch_1.Response]), 
                     __metadata('design:returntype', promise_1.Promise)
                 ], HttpRequest.prototype, "getResponse", null);
-                HttpRequest = __decorate([
-                    core_1.io, 
-                    __metadata('design:paramtypes', [])
-                ], HttpRequest);
                 return HttpRequest;
-            }());
+            }(core_1.Outlet));
             exports_1("HttpRequest", HttpRequest);
         }
     }

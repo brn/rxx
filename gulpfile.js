@@ -161,7 +161,7 @@ gulp.task('check-releasable', ['docs', 'typescript', 'typescript-cjs', 'typescri
 
 gulp.task('pre-publish', ['check-releasable'], () => {
   const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
-  const version = semver.inc(pkg.version, 'prerelease', 'beta');
+  const version = semver.inc(pkg.version, 'patch');
 
   glob.sync('./src/*').forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
   pkg.version = version;

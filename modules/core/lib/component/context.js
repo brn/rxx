@@ -134,7 +134,6 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                 __extends(Context, _super);
                 function Context(props, c) {
                     _super.call(this, props, c);
-                    this.disposables = [];
                     var self = this;
                     var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
                     var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
@@ -166,12 +165,12 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                                 else {
                                     result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                                 }
-                                self.disposables = self.disposables.concat(lodash_1._.map(ioModules, function (io) { return io.subscribe(result); }));
+                                lodash_1._.forEach(ioModules, function (io) { return self.subscription.add(io.subscribe(result)); });
                                 return lodash_1._.assign(props, result['view'] || {});
                             }, {});
                         },
                         clean: function () {
-                            lodash_1._.forIn(ioModules, function (io) { return io.end(); });
+                            self.subscription.unsubscribe();
                         },
                         connect: connect,
                         injector: injector,
@@ -182,7 +181,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                     return this.props.children;
                 };
                 Context.prototype.componentWillUnmount = function () {
-                    lodash_1._.forEach(this.disposables, function (disposable) { return disposable.dispose(); });
+                    this.contextObject.clean();
                 };
                 Context.prototype.getChildContext = function () {
                     return this.contextObject;

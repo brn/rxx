@@ -20,7 +20,8 @@
 import * as React from 'react';
 import {
   ConnectableObservable,
-  Observable
+  Observable,
+  Subscription
 }                 from 'rxjs/Rx';
 import {
   Module
@@ -32,10 +33,8 @@ import {
   IO,
   Event,
   StorageIO,
-  getIOModules,
   BasicIOTypes,
-  IO_MARK,
-  Disposable
+  IO_MARK
 }                 from '../io/io';
 import {
   SERVICE_MARK,
@@ -151,8 +150,7 @@ export class Context extends React.Component<ContextProps, {}> {
    */
   private contextObject: ContextType;
 
-
-  private disposables: Disposable[] = [];
+  private subscription: Subscription;
 
 
   public constructor(props, c) {
@@ -186,13 +184,13 @@ export class Context extends React.Component<ContextProps, {}> {
             result = service.initialize(ioResposens, injector, ...args);
           }
 
-          self.disposables = self.disposables.concat(_.map(ioModules, io => io.subscribe(result)));
+          _.forEach(ioModules, io => self.subscription.add(io.subscribe(result)));
           
           return _.assign(props, result['view'] || {});
         }, {});
       },
       clean() {
-        _.forIn(ioModules, io => io.end());
+        self.subscription.unsubscribe();
       },
       connect,
       injector: injector,
@@ -207,7 +205,7 @@ export class Context extends React.Component<ContextProps, {}> {
 
 
   public componentWillUnmount() {
-    _.forEach(this.disposables, disposable => disposable.dispose());
+    this.contextObject.clean();
   }
 
 

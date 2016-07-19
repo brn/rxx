@@ -93,6 +93,12 @@
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_io_io_.outlet.html" class="tsd-signature-type">Outlet</a></li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -106,7 +112,6 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_io_io_.io.html#end" class="tsd-kind-icon">end</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_io_io_.io.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
 							</ul>
 						</section>
@@ -121,7 +126,7 @@
 					<div class="tsd-signature tsd-kind-icon">response<span class="tsd-signature-symbol">:</span> <a href="../classes/_io_io_.ioresponse.html" class="tsd-signature-type">IOResponse</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L177">io/io.tsx:177</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L145">io/io.tsx:145</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -129,33 +134,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="end" class="tsd-anchor"></a>
-					<h3>end</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">end<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L183">io/io.tsx:183</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="subscribe" class="tsd-anchor"></a>
 					<h3>subscribe</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_io_io_.disposable.html" class="tsd-signature-type">Disposable</a></li>
+						<li class="tsd-signature tsd-kind-icon">subscribe<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Subscription</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L182">io/io.tsx:182</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/master/modules/core/src/io/io.tsx#L150">io/io.tsx:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -174,7 +162,7 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../classes/_io_io_.disposable.html" class="tsd-signature-type">Disposable</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Subscription</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -266,10 +254,10 @@
 						<a href="../enums/_io_io_.storagetype.html" class="tsd-kind-icon">Storage<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_io_io_.disposable.html" class="tsd-kind-icon">Disposable</a>
+						<a href="../classes/_io_io_.ioresponse.html" class="tsd-kind-icon">IOResponse</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_io_io_.ioresponse.html" class="tsd-kind-icon">IOResponse</a>
+						<a href="../classes/_io_io_.outlet.html" class="tsd-kind-icon">Outlet</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="../classes/_io_io_.subjectstore.html" class="tsd-kind-icon">Subject<wbr>Store</a>
@@ -286,6 +274,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_io_io_.httpconfig.html" class="tsd-kind-icon">Http<wbr>Config</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_io_io_.httpresponse.html" class="tsd-kind-icon">Http<wbr>Response</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
@@ -293,9 +284,6 @@
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_io_io_.io.html#response" class="tsd-kind-icon">response</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_io_io_.io.html#end" class="tsd-kind-icon">end</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_io_io_.io.html#subscribe" class="tsd-kind-icon">subscribe</a>
@@ -312,15 +300,6 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_io_io_.html#io_mark" class="tsd-kind-icon">IO_<wbr>MARK</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_io_io_.html#io_modules" class="tsd-kind-icon">IO_<wbr>MODULES</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_io_io_.html#appendiomodulekey" class="tsd-kind-icon">appendIOModule<wbr>Key</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_io_io_.html#getiomodules" class="tsd-kind-icon">getIOModules</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="../modules/_io_io_.html#io-1" class="tsd-kind-icon">io</a>

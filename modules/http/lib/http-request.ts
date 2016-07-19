@@ -20,8 +20,6 @@
 /// <reference path="./declarations.d.ts"/>
 
 import {
-  io,
-  IO,
   IOResponse,
   SubjectStore,
   HttpConfig,
@@ -30,7 +28,7 @@ import {
   param,
   Symbol,
   intercept,
-  Disposable
+  Outlet
 } from '@react-mvi/core';
 import {
   Observable,
@@ -63,39 +61,18 @@ export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__
 /**
  * Http request sender.
  */
-@io
-export class HttpRequest implements IO {
-  /**
-   * Response.
-   */
-  private res: IOResponse;
-
-  /**
-   * Subject holder.
-   */
-  private store: SubjectStore;
-
-
-  /**
-   * @param filters Filter processoers.
-   */
-  public constructor() {
-    this.store = new SubjectStore();
-    this.res   = new IOResponse(this.store);
-  }
-
-
+export class HttpRequest extends Outlet {
   /**
    * Wait for request from observables.
    * @override
    * @param request Observable that send request.
    */
-  public subscribe(props: {[key: string]: any}): Disposable {
-    const disp = new Disposable();
+  public subscribe(props: {[key: string]: any}): Subscription {
+    const subscription = new Subscription();
     if (props['http']) {
       for (let reqKey in props['http']) {
         const req = props['http'][reqKey];
-        disp.addSubscription(req.subscribe((config: HttpConfig) => {
+        subscription.add(req.subscribe((config: HttpConfig) => {
           const subjects = this.store.get(reqKey);
           (() => {
             switch (config.method) {
@@ -139,24 +116,7 @@ export class HttpRequest implements IO {
         }
       }
     }
-    return disp;
-  }
-
-
-  /**
-   * Dispose all subscriptions.
-   * @override
-   */
-  public end() {
-    this.store.end();
-  }
-
-
-  /**
-   * Return response observable.
-   */
-  public get response() {
-    return this.res;
+    return subscription;
   }
 
 

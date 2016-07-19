@@ -16,6 +16,15 @@
  * @author Taketoshi Aono
  */
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var Subject_1 = require('rxjs/Subject');
 var symbol_1 = require('../shims/symbol');
 var lodash_1 = require('../shims/lodash');
@@ -27,15 +36,6 @@ function io(target) {
     target[exports.IO_MARK] = true;
 }
 exports.io = io;
-var IO_MODULES = ['http', 'event', 'storage'];
-exports.appendIOModuleKey = function (name) {
-    if (IO_MODULES.indexOf(name) === -1) {
-        IO_MODULES.push(name);
-        return;
-    }
-    throw new Error(name + " is already registered as io module.");
-};
-exports.getIOModules = function () { return IO_MODULES.slice(); };
 /**
  * Represent IO response.
  */
@@ -120,20 +120,25 @@ var SubjectStore = (function () {
     return SubjectStore;
 }());
 exports.SubjectStore = SubjectStore;
-var Disposable = (function () {
-    function Disposable() {
-        this.subscriptions = [];
+var Outlet = (function () {
+    function Outlet() {
+        this.store = new SubjectStore();
+        this.ioResponse = new IOResponse(this.store);
     }
-    Disposable.prototype.addSubscription = function (subscription) {
-        this.subscriptions.push(subscription);
-    };
-    Disposable.prototype.getSubscriptions = function () { return this.subscriptions; };
-    Disposable.prototype.dispose = function () {
-        lodash_1._.forEach(this.subscriptions, function (subscription) { return subscription.unsubscribe(); });
-    };
-    return Disposable;
+    Object.defineProperty(Outlet.prototype, "response", {
+        get: function () {
+            return this.ioResponse;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Outlet = __decorate([
+        io, 
+        __metadata('design:paramtypes', [])
+    ], Outlet);
+    return Outlet;
 }());
-exports.Disposable = Disposable;
+exports.Outlet = Outlet;
 /**
  * The methods of the Http request.
  */

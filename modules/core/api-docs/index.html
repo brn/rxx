@@ -69,8 +69,6 @@
 				<p>Minimal framework for react + rxjs mvi architecture</p>
 				<p><a href="http://brn.github.io/react-mvi">Documents</a></p>
 				<p>inspired by<br><a href="https://github.com/milankinen/react-combinators">react-combinators</a><br><a href="https://github.com/milankinen/react-reactive-toolkit">react-reactive-toolkit</a></p>
-				<p>Guide
-				<a href="./docs/basic_guide.md">Basic Guide</a></p>
 				<h2 id="requirements">Requirements</h2>
 				<ul>
 					<li>jspm &gt; 0.17.0-beta.16</li>
@@ -117,51 +115,99 @@
     <span class="hljs-string">"baseDir"</span>: <span class="hljs-string">"."</span>,
     <span class="hljs-attr">"baseURL"</span>: <span class="hljs-string">"."</span>,
     <span class="hljs-attr">"paths"</span>: {
-      <span class="hljs-attr">"@react-mvi/core"</span>: [
-        <span class="hljs-string">"jspm_packages/npm/@react-mvi/core*"</span>
-      ],
-      <span class="hljs-attr">"rxjs"</span>: [
-        <span class="hljs-string">"jspm_packages/npm/rxjs/*"</span>
-      ]
+      <span class="hljs-attr">"@react-mvi/core"</span>: [<span class="hljs-string">"jspm_packages/npm/@react-mvi/core@0.3.3-beta.45/index.tsx"</span>],
+      <span class="hljs-attr">"@react-mvi/http"</span>: [<span class="hljs-string">"jspm_packages/npm/@react-mvi/http@0.3.3-beta.41/index.ts"</span>],
+      <span class="hljs-attr">"@react-mvi/event"</span>: [<span class="hljs-string">"jspm_packages/npm/@react-mvi/event@0.3.3-beta.23/index.ts"</span>],
+      <span class="hljs-attr">"rxjs/*"</span>: [<span class="hljs-string">"jspm_packages/npm/rxjs@5.0.0-beta.10/*"</span>]
     }
   }
 }
 </code></pre>
 				<h2 id="simple-usage">Simple Usage</h2>
-				<p>before this example,</p>
-				<ul>
-					<li><code>jspm install @react-mvi/http=npm:@react-mvi/http</code></li>
-					<li><code>jspm install @react-mvi/event=npm:@react-mvi/event</code></li>
-				</ul>
+				<p>See <a href="./docs/basic_guide.md">Basic Guide</a></p>
 				<pre><code class="lang-typescript">import * as React from 'react';
+import {
+  Observable
+} from 'rxjs/Rx';
 import {
   createModule,
   component,
+  IOResponse,
   Tags as T,
-  run
+  run,
+  service,
+  HttpMethod,
+  ResponseType
 } from '@react-mvi/core'
 import {
   EventDispatcher
 } from '@react-mvi/event'
 import {
-  HttpRequest
+  HttpRequest,
+  HttpResponse
 } from '@react-mvi/http'
 
-const Service = ({http, event}) =&gt; {
-  return {
-    counter: event.for('user::click').scan((_, acc) =&gt; acc + 1, 0).publish();
+
+class Repository {
+  public getCounterRequest(counterStream: Observable&lt;number&gt;) {
+    return counterStream.map(counterValue =&gt; ({
+      url: '/count',
+      method: HttpMethod.POST,
+      json: true,
+      responseType: ResponseType.JSON,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        count: counterValue
+      }
+    }));
   }
 }
+
+
+class UseCase {
+  public getCounterValue(event: IOResponse) {
+    return event.for('counter::plus').mapTo(1)
+      .merge(event.for('counter::minus').mapTo(-1))
+      .scan((acc: number, e: number) =&gt; {
+        return acc + e;
+      }, 0)
+  }
+}
+
+
+const Service = service(({http, event}: {[key: string]: IOResponse}, injector) =&gt; {
+  const repository = injector.get('repository');
+  const usecase = injector.get('usecase');
+  const counterRequest = repository.getCounterRequest(usecase.getCounterValue(event));
+  return {
+    http: {
+      'counter::mutate': counterRequest.publish()
+    },
+    view: {
+      counter: http.for&lt;HttpResponse&lt;{count: number}, void&gt;&gt;('counter::mutate').map(e =&gt; e.response.count).startWith(0).publish()
+    }
+  }
+});
+
 
 const module = createModule(config =&gt; {
   config.bind('http').to(HttpRequest);
   config.bind('event').to(EventDispatcher);
+  config.bind('usecase').to(UseCase);
+  config.bind('repository').to(Repository);
   config.bind('aService').toInstance(Service);
 });
 
-const View = component((props, context) =&gt; {
+
+const View = component((props: {counter: Observable&lt;number&gt;}, context) =&gt; {
   return (
-    &lt;T.Div onClick={context.io.event.asc('user::click')}&gt;conter value is {props.counter}&lt;/T.Div&gt;
+    &lt;div&gt;
+      &lt;button onClick={context.io.event.asc('counter::plus')}&gt;Plus&lt;/button&gt;
+      &lt;button onClick={context.io.event.asc('counter::minus')}&gt;Plus&lt;/button&gt;
+      &lt;T.Div&gt;conter value is {props.counter}&lt;/T.Div&gt;
+    &lt;/div&gt;
   )
 });
 

@@ -15,6 +15,15 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 import { Subject } from 'rxjs/Subject';
 import { Symbol } from '../shims/symbol';
 import { _ } from '../shims/lodash';
@@ -25,15 +34,6 @@ export var IO_MARK = Symbol('io');
 export function io(target) {
     target[IO_MARK] = true;
 }
-var IO_MODULES = ['http', 'event', 'storage'];
-export var appendIOModuleKey = function (name) {
-    if (IO_MODULES.indexOf(name) === -1) {
-        IO_MODULES.push(name);
-        return;
-    }
-    throw new Error(name + " is already registered as io module.");
-};
-export var getIOModules = function () { return IO_MODULES.slice(); };
 /**
  * Represent IO response.
  */
@@ -118,20 +118,25 @@ var SubjectStore = (function () {
     return SubjectStore;
 }());
 SubjectStore = SubjectStore;
-var Disposable = (function () {
-    function Disposable() {
-        this.subscriptions = [];
+var Outlet = (function () {
+    function Outlet() {
+        this.store = new SubjectStore();
+        this.ioResponse = new IOResponse(this.store);
     }
-    Disposable.prototype.addSubscription = function (subscription) {
-        this.subscriptions.push(subscription);
-    };
-    Disposable.prototype.getSubscriptions = function () { return this.subscriptions; };
-    Disposable.prototype.dispose = function () {
-        _.forEach(this.subscriptions, function (subscription) { return subscription.unsubscribe(); });
-    };
-    return Disposable;
+    Object.defineProperty(Outlet.prototype, "response", {
+        get: function () {
+            return this.ioResponse;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Outlet = __decorate([
+        io, 
+        __metadata('design:paramtypes', [])
+    ], Outlet);
+    return Outlet;
 }());
-Disposable = Disposable;
+Outlet = Outlet;
 /**
  * The methods of the Http request.
  */

@@ -17,13 +17,15 @@
  */
 
 import {
-  io,
-  Disposable,
   IOResponse,
   SubjectStore,
   Event,
-  isDefined
+  isDefined,
+  Outlet
 } from '@react-mvi/core';
+import {
+  Subscription
+} from 'rxjs/Rx';
 
 
 /**
@@ -35,31 +37,15 @@ const MAX_HISTORY_LENGTH = 10;
 /**
  * Event publisher.
  */
-@io
-export class EventDispatcher implements Event {
-  /**
-   * Subject store.
-   */
-  private store = new SubjectStore();
-
-  /**
-   * IO Response.
-   */
-  private res: IOResponse;
-
+export class EventDispatcher extends Outlet {
   /**
    * Event history.
    */
   private history = [];
 
 
-  public constructor() {
-    this.res = new IOResponse(this.store);
-  }
-
-
-  public subscribe(props: {[key: string]: any}): Disposable {
-    return new Disposable();
+  public subscribe(props: {[key: string]: any}): Subscription {
+    return new Subscription();
   }
 
 
@@ -124,23 +110,5 @@ export class EventDispatcher implements Event {
    */
   public asc(key: string, v?: any): (args?: any) => void {
     return this.asCallback(key, v);
-  }
-
-
-  /**
-   * Dispose all subscriptions.
-   * @override
-   */
-  public end() {
-    this.store.end();
-  }
-
-
-  /**
-   * Return response of events.
-   * @override
-   */
-  public get response() {
-    return this.res;
   }
 }

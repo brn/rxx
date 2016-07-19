@@ -56,7 +56,7 @@ export declare class Context extends React.Component<ContextProps, {}> {
      * Context object.
      */
     private contextObject;
-    private disposables;
+    private subscription;
     constructor(props: any, c: any);
     render(): any;
     componentWillUnmount(): void;

@@ -15,24 +15,23 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core'], function(exports_1, context_1) {
+System.register(['@react-mvi/core', 'rxjs/Rx'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    var __extends = (this && this.__extends) || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var __metadata = (this && this.__metadata) || function (k, v) {
-        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-    };
-    var core_1;
+    var core_1, Rx_1;
     var MAX_HISTORY_LENGTH, EventDispatcher;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+            },
+            function (Rx_1_1) {
+                Rx_1 = Rx_1_1;
             }],
         execute: function() {
             /**
@@ -42,20 +41,17 @@ System.register(['@react-mvi/core'], function(exports_1, context_1) {
             /**
              * Event publisher.
              */
-            EventDispatcher = (function () {
+            EventDispatcher = (function (_super) {
+                __extends(EventDispatcher, _super);
                 function EventDispatcher() {
-                    /**
-                     * Subject store.
-                     */
-                    this.store = new core_1.SubjectStore();
+                    _super.apply(this, arguments);
                     /**
                      * Event history.
                      */
                     this.history = [];
-                    this.res = new core_1.IOResponse(this.store);
                 }
                 EventDispatcher.prototype.subscribe = function (props) {
-                    return new core_1.Disposable();
+                    return new Rx_1.Subscription();
                 };
                 /**
                  * Publish event.
@@ -115,30 +111,8 @@ System.register(['@react-mvi/core'], function(exports_1, context_1) {
                 EventDispatcher.prototype.asc = function (key, v) {
                     return this.asCallback(key, v);
                 };
-                /**
-                 * Dispose all subscriptions.
-                 * @override
-                 */
-                EventDispatcher.prototype.end = function () {
-                    this.store.end();
-                };
-                Object.defineProperty(EventDispatcher.prototype, "response", {
-                    /**
-                     * Return response of events.
-                     * @override
-                     */
-                    get: function () {
-                        return this.res;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                EventDispatcher = __decorate([
-                    core_1.io, 
-                    __metadata('design:paramtypes', [])
-                ], EventDispatcher);
                 return EventDispatcher;
-            }());
+            }(core_1.Outlet));
             exports_1("EventDispatcher", EventDispatcher);
         }
     }

@@ -14,27 +14,19 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { Disposable, IOResponse, Event } from '@react-mvi/core';
+import { Outlet } from '@react-mvi/core';
+import { Subscription } from 'rxjs/Rx';
 /**
  * Event publisher.
  */
-export declare class EventDispatcher implements Event {
-    /**
-     * Subject store.
-     */
-    private store;
-    /**
-     * IO Response.
-     */
-    private res;
+export declare class EventDispatcher extends Outlet {
     /**
      * Event history.
      */
     private history;
-    constructor();
     subscribe(props: {
         [key: string]: any;
-    }): Disposable;
+    }): Subscription;
     /**
      * Publish event.
      * @override
@@ -65,14 +57,4 @@ export declare class EventDispatcher implements Event {
      * @param v Event args.
      */
     asc(key: string, v?: any): (args?: any) => void;
-    /**
-     * Dispose all subscriptions.
-     * @override
-     */
-    end(): void;
-    /**
-     * Return response of events.
-     * @override
-     */
-    readonly response: IOResponse;
 }
