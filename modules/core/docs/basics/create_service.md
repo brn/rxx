@@ -51,6 +51,7 @@ So this class marked as service layer.
 
 Service layer accept two arguments.  
 One is Map of IOResponse.
+Second is Injector.
 
 ### What is IOResponse?
 
@@ -81,3 +82,22 @@ const s = service(({event}: {[key: string]: IOResponse}, injector) => {
 `event.for('foo::bar')` is what we want to do is.  
 Observable created from __for__ method has string key which represent event name,  
 And this string key associate both __input__ and __output__.
+
+### What is Injector
+
+Injector is DI Container factory.  
+Injector is able to create instance from dependency tree that called as Module, passed at initializing.
+
+Examples
+
+```typescript
+const s = service((io, injector) => {
+  repository = injector.get('repository');
+})
+```
+
+That example shows instantiation of Repository class from string key,  
+that repository instance has resolved sub-dependencies.
+
+Wanna know more?  
+See [DI Container](./di_container.md)
