@@ -3,8 +3,8 @@
 ## Create service.
 
 react-mvi has service layer that create props of React Component.  
-Usually service function or class is called by react-mvi by auto at time when you call __run__ function.  
-But react-mvi how do distinguish service and other modules?
+Usually service function or class is called by react-mvi auto when you call __run__ function.  
+But react-mvi how distinguish service and other modules?
 
 Examples
 
@@ -24,7 +24,7 @@ const s = service((io, injector) => {});
 
 We create service module from __service__ function.  
 This __service__ function create function that was marked as service layer.  
-So DI Container could distinguish service and other layer.
+So DI Container is able to distinguish service and other layer.
 
 How is class?
 
@@ -56,15 +56,15 @@ Second is Injector.
 ### What is IOResponse?
 
 IOResponse is class that was created by IO modules.  
-Usually IO modules was input that is accept external value or triggered by external event.  
+Usually IO modules has input method that is accept external value or triggered by external event.  
 Where the output of IO?  
-IOResponse is that, this class represent the result of io and result value was flowed to  
+IOResponse is that, this class represent the result of io, and result value was flowed to  
 Observable created by IOResponse.  
 
 ### How do I create Observable from IOResponse?
 
 Simply, call __for__ method.  
-All IOResponse has for method that create Observbale from string key.
+All IOResponse has __for__ method that create Observbale from string key.
 
 Examples
 
@@ -86,7 +86,7 @@ And this string key associate both __input__ and __output__.
 ### What is Injector
 
 Injector is DI Container factory.  
-Injector is able to create instance from dependency tree that called as Module, passed at initializing.
+Injector is able to create instance from dependency tree that called as _Module_, by passed at initializing.
 
 Examples
 
@@ -105,7 +105,7 @@ See [DI Container](./di_container.md)
 
 ## Service Result
 
-Always service function must return value as showed in following.
+Service function must return value as showed in following.
 
 ```typescript
 const s = service(() => {
@@ -127,7 +127,7 @@ That return value has the __view__ section and other IO specific sections.
 
 In brief,  
 the __view__ section is React Component Props.  
-Only __view__ section was passed to the view component.
+Only __view__ section is passed to the view component.
 
 
 ### IO Specific Section

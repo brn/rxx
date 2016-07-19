@@ -2,24 +2,25 @@
 
 ## Create react component with context.
 
-React component has system called context.
+React Component has system called context.
 
 ### What is context?
 
 Context is system which share common function, properties and etc...  
-Context was unlike props, do not need pass through children components, to share context,  
-simply define context value at the root component and if you want to use context properties,  
-child component simply add some required properties,
+Context was unlike props, do not need pass through children components.
+To share context, simply define context value at the root component  
+and if you want to use context properties,  
+you simply add some required properties to child component.
 
 ### In react-mvi
 
 react-mvi use context system as well.  
 react-mvi context has some useful function or properties and IO modules.  
 
-How do I create component which has context.
+How do you create component which has context?
 
-react-mvi component which has created from __run__ or __runnable__, has root context,  
-so, only you need is create child component by 'component' function of react-mvi.
+The component which has created from __run__ or __runnable__ has root context,  
+so, only you need is create child component by __component__ function of react-mvi/core.
 
 *Exmaples*
 
@@ -66,7 +67,7 @@ Second is class that extends React Component and that class has props and contex
 That's all!  
 
 Oh, forgot one thing,
-The last arguments of __comopnent__ function is component name,  
-what is component name?  
+The last arguments of __comopnent__ function is component name.  
+What is component name?  
 React component has name which named by __function.name__ or __displayName__ property.
 The __component__ function add displayName to your component to easy to debug.
