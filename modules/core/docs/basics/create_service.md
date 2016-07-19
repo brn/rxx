@@ -101,3 +101,37 @@ that repository instance has resolved sub-dependencies.
 
 Wanna know more?  
 See [DI Container](./di_container.md)
+
+
+## Service Result
+
+Always service function must return value as showed in following.
+
+```typescript
+const s = service(() => {
+  return {
+    http: {
+      ...
+    }
+    view: {
+      ...
+    }
+  }
+})
+```
+
+That return value has the __view__ section and other IO specific sections.
+
+
+### View Section
+
+In brief,  
+the __view__ section is React Component Props.  
+Only __view__ section was passed to the view component.
+
+
+### IO Specific Section
+
+The IO specific sections are defined by each IO modules.  
+In below examples __http__ section is IO Specific Section that processed by @react-miv/http.
+Thease section is not decided by core modules, it's specific section for each io modules.
