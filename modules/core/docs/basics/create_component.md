@@ -18,7 +18,7 @@ react-mvi context has some useful function or properties and IO modules.
 
 How do I create component which has context.
 
-react-mvi component which has created from 'run' or 'runnable', has root context,  
+react-mvi component which has created from __run__ or __runnable__, has root context,  
 so, only you need is create child component by 'component' function of react-mvi.
 
 *Exmaples*
@@ -59,13 +59,13 @@ const Component = component(class extends React.Component<Props, {}> {
 ```
 
 It is easy, isn't it?  
-'component' function accept two argument type.  
+__component__ function accept two argument type.  
 One is function that is return React Component and this function called by props and context.  
 Two is class that extends React Component and that class has props and context in instance properties.  
 
 That's all!  
 Oh, forgot one thing,
-The last arguments of 'comopnent' function is component name,  
+The last arguments of __comopnent__ function is component name,  
 what is component name?  
-React component has name which named by 'function name' or 'displayName' property.
-The 'component' function add displayName to your component to easy to debug.
+React component has name which named by __function.name__ or __displayName__ property.
+The __component__ function add displayName to your component to easy to debug.

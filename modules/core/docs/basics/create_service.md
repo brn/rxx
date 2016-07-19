@@ -3,7 +3,7 @@
 ## Create service.
 
 react-mvi has service layer that create props of React Component.  
-Usually service function or class is called by react-mvi by auto at time when you call 'run' function.  
+Usually service function or class is called by react-mvi by auto at time when you call __run__ function.  
 But react-mvi how do distinguish service and other modules?
 
 Examples
@@ -22,8 +22,8 @@ You only need attention to that line.
 const s = service((io, injector) => {});
 ```
 
-We create service module from 'service' function.  
-This 'service' function create function that was marked as service layer.  
+We create service module from __service__ function.  
+This __service__ function create function that was marked as service layer.  
 So DI Container could distinguish service and other layer.
 
 How is class?
@@ -43,7 +43,7 @@ class Service {
 }
 ```
 
-Only you need is use 'service' function as ES6 decorator.  
+Only you need is use __service__ function as ES6 decorator.  
 So this class marked as service layer.
 
 
@@ -62,7 +62,7 @@ Observable created by IOResponse.
 
 ### How do I create Observable from IOResponse?
 
-Simply, call 'for' method.  
+Simply, call __for__ method.  
 All IOResponse has for method that create Observbale from string key.
 
 Examples
@@ -79,5 +79,5 @@ const s = service(({event}: {[key: string]: IOResponse}, injector) => {
 ```
 
 `event.for('foo::bar')` is what we want to do is.  
-Observable created from 'for' method has string key which represent event name,  
-And this string key associate both _input_ and _output_.
+Observable created from __for__ method has string key which represent event name,  
+And this string key associate both __input__ and __output__.
