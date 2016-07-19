@@ -20,6 +20,7 @@
 /// <reference path="./declarations.d.ts"/>
 
 import {
+  io,
   IOResponse,
   SubjectStore,
   HttpConfig,
@@ -61,6 +62,7 @@ export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__
 /**
  * Http request sender.
  */
+@io
 export class HttpRequest extends Outlet {
   /**
    * Wait for request from observables.

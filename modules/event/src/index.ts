@@ -17,6 +17,7 @@
  */
 
 import {
+  io,
   IOResponse,
   SubjectStore,
   Event,
@@ -37,6 +38,7 @@ const MAX_HISTORY_LENGTH = 10;
 /**
  * Event publisher.
  */
+@io
 export class EventDispatcher extends Outlet {
   /**
    * Event history.

@@ -261,6 +261,10 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     __metadata('design:paramtypes', [Number, fetch_1.Response]), 
                     __metadata('design:returntype', promise_1.Promise)
                 ], HttpRequest.prototype, "getResponse", null);
+                HttpRequest = __decorate([
+                    core_1.io, 
+                    __metadata('design:paramtypes', [])
+                ], HttpRequest);
                 return HttpRequest;
             }(core_1.Outlet));
             exports_1("HttpRequest", HttpRequest);

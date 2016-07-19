@@ -29,7 +29,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { IOResponse, HttpMethod, ResponseType, Symbol, intercept, Outlet } from '@react-mvi/core';
+import { io, IOResponse, HttpMethod, ResponseType, Symbol, intercept, Outlet } from '@react-mvi/core';
 import { Subscription, ConnectableObservable } from 'rxjs/Rx';
 import { HttpResponse } from './http-response';
 import { querystring as qs } from './shims/query-string';
@@ -239,6 +239,10 @@ var HttpRequest = (function (_super) {
         __metadata('design:paramtypes', [Number, Response]), 
         __metadata('design:returntype', Promise)
     ], HttpRequest.prototype, "getResponse", null);
+    HttpRequest = __decorate([
+        io, 
+        __metadata('design:paramtypes', [])
+    ], HttpRequest);
     return HttpRequest;
 }(Outlet));
 HttpRequest = HttpRequest;

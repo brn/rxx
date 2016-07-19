@@ -94,7 +94,7 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.4",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.6",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -491,17 +491,17 @@ SystemJS.config({
         "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
       }
     },
-    "npm:@react-mvi/core@0.3.4": {
-      "map": {
-        "core-js": "npm:core-js@2.4.1",
-        "ts": "github:frankwallis/plugin-typescript@4.0.16"
-      }
-    },
     "npm:buffer@4.7.1": {
       "map": {
         "isarray": "npm:isarray@1.0.0",
         "ieee754": "npm:ieee754@1.1.6",
         "base64-js": "npm:base64-js@1.1.2"
+      }
+    },
+    "npm:@react-mvi/core@0.3.6": {
+      "map": {
+        "core-js": "npm:core-js@2.4.1",
+        "ts": "github:frankwallis/plugin-typescript@4.0.16"
       }
     }
   }

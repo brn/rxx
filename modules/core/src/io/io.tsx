@@ -143,7 +143,6 @@ export interface IO {
 }
 
 
-@io
 export abstract class Outlet implements IO {
   protected store = new SubjectStore();
   private ioResponse: IOResponse;

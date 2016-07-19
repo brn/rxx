@@ -21,7 +21,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 import * as React from 'react';
-import { ConnectableObservable } from 'rxjs/Rx';
+import { ConnectableObservable, Subscription } from 'rxjs/Rx';
 import { Injector } from '../di/injector';
 import { IO_MARK } from '../io/io';
 import { SERVICE_MARK } from '../service/service';
@@ -100,6 +100,7 @@ var Context = (function (_super) {
         _super.call(this, props, c);
         var self = this;
         var injector = props.injector ? props.injector : new Injector(props.modules);
+        var subscription = new Subscription();
         var ioModules = _.mapValues(injector.find(function (binding) {
             if (!binding.instance && binding.val) {
                 return binding.val[IO_MARK];
@@ -129,12 +130,12 @@ var Context = (function (_super) {
                     else {
                         result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                     }
-                    _.forEach(ioModules, function (io) { return self.subscription.add(io.subscribe(result)); });
+                    _.forEach(ioModules, function (io) { return subscription.add(io.subscribe(result)); });
                     return _.assign(props, result['view'] || {});
                 }, {});
             },
             clean: function () {
-                self.subscription.unsubscribe();
+                subscription.unsubscribe();
             },
             connect: connect,
             injector: injector,

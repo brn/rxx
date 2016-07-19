@@ -6,7 +6,8 @@ This section describe how you create your own io module.
 
 ```typescript
 import {
-  Outlet
+  Outlet,
+  io
 } from '@react-mvi/core';
 import {
   Observable,
@@ -17,6 +18,7 @@ import {
 } from './my-api';
 
 
+@io
 export class MyIOClass extends Outlet {
   subscribe(props: {[key: string]: Observable<any>}): Subscription {
     const sub = new Subscription();
@@ -40,11 +42,18 @@ export class MyIOClass extends Outlet {
 ```
 
 Below example is send http request by MyApi and submit response to subject with key.  
-Check this line.
+Check these two line.
 
+
+```typescript
+@io
+export class MyIOClass extends Outlet {
 ```
+
+```typescript
 this.store.get(key).forEach
 ```
 
-`this.store` is base class that was named _Outlet_ property and holds some Rx.Subject with keys.  
+First, io module must decorated by io decorator.
+Second, `this.store` is base class that was named _Outlet_ property and holds some Rx.Subject with keys.  
 If your service accessed IOResponse.for(key), at same time Rx.Subject made into Outlet.store with same key.

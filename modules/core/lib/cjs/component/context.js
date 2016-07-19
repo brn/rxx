@@ -101,6 +101,7 @@ var Context = (function (_super) {
         _super.call(this, props, c);
         var self = this;
         var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
+        var subscription = new Rx_1.Subscription();
         var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
             if (!binding.instance && binding.val) {
                 return binding.val[io_1.IO_MARK];
@@ -130,12 +131,12 @@ var Context = (function (_super) {
                     else {
                         result = service.initialize.apply(service, [ioResposens, injector].concat(args));
                     }
-                    lodash_1._.forEach(ioModules, function (io) { return self.subscription.add(io.subscribe(result)); });
+                    lodash_1._.forEach(ioModules, function (io) { return subscription.add(io.subscribe(result)); });
                     return lodash_1._.assign(props, result['view'] || {});
                 }, {});
             },
             clean: function () {
-                self.subscription.unsubscribe();
+                subscription.unsubscribe();
             },
             connect: connect,
             injector: injector,

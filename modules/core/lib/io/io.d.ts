@@ -63,10 +63,6 @@ export declare class SubjectStore {
      * @returns Registered Subject.
      */
     add<T>(key: string): Subject<T>;
-    /**
-     * Dispose all subscriptions.
-     */
-    end(): void;
 }
 /**
  * Interface for IO processor.

@@ -150,13 +150,12 @@ export class Context extends React.Component<ContextProps, {}> {
    */
   private contextObject: ContextType;
 
-  private subscription: Subscription;
-
 
   public constructor(props, c) {
     super(props, c);
     const self = this;
     const injector = props.injector? props.injector: new Injector(props.modules);
+    const subscription: Subscription = new Subscription();
 
     const ioModules: IOTypes = _.mapValues(injector.find(binding => {
       if (!binding.instance && binding.val) {
@@ -184,13 +183,13 @@ export class Context extends React.Component<ContextProps, {}> {
             result = service.initialize(ioResposens, injector, ...args);
           }
 
-          _.forEach(ioModules, io => self.subscription.add(io.subscribe(result)));
+          _.forEach(ioModules, io => subscription.add(io.subscribe(result)));
           
           return _.assign(props, result['view'] || {});
         }, {});
       },
       clean() {
-        self.subscription.unsubscribe();
+        subscription.unsubscribe();
       },
       connect,
       injector: injector,

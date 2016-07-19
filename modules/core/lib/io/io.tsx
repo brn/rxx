@@ -127,14 +127,6 @@ export class SubjectStore {
   public add<T>(key: string): Subject<T> {
     return this.subjectMap[key] = new Subject<T>();
   }
-
-
-  /**
-   * Dispose all subscriptions.
-   */
-  public end() {
-    _.forEach(this.subjectMap, (v: Subject<any>) => v.complete());
-  }
 }
 
 
@@ -151,7 +143,6 @@ export interface IO {
 }
 
 
-@io
 export abstract class Outlet implements IO {
   protected store = new SubjectStore();
   private ioResponse: IOResponse;
