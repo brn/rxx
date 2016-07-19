@@ -11,8 +11,6 @@ inspired by
 
 - Examples
     - [Simple Counter Programe](./docs/basic_guide.md)
--
-
     - [Single Page Application with react-router](./docs/spa.md)
 - Basics
     - [Create component with context](./docs/basics/create_component.md)
