@@ -52,7 +52,7 @@ So this class marked as service layer.
 Service layer accept two arguments.  
 One is Map of IOResponse.
 
-What is IOResponse?
+### What is IOResponse?
 
 IOResponse is class that was created by IO modules.  
 Usually IO modules was input that is accept external value or triggered by external event.  
@@ -60,7 +60,7 @@ Where the output of IO?
 IOResponse is that, this class represent the result of io and result value was flowed to  
 Observable created by IOResponse.  
 
-How do I create Observable from IOResponse?
+### How do I create Observable from IOResponse?
 
 Simply, call 'for' method.  
 All IOResponse has for method that create Observbale from string key.
