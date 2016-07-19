@@ -2,7 +2,7 @@
 
 ## Simple Counter Program
 
-Sample sources exisists in [HERE](../../../examples/counter)
+Sample sources exisists in [HERE](../examples/counter)
 
 ## Preparation
 
