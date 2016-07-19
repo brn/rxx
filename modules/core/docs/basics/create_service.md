@@ -134,4 +134,4 @@ Only __view__ section was passed to the view component.
 
 The IO specific sections are defined by each IO modules.  
 In below examples __http__ section is IO Specific Section that processed by @react-miv/http.
-Thease section is not decided by core modules, it's specific section for each io modules.
+Thease section is not decided by core modules, it's decided by each io modules.
