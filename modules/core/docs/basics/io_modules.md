@@ -14,5 +14,5 @@ So that is simple class which process Observables.
 
 All IO modules has __input__ method named __subscribe__ and __output__ method named __response__,  
 and all observable you passed to IO modules processed or subscribed within that __subscribe__ method  
-and your service function recieve __response__ method return value that is class defined in react-mvi IOResponse  
-as parameters.(See [Create service](./create_service#What_is_IOResponse))
+and your service function recieve __response__ method return value that is defined in react-mvi as IOResponse  
+as parameters.(See [Create service](./create_service.md#What_is_IOResponse))
