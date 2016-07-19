@@ -23,7 +23,7 @@ so, only you need is create child component by 'component' function of react-mvi
 
 *Exmaples*
 
-```
+```typescript
 import {
   component,
   ContextType
@@ -41,7 +41,7 @@ const Component = component((props: Props, context: ContextType): React.Componen
 or
 
 
-```
+```typescript
 import {
   component,
   ContextType
@@ -64,6 +64,7 @@ One is function that is return React Component and this function called by props
 Two is class that extends React Component and that class has props and context in instance properties.  
 
 That's all!  
+
 Oh, forgot one thing,
 The last arguments of __comopnent__ function is component name,  
 what is component name?  

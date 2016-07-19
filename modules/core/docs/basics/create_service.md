@@ -8,7 +8,7 @@ But react-mvi how do distinguish service and other modules?
 
 Examples
 
-```
+```typescript
 import {
   service
 } from '@react-mvi';
@@ -18,7 +18,7 @@ const s = service((io, injector) => {});
 
 You only need attention to that line.
 
-```
+```typescript
 const s = service((io, injector) => {});
 ```
 
@@ -30,7 +30,7 @@ How is class?
 
 Examples
 
-```
+```typescript
 import {
   service
 } from '@react-mvi';
@@ -67,7 +67,7 @@ All IOResponse has for method that create Observbale from string key.
 
 Examples
 
-```
+```typescript
 import {
   service,
   IOResponse
