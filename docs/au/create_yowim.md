@@ -41,7 +41,7 @@ export class MyIOClass extends Outlet {
 }
 ```
 
-Below example is send http request by MyApi and submit response to subject with key.  
+Above example is send http request by MyApi and submit response to subject with key.  
 Check these two line.
 
 

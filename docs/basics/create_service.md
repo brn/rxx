@@ -105,7 +105,7 @@ See [DI Container](./di_container.md)
 
 ## Service Result
 
-Service function must return value as showed in following.
+Service function must return value as showed in below.
 
 ```typescript
 const s = service(() => {
@@ -133,5 +133,5 @@ Only __view__ section is passed to the view component.
 ### IO Specific Section
 
 The IO specific sections are defined by each IO modules.  
-In below examples __http__ section is IO Specific Section that processed by @react-miv/http.
+In above examples __http__ section is IO Specific Section that processed by @react-miv/http.
 Thease section is not decided by core modules, it's decided by each io modules.

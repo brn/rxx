@@ -39,7 +39,7 @@ so this example does not separate modules, all of implementations into index.tsx
 
 ### Specification
 
-Now we show this expample application specification following.
+Now we show this expample application specification as below.
 
 ```
 [Button plus] [Button minus] [String 'counter value 0']

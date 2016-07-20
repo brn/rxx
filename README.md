@@ -12,6 +12,7 @@ inspired by
     - [Simple Counter Programe](./docs/basic_guide.md)
     - [Single Page Application with react-router](./docs/spa.md)
 - Basics
+    - [Setup](./docs/setup.md)
     - [Create component with context](./docs/basics/create_component.md)
     - [Create service](./docs/basics/create_service.md)
     - [IO modules](./docs/basics/io_modules.md)

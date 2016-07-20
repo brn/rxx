@@ -97,8 +97,8 @@ const foo = injector.getInstance(Foo);
 console.log(foo.getName()) // foo bar baz
 ```
 
-Below example shows injector instantiation for AbstractModule pattern.  
-createModule pattern is following.
+Above example shows injector instantiation for AbstractModule pattern.  
+createModule pattern is become like below.
 
 ```typescript
 import {
@@ -118,7 +118,7 @@ console.log(foo.getName()) // foo bar baz
 
 All binded dependencies in module was resolved when __getInstance__ or __get__ called.  
 If your class has property decorated by __inject__ was replaced by Injector.  
-And if you want to inject to parameters, see following.
+And if you want to inject to parameters, see below.
 
 ```typescript
 import {
@@ -137,7 +137,7 @@ This examples show constructor injection by param decoarator.
 This DI Container has interceptor, advise.  
 Interceptor is able to hook process before or after method invocation.
 
-See following.
+See below.
 
 ```
 import {
@@ -190,7 +190,7 @@ Foo
 4
 ```
 
-Below examples show intercept method _doSomething_ by intercept decorator and FooInterceptor.
+Above examples show intercept method _doSomething_ by intercept decorator and FooInterceptor.
 
 ## Work with react-mvi/core run or runner function.
 
