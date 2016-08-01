@@ -67,7 +67,7 @@ var EmptyRoot = function (props) { return props.children; };
  * Subscriber component for Rx.Observable.
  * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
  */
-var Subscriber = (function (_super) {
+export var Subscriber = (function (_super) {
     __extends(Subscriber, _super);
     function Subscriber(p, c) {
         _super.call(this, p, c);
@@ -271,4 +271,3 @@ var Subscriber = (function (_super) {
     };
     return Subscriber;
 }(React.Component));
-Subscriber = Subscriber;

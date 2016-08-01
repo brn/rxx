@@ -15,32 +15,18 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
+System.register(['es6-symbol'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var HAS_SYMBOL, Symbol;
+    var es6_symbol_1;
+    var Symbol;
     return {
-        setters:[],
+        setters:[
+            function (es6_symbol_1_1) {
+                es6_symbol_1 = es6_symbol_1_1;
+            }],
         execute: function() {
-            /**
-             * Check browser has Symbol implementations.
-             */
-            HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
-            /**
-             * Shim of Symbol.
-             */
-            exports_1("Symbol", Symbol = HAS_SYMBOL ? window['Symbol'] : function (key) {
-                return key;
-            });
-            if (!HAS_SYMBOL) {
-                var GLOBAL_SYMBOL_MAP_1 = {};
-                Symbol.for = function (key) {
-                    if (!GLOBAL_SYMBOL_MAP_1[key]) {
-                        GLOBAL_SYMBOL_MAP_1[key] = key;
-                    }
-                    return key;
-                };
-            }
+            exports_1("Symbol", Symbol = es6_symbol_1.default);
         }
     }
 });

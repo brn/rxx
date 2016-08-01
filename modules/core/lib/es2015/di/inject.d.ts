@@ -1,11 +1,11 @@
 /**
  * DI config key.
  */
-export declare const injectionTargetSymbol: any;
+export declare const injectionTargetSymbol: symbol;
 /**
  * Dynamic decorator key.
  */
-export declare const dynamicTargetSymbol: any;
+export declare const dynamicTargetSymbol: symbol;
 /**
  * DIしたいプロパティに設定するデコレータ
  * @param name プロパティ名とは違うモジュールを注入したい場合の名前

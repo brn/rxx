@@ -15,22 +15,5 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-/**
- * Check browser has Symbol implementations.
- */
-var HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
-/**
- * Shim of Symbol.
- */
-export var Symbol = HAS_SYMBOL ? window['Symbol'] : function (key) {
-    return key;
-};
-if (!HAS_SYMBOL) {
-    var GLOBAL_SYMBOL_MAP_1 = {};
-    Symbol.for = function (key) {
-        if (!GLOBAL_SYMBOL_MAP_1[key]) {
-            GLOBAL_SYMBOL_MAP_1[key] = key;
-        }
-        return key;
-    };
-}
+import ES6Symbol from 'es6-symbol';
+export var Symbol = ES6Symbol;

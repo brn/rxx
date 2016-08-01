@@ -25,7 +25,7 @@ import { _ } from '../shims/lodash';
 /**
  * Base implementation of `Module`.
  */
-var AbstractModule = (function () {
+export var AbstractModule = (function () {
     function AbstractModule() {
         /**
          * Map of bindings.
@@ -95,7 +95,6 @@ var AbstractModule = (function () {
     };
     return AbstractModule;
 }());
-AbstractModule = AbstractModule;
 /**
  * Simple utility function that create module.
  * @param fn The configure method body.

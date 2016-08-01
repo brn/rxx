@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Process | react-mvi</title>
+	<title>Symbol | react-mvi</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -57,46 +57,24 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_env_.html">&quot;env&quot;</a>
+					<a href="../modules/_shims_symbol_.html">&quot;shims/symbol&quot;</a>
 				</li>
 				<li>
-					<a href="_env_.process.html">Process</a>
+					<a href="_shims_symbol_.symbol.html">Symbol</a>
 				</li>
 			</ul>
-			<h1>Interface Process</h1>
+			<h1>Interface Symbol</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The MIT License (MIT)
-						Copyright (c) Taketoshi Aono</p>
-					</div>
-					<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;),
-						to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-					and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-					<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-					<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-						FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-					WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-					<dl class="tsd-comment-tags">
-						<dt>fileoverview</dt>
-						<dd></dd>
-						<dt>author</dt>
-						<dd><p>Taketoshi Aono</p>
-						</dd>
-					</dl>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Process</span>
+						<span class="target">Symbol</span>
 					</li>
 				</ul>
 			</section>
@@ -105,33 +83,60 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_env_.process.html#env" class="tsd-kind-icon">env</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_shims_symbol_.symbol.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_shims_symbol_.symbol.html#valueof" class="tsd-kind-icon">value<wbr>Of</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="env" class="tsd-anchor"></a>
-					<h3>env</h3>
-					<div class="tsd-signature tsd-kind-icon">env<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/env.tsx#L21">env.tsx:21</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>NODE_<wbr>ENV<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"production"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"debug"</span></h5>
-							</li>
-						</ul>
-					</div>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="tostring" class="tsd-anchor"></a>
+					<h3>to<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/shims/symbol.tsx#L28">shims/symbol.tsx:28</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a string representation of an object.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="valueof" class="tsd-anchor"></a>
+					<h3>value<wbr>Of</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">value<wbr>Of<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/shims/symbol.tsx#L31">shims/symbol.tsx:31</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the primitive value of the specified object.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Object</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -180,7 +185,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_di_module_.html">"di/module"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_env_.html">"env"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -198,7 +203,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_shims_lodash_.html">"shims/lodash"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_shims_symbol_.html">"shims/symbol"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -211,17 +216,20 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_env_.process.html" class="tsd-kind-icon">Process</a>
+						<a href="_shims_symbol_.symbol.html" class="tsd-kind-icon">Symbol</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_env_.process.html#env" class="tsd-kind-icon">env</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_shims_symbol_.symbol.html#tostring" class="tsd-kind-icon">to<wbr>String</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_shims_symbol_.symbol.html#valueof" class="tsd-kind-icon">value<wbr>Of</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_env_.html#getprocess" class="tsd-kind-icon">get<wbr>Process</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_shims_symbol_.symbolconstructor.html" class="tsd-kind-icon">Symbol<wbr>Constructor</a>
 					</li>
 				</ul>
 			</nav>

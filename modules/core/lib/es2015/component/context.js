@@ -94,7 +94,7 @@ var connect = function (v) {
 /**
  * React context provider.
  */
-var Context = (function (_super) {
+export var Context = (function (_super) {
     __extends(Context, _super);
     function Context(props, c) {
         _super.call(this, props, c);
@@ -160,7 +160,6 @@ var Context = (function (_super) {
     });
     return Context;
 }(React.Component));
-Context = Context;
 /**
  * Decorator to set specified type as context type.
  * @param target A class constructor.

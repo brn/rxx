@@ -20,7 +20,7 @@ import { Module } from './module';
 /**
  * The key to hold dependency name.
  */
-export declare const INJECTION_NAME_SYMBOL: any;
+export declare const INJECTION_NAME_SYMBOL: symbol;
 /**
  * The main class.
  */

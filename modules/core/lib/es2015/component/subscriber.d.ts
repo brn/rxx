@@ -19,7 +19,7 @@ import * as React from 'react';
  * If this symbol was set to static property,
  * that mean this component is process Observable.
  */
-export declare const SUBSCRIBER_MARK: any;
+export declare const SUBSCRIBER_MARK: symbol;
 /**
  * Subscriber component for Rx.Observable.
  * This component provide an ability that subscribe rxjs stream props by auto detection of children components.

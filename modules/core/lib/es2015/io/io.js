@@ -27,7 +27,7 @@ export function io(target) {
 /**
  * Represent IO response.
  */
-var IOResponse = (function () {
+export var IOResponse = (function () {
     function IOResponse(subjectStore) {
         this.subjectStore = subjectStore;
     }
@@ -45,11 +45,10 @@ var IOResponse = (function () {
     };
     return IOResponse;
 }());
-IOResponse = IOResponse;
 /**
  * Hold Subject cache.
  */
-var SubjectStore = (function () {
+export var SubjectStore = (function () {
     function SubjectStore(subjectMap) {
         if (subjectMap === void 0) { subjectMap = {}; }
         this.subjectMap = subjectMap;
@@ -101,8 +100,7 @@ var SubjectStore = (function () {
     };
     return SubjectStore;
 }());
-SubjectStore = SubjectStore;
-var Outlet = (function () {
+export var Outlet = (function () {
     function Outlet() {
         this.store = new SubjectStore();
         this.ioResponse = new IOResponse(this.store);
@@ -116,7 +114,6 @@ var Outlet = (function () {
     });
     return Outlet;
 }());
-Outlet = Outlet;
 /**
  * The methods of the Http request.
  */

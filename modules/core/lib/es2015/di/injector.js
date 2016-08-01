@@ -97,7 +97,7 @@ var Injections = (function () {
 /**
  * The main class.
  */
-var Injector = (function () {
+export var Injector = (function () {
     /**
      * @param modules The module array that is defined dependencies.
      */
@@ -605,4 +605,3 @@ var Injector = (function () {
     };
     return Injector;
 }());
-Injector = Injector;

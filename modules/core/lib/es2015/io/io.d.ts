@@ -17,7 +17,7 @@
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-export declare const IO_MARK: any;
+export declare const IO_MARK: symbol;
 /**
  * Decorator for io module.
  */

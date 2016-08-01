@@ -147,7 +147,7 @@ SystemJS.config({
   ],
   map: {
     "os": "github:jspm/nodelibs-os@0.2.0-alpha",
-    "es6-symbol": "npm:es6-symbol@3.0.2",
+    "es6-symbol": "npm:es6-symbol@3.1.0",
     "lodash": "npm:lodash@4.13.1",
     "react-dom": "npm:react-dom@15.1.0",
     "rxjs": "npm:rxjs@5.0.0-beta.8",
@@ -167,7 +167,7 @@ SystemJS.config({
     "react": "npm:react@15.1.0",
     "stream": "github:jspm/nodelibs-stream@0.2.0-alpha",
     "string_decoder": "github:jspm/nodelibs-string_decoder@0.2.0-alpha",
-    "ts": "github:frankwallis/plugin-typescript@4.0.16",
+    "ts": "github:frankwallis/plugin-typescript@5.0.8",
     "url": "github:jspm/nodelibs-url@0.2.0-alpha",
     "util": "github:jspm/nodelibs-util@0.2.0-alpha",
     "vm": "github:jspm/nodelibs-vm@0.2.0-alpha",
@@ -176,26 +176,14 @@ SystemJS.config({
   packages: {
     "npm:d@0.1.1": {
       "map": {
-        "es5-ext": "npm:es5-ext@0.10.11"
-      }
-    },
-    "npm:es5-ext@0.10.11": {
-      "map": {
-        "es6-iterator": "npm:es6-iterator@2.0.0",
-        "es6-symbol": "npm:es6-symbol@3.0.2"
+        "es5-ext": "npm:es5-ext@0.10.12"
       }
     },
     "npm:es6-iterator@2.0.0": {
       "map": {
         "d": "npm:d@0.1.1",
-        "es5-ext": "npm:es5-ext@0.10.11",
-        "es6-symbol": "npm:es6-symbol@3.0.2"
-      }
-    },
-    "npm:es6-symbol@3.0.2": {
-      "map": {
-        "d": "npm:d@0.1.1",
-        "es5-ext": "npm:es5-ext@0.10.11"
+        "es5-ext": "npm:es5-ext@0.10.12",
+        "es6-symbol": "npm:es6-symbol@3.1.0"
       }
     },
     "npm:lodash@4.13.1": {
@@ -213,7 +201,7 @@ SystemJS.config({
     },
     "github:jspm/nodelibs-buffer@0.2.0-alpha": {
       "map": {
-        "buffer-browserify": "npm:buffer@4.6.0"
+        "buffer-browserify": "npm:buffer@4.7.1"
       }
     },
     "github:jspm/nodelibs-crypto@0.2.0-alpha": {
@@ -279,17 +267,17 @@ SystemJS.config({
     },
     "npm:browserify-rsa@4.0.1": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "randombytes": "npm:randombytes@2.0.3"
       }
     },
     "npm:browserify-sign@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "browserify-rsa": "npm:browserify-rsa@4.0.1",
         "create-hash": "npm:create-hash@1.1.2",
         "create-hmac": "npm:create-hmac@1.1.4",
-        "elliptic": "npm:elliptic@6.2.8",
+        "elliptic": "npm:elliptic@6.3.1",
         "inherits": "npm:inherits@2.0.1",
         "parse-asn1": "npm:parse-asn1@5.0.0"
       }
@@ -298,13 +286,6 @@ SystemJS.config({
       "map": {
         "pako": "npm:pako@0.2.8",
         "readable-stream": "npm:readable-stream@2.1.4"
-      }
-    },
-    "npm:buffer@4.6.0": {
-      "map": {
-        "base64-js": "npm:base64-js@1.1.2",
-        "ieee754": "npm:ieee754@1.1.6",
-        "isarray": "npm:isarray@1.0.0"
       }
     },
     "npm:cipher-base@1.0.2": {
@@ -319,8 +300,8 @@ SystemJS.config({
     },
     "npm:create-ecdh@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
-        "elliptic": "npm:elliptic@6.2.8"
+        "bn.js": "npm:bn.js@4.11.5",
+        "elliptic": "npm:elliptic@6.3.1"
       }
     },
     "npm:create-hash@1.1.2": {
@@ -359,7 +340,7 @@ SystemJS.config({
     },
     "npm:diffie-hellman@5.0.2": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "miller-rabin": "npm:miller-rabin@4.0.0",
         "randombytes": "npm:randombytes@2.0.3"
       }
@@ -400,13 +381,13 @@ SystemJS.config({
     },
     "npm:miller-rabin@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "brorand": "npm:brorand@1.0.5"
       }
     },
     "npm:parse-asn1@5.0.0": {
       "map": {
-        "asn1.js": "npm:asn1.js@4.6.2",
+        "asn1.js": "npm:asn1.js@4.8.0",
         "browserify-aes": "npm:browserify-aes@1.0.6",
         "create-hash": "npm:create-hash@1.1.2",
         "evp_bytestokey": "npm:evp_bytestokey@1.0.0",
@@ -425,7 +406,7 @@ SystemJS.config({
     },
     "npm:public-encrypt@4.0.0": {
       "map": {
-        "bn.js": "npm:bn.js@4.11.4",
+        "bn.js": "npm:bn.js@4.11.5",
         "browserify-rsa": "npm:browserify-rsa@4.0.1",
         "create-hash": "npm:create-hash@1.1.2",
         "parse-asn1": "npm:parse-asn1@5.0.0",
@@ -498,33 +479,49 @@ SystemJS.config({
         "encoding": "npm:encoding@0.1.12"
       }
     },
-    "npm:elliptic@6.2.8": {
-      "map": {
-        "inherits": "npm:inherits@2.0.1",
-        "bn.js": "npm:bn.js@4.11.4",
-        "hash.js": "npm:hash.js@1.0.3",
-        "brorand": "npm:brorand@1.0.5"
-      }
-    },
-    "npm:asn1.js@4.6.2": {
-      "map": {
-        "bn.js": "npm:bn.js@4.11.4",
-        "inherits": "npm:inherits@2.0.1",
-        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
-      }
-    },
-    "github:frankwallis/plugin-typescript@4.0.16": {
-      "map": {
-        "typescript": "npm:typescript@1.8.10"
-      }
-    },
     "github:jspm/nodelibs-os@0.2.0-alpha": {
       "map": {
         "os-browserify": "npm:os-browserify@0.2.1"
       }
     },
-    "npm:typescript@1.8.10": {
-      "map": {}
+    "npm:es6-symbol@3.1.0": {
+      "map": {
+        "d": "npm:d@0.1.1",
+        "es5-ext": "npm:es5-ext@0.10.12"
+      }
+    },
+    "npm:es5-ext@0.10.12": {
+      "map": {
+        "es6-symbol": "npm:es6-symbol@3.1.0",
+        "es6-iterator": "npm:es6-iterator@2.0.0"
+      }
+    },
+    "github:frankwallis/plugin-typescript@5.0.8": {
+      "map": {
+        "typescript": "npm:typescript@2.0.0"
+      }
+    },
+    "npm:elliptic@6.3.1": {
+      "map": {
+        "inherits": "npm:inherits@2.0.1",
+        "bn.js": "npm:bn.js@4.11.5",
+        "hash.js": "npm:hash.js@1.0.3",
+        "brorand": "npm:brorand@1.0.5"
+      }
+    },
+    "npm:asn1.js@4.8.0": {
+      "map": {
+        "inherits": "npm:inherits@2.0.1",
+        "bn.js": "npm:bn.js@4.11.5",
+        "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
+      }
+    },
+    "npm:buffer@4.7.1": {
+      "map": {
+        "isarray": "npm:isarray@1.0.0",
+        "base64-js": "npm:base64-js@1.1.2",
+        "ieee754": "npm:ieee754@1.1.6"
+      }
     }
   }
 });

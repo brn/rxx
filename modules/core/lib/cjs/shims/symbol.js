@@ -16,22 +16,6 @@
  * @author Taketoshi Aono
  */
 "use strict";
-/**
- * Check browser has Symbol implementations.
- */
-var HAS_SYMBOL = typeof window['Symbol'] === 'function' && Object.prototype.toString.call(window['Symbol'].prototype) === '[object Symbol]';
-/**
- * Shim of Symbol.
- */
-exports.Symbol = HAS_SYMBOL ? window['Symbol'] : function (key) {
-    return key;
-};
-if (!HAS_SYMBOL) {
-    var GLOBAL_SYMBOL_MAP_1 = {};
-    exports.Symbol.for = function (key) {
-        if (!GLOBAL_SYMBOL_MAP_1[key]) {
-            GLOBAL_SYMBOL_MAP_1[key] = key;
-        }
-        return key;
-    };
-}
+/// <reference path="../declarations.d.ts"/>
+var es6_symbol_1 = require('es6-symbol');
+exports.Symbol = es6_symbol_1.default;
