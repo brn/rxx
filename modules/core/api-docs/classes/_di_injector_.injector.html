@@ -99,7 +99,8 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#bindings" class="tsd-kind-icon">bindings</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#intercepts" class="tsd-kind-icon">intercepts</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#hasmethodproxydefs" class="tsd-kind-icon">has<wbr>Method<wbr>Proxy<wbr>Defs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#methodproxydefs" class="tsd-kind-icon">method<wbr>Proxy<wbr>Defs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#parent" class="tsd-kind-icon">parent</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#templatedefinitions" class="tsd-kind-icon">template<wbr>Definitions</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#templates" class="tsd-kind-icon">templates</a></li>
@@ -121,6 +122,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_di_injector_.injector.html#getinstancefromself" class="tsd-kind-icon">get<wbr>Instance<wbr>From<wbr>Self</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#getinterceptorinstance" class="tsd-kind-icon">get<wbr>Interceptor<wbr>Instance</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#getmethodproxy" class="tsd-kind-icon">get<wbr>Method<wbr>Proxy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#hasinterceptors" class="tsd-kind-icon">has<wbr>Interceptors</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_di_injector_.injector.html#initialize" class="tsd-kind-icon">initialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_di_injector_.injector.html#inject" class="tsd-kind-icon">inject</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_di_injector_.injector.html#injectonce" class="tsd-kind-icon">inject<wbr>Once</a></li>
@@ -146,7 +148,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L159">di/injector.tsx:159</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L162">di/injector.tsx:162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -175,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">bindings<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_di_binding_.bindingrelation.html" class="tsd-signature-type">BindingRelation</a><span class="tsd-signature-symbol"> =&nbsp;{} as BindingRelation</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L144">di/injector.tsx:144</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L144">di/injector.tsx:144</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -185,12 +187,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="intercepts" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> intercepts</h3>
-					<div class="tsd-signature tsd-kind-icon">intercepts<span class="tsd-signature-symbol">:</span> <a href="_di_binding_.interceptplaceholder.html" class="tsd-signature-type">InterceptPlaceholder</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<a name="hasmethodproxydefs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> has<wbr>Method<wbr>Proxy<wbr>Defs</h3>
+					<div class="tsd-signature tsd-kind-icon">has<wbr>Method<wbr>Proxy<wbr>Defs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L149">di/injector.tsx:149</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L162">di/injector.tsx:162</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="methodproxydefs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> method<wbr>Proxy<wbr>Defs</h3>
+					<div class="tsd-signature tsd-kind-icon">method<wbr>Proxy<wbr>Defs<span class="tsd-signature-symbol">:</span> <a href="_di_binding_.interceptplaceholder.html" class="tsd-signature-type">InterceptPlaceholder</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L149">di/injector.tsx:149</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -205,7 +217,7 @@
 					<div class="tsd-signature tsd-kind-icon">parent<span class="tsd-signature-symbol">:</span> <a href="_di_injector_.injector.html" class="tsd-signature-type">Injector</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L139">di/injector.tsx:139</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L139">di/injector.tsx:139</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -220,7 +232,7 @@
 					<div class="tsd-signature tsd-kind-icon">template<wbr>Definitions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L159">di/injector.tsx:159</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L159">di/injector.tsx:159</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -243,7 +255,7 @@
 					<div class="tsd-signature tsd-kind-icon">templates<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_di_binding_.bindingrelation.html" class="tsd-signature-type">BindingRelation</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L154">di/injector.tsx:154</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L154">di/injector.tsx:154</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -265,7 +277,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L624">di/injector.tsx:624</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L632">di/injector.tsx:632</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -299,7 +311,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L474">di/injector.tsx:474</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L479">di/injector.tsx:479</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -346,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L290">di/injector.tsx:290</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L294">di/injector.tsx:294</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -378,7 +390,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L399">di/injector.tsx:399</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L404">di/injector.tsx:404</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -425,7 +437,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L363">di/injector.tsx:363</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L368">di/injector.tsx:368</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -482,7 +494,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L381">di/injector.tsx:381</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L386">di/injector.tsx:386</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -533,13 +545,13 @@
 					<a name="findonparent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> find<wbr>OnParent</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>OnParent<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>OnParent<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L542">di/injector.tsx:542</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L547">di/injector.tsx:547</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -551,13 +563,31 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>cb: <span class="tsd-signature-type">Function</span></h5>
+									<h5>cb: <span class="tsd-signature-type">function</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Callback function.</p>
 									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>injector<span class="tsd-signature-symbol">: </span><a href="_di_injector_.injector.html" class="tsd-signature-type">Injector</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>injector: <a href="_di_injector_.injector.html" class="tsd-signature-type">Injector</a></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -571,7 +601,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L559">di/injector.tsx:559</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L567">di/injector.tsx:567</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -603,7 +633,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L302">di/injector.tsx:302</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L307">di/injector.tsx:307</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -635,7 +665,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L577">di/injector.tsx:577</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L585">di/injector.tsx:585</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -685,7 +715,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L317">di/injector.tsx:317</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L322">di/injector.tsx:322</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -717,7 +747,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L661">di/injector.tsx:661</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L672">di/injector.tsx:672</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -749,7 +779,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L677">di/injector.tsx:677</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L688">di/injector.tsx:688</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -808,6 +838,23 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="hasinterceptors" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> has<wbr>Interceptors</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Interceptors<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L695">di/injector.tsx:695</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="initialize" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> initialize</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -817,7 +864,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L173">di/injector.tsx:173</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L177">di/injector.tsx:177</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -848,7 +895,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L227">di/injector.tsx:227</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L231">di/injector.tsx:231</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -910,7 +957,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L277">di/injector.tsx:277</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L281">di/injector.tsx:281</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -955,7 +1002,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L261">di/injector.tsx:261</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L265">di/injector.tsx:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1017,7 +1064,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L190">di/injector.tsx:190</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L194">di/injector.tsx:194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1039,7 +1086,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L423">di/injector.tsx:423</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L428">di/injector.tsx:428</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1084,7 +1131,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L349">di/injector.tsx:349</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L354">di/injector.tsx:354</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1104,7 +1151,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/a673a23/modules/core/src/di/injector.tsx#L340">di/injector.tsx:340</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L345">di/injector.tsx:345</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1207,7 +1254,10 @@
 								<a href="_di_injector_.injector.html#bindings" class="tsd-kind-icon">bindings</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_di_injector_.injector.html#intercepts" class="tsd-kind-icon">intercepts</a>
+								<a href="_di_injector_.injector.html#hasmethodproxydefs" class="tsd-kind-icon">has<wbr>Method<wbr>Proxy<wbr>Defs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_di_injector_.injector.html#methodproxydefs" class="tsd-kind-icon">method<wbr>Proxy<wbr>Defs</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_di_injector_.injector.html#parent" class="tsd-kind-icon">parent</a>
@@ -1256,6 +1306,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_di_injector_.injector.html#getmethodproxy" class="tsd-kind-icon">get<wbr>Method<wbr>Proxy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_di_injector_.injector.html#hasinterceptors" class="tsd-kind-icon">has<wbr>Interceptors</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_di_injector_.injector.html#initialize" class="tsd-kind-icon">initialize</a>

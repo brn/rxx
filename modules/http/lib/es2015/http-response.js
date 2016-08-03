@@ -3,7 +3,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-var HttpResponse = (function () {
+export var HttpResponse = (function () {
     function HttpResponse(_ok, _status, _response, _error) {
         if (_error === void 0) { _error = null; }
         this._ok = _ok;
@@ -33,4 +33,3 @@ var HttpResponse = (function () {
     });
     return HttpResponse;
 }());
-HttpResponse = HttpResponse;

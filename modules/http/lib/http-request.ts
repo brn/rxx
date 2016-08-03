@@ -58,6 +58,7 @@ export {IOResponse, HttpConfig, HttpMethod, ResponseType};
 export const HTTP_INTERCEPT = Symbol('__http_request_intercept__');
 export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 
+const typeMatcher = /\[object ([^\]]+)\]/
 
 /**
  * Http request sender.
@@ -150,12 +151,12 @@ export class HttpRequest extends Outlet {
    * @returns Promise that return response.
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
-  private post({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
+  private post({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
     return this.fetch(url, {
       headers,
       method: 'POST',
       mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): data
+      body: json? JSON.stringify(data): form? this.serialize(data): data
     });
   }
 
@@ -167,12 +168,12 @@ export class HttpRequest extends Outlet {
    * @returns Promise that return response.
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
-  private put({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
+  private put({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
     return this.fetch(url, {
       headers: headers,
       method: 'PUT',
       mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): data
+      body: json? JSON.stringify(data): form? this.serialize(data): data
     });
   }
 
@@ -184,12 +185,12 @@ export class HttpRequest extends Outlet {
    * @returns Promise that return response.
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
-  private delete<T>({url, headers = {}, data = {} as any, json = true, mode}: HttpConfig): Promise<Response> {
+  private delete<T>({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
     return this.fetch(url, {
       headers: headers,
       method: 'DELETE',
       mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): data
+      body: json? JSON.stringify(data): form? this.serialize(data): data
     });
   }
 
@@ -231,5 +232,44 @@ export class HttpRequest extends Outlet {
       return ResponseType.BLOB;
     }
     return ResponseType.TEXT;
+  }
+
+
+  private serialize(data: any): string {
+    const ret = [];
+    this.doSerialize(data, ret);
+    return ret.join('&');
+  }
+
+
+  private doSerialize(data: any, resultCollection: string[], parentKey: string = ''): void {
+    const type = this.getType(data);
+    if (type === 'Object') {
+      for (let key in data) {
+        const valueType = this.getType(data[key]);
+        const keyValue = `${parentKey? parentKey + '.': ''}${key}`;
+        if (valueType === 'String' ||
+            valueType === 'Number' ||
+            valueType === 'RegExp' ||
+            valueType === 'Boolean') {
+          resultCollection.push(`${keyValue}=${String(data[key])}`);
+        } else if (valueType === 'Date') {
+          resultCollection.push(`${keyValue}=${+(data[key])}`);
+        } else if (valueType === 'Object') {
+          this.doSerialize(data[key], resultCollection, key);
+        } else if (valueType === 'Array') {
+          this.doSerialize(data[key], resultCollection, key);
+        }
+      }
+    } else if (type === 'Array') {
+      for (let i = 0, len = data.length; i < len; i++) {
+        resultCollection.push(`${parentKey}[i]=${data[i]}`);
+      }
+    }
+  }
+
+
+  private getType(value): string {
+    return Object.prototype.toString.call(value).match(typeMatcher)[1]
   }
 }

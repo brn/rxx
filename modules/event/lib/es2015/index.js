@@ -38,7 +38,7 @@ var MAX_HISTORY_LENGTH = 10;
 /**
  * Event publisher.
  */
-var EventDispatcher = (function (_super) {
+export var EventDispatcher = (function (_super) {
     __extends(EventDispatcher, _super);
     function EventDispatcher() {
         _super.apply(this, arguments);
@@ -114,4 +114,3 @@ var EventDispatcher = (function (_super) {
     ], EventDispatcher);
     return EventDispatcher;
 }(Outlet));
-EventDispatcher = EventDispatcher;

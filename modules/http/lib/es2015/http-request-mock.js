@@ -13,7 +13,7 @@ import { Response } from './shims/fetch';
 /**
  * Mock class for HttpRequest.
  */
-var HttpRequestMock = (function (_super) {
+export var HttpRequestMock = (function (_super) {
     __extends(HttpRequestMock, _super);
     /**
      * @param methods Definitions of each method return value.
@@ -52,4 +52,3 @@ var HttpRequestMock = (function (_super) {
     });
     return HttpRequestMock;
 }(HttpRequest));
-HttpRequestMock = HttpRequestMock;

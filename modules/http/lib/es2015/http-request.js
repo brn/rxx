@@ -38,10 +38,11 @@ import { fetch, Response } from './shims/fetch';
 export { IOResponse, HttpMethod, ResponseType };
 export var HTTP_INTERCEPT = Symbol('__http_request_intercept__');
 export var HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
+var typeMatcher = /\[object ([^\]]+)\]/;
 /**
  * Http request sender.
  */
-var HttpRequest = (function (_super) {
+export var HttpRequest = (function (_super) {
     __extends(HttpRequest, _super);
     function HttpRequest() {
         _super.apply(this, arguments);
@@ -136,12 +137,12 @@ var HttpRequest = (function (_super) {
      * @returns Promise that return response.
      */
     HttpRequest.prototype.post = function (_a) {
-        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
         return this.fetch(url, {
             headers: headers,
             method: 'POST',
             mode: mode || 'same-origin',
-            body: json ? JSON.stringify(data) : data
+            body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
         });
     };
     /**
@@ -151,12 +152,12 @@ var HttpRequest = (function (_super) {
      * @returns Promise that return response.
      */
     HttpRequest.prototype.put = function (_a) {
-        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
         return this.fetch(url, {
             headers: headers,
             method: 'PUT',
             mode: mode || 'same-origin',
-            body: json ? JSON.stringify(data) : data
+            body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
         });
     };
     /**
@@ -166,12 +167,12 @@ var HttpRequest = (function (_super) {
      * @returns Promise that return response.
      */
     HttpRequest.prototype.delete = function (_a) {
-        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+        var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
         return this.fetch(url, {
             headers: headers,
             method: 'DELETE',
             mode: mode || 'same-origin',
-            body: json ? JSON.stringify(data) : data
+            body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
         });
     };
     /**
@@ -209,6 +210,44 @@ var HttpRequest = (function (_super) {
         }
         return ResponseType.TEXT;
     };
+    HttpRequest.prototype.serialize = function (data) {
+        var ret = [];
+        this.doSerialize(data, ret);
+        return ret.join('&');
+    };
+    HttpRequest.prototype.doSerialize = function (data, resultCollection, parentKey) {
+        if (parentKey === void 0) { parentKey = ''; }
+        var type = this.getType(data);
+        if (type === 'Object') {
+            for (var key in data) {
+                var valueType = this.getType(data[key]);
+                var keyValue = "" + (parentKey ? parentKey + '.' : '') + key;
+                if (valueType === 'String' ||
+                    valueType === 'Number' ||
+                    valueType === 'RegExp' ||
+                    valueType === 'Boolean') {
+                    resultCollection.push(keyValue + "=" + String(data[key]));
+                }
+                else if (valueType === 'Date') {
+                    resultCollection.push(keyValue + "=" + +(data[key]));
+                }
+                else if (valueType === 'Object') {
+                    this.doSerialize(data[key], resultCollection, key);
+                }
+                else if (valueType === 'Array') {
+                    this.doSerialize(data[key], resultCollection, key);
+                }
+            }
+        }
+        else if (type === 'Array') {
+            for (var i = 0, len = data.length; i < len; i++) {
+                resultCollection.push(parentKey + "[i]=" + data[i]);
+            }
+        }
+    };
+    HttpRequest.prototype.getType = function (value) {
+        return Object.prototype.toString.call(value).match(typeMatcher)[1];
+    };
     __decorate([
         intercept(HTTP_REQUEST_INTERCEPT), 
         __metadata('design:type', Function), 
@@ -245,4 +284,3 @@ var HttpRequest = (function (_super) {
     ], HttpRequest);
     return HttpRequest;
 }(Outlet));
-HttpRequest = HttpRequest;

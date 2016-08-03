@@ -125,7 +125,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     /**
                      * Definition of interceptor bindings.
                      */
-                    this.intercepts = [];
+                    this.methodProxyDefs = [];
                     /**
                      * Definition of template bindings.
                      */
@@ -134,7 +134,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                      * Definition of template.
                      */
                     this.templateDefinitions = {};
+                    this.hasMethodProxyDefs = false;
                     this.initialize(modules);
+                    this.hasMethodProxyDefs = this.hasInterceptors();
                 }
                 /**
                  * Iniaitlize modules and injector.
@@ -147,7 +149,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         mod.configure();
                         lodash_1._.extend(obj, mod.getBindings());
                         lodash_1._.extend(_this.templates, mod.getTemplates());
-                        _this.intercepts = _this.intercepts.concat(mod.getIntercepts() || []);
+                        _this.methodProxyDefs = _this.methodProxyDefs.concat(mod.getIntercepts() || []);
                     });
                     obj['injector'] = this.fromParams(this);
                     this.bindings = obj;
@@ -252,6 +254,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                 Injector.prototype.createChildInjector = function (modules) {
                     var injector = new Injector(modules);
                     injector.parent = this;
+                    injector.hasMethodProxyDefs = injector.hasInterceptors();
                     return injector;
                 };
                 /**
@@ -304,8 +307,8 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  */
                 Injector.prototype.keys = function () {
                     var ret = [];
-                    this.findOnParent(function (bindings) {
-                        ret = ret.concat(lodash_1._.map(bindings, function (binding, name) { return name; }));
+                    this.findOnParent(function (injector) {
+                        ret = ret.concat(lodash_1._.map(injector.bindings, function (binding, name) { return name; }));
                         return true;
                     });
                     return ret;
@@ -316,7 +319,8 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  */
                 Injector.prototype.find = function (predicate) {
                     var results = {};
-                    this.findOnParent(function (bindings) {
+                    this.findOnParent(function (_a) {
+                        var bindings = _a.bindings;
                         lodash_1._.forIn(bindings, function (v, k) {
                             if (predicate(v, k)) {
                                 results[k] = v;
@@ -353,7 +357,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         var keyArgs = this.createArguments(new Injections(null, ret), params, true);
                         lodash_1._.assign(ret, keyArgs);
                     }
-                    if (this.intercepts.length > 0) {
+                    if (this.hasMethodProxyDefs) {
                         this.applyInterceptor(ret);
                     }
                     if (ret && ret['postInit']) {
@@ -438,7 +442,8 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         dynamicName = isDynamic ? resources[i][1] : null;
                         if (lodash_1._.isRegExp(bindingName)) {
                             var inner = [];
-                            this.findOnParent(function (bindings, templates) {
+                            this.findOnParent(function (_a) {
+                                var bindings = _a.bindings, templates = _a.templates;
                                 lodash_1._.forEach(lodash_1._.assign(bindings, templates), function (binding, name) {
                                     bindingName.test(name) && inner.push(_this.getInstance(name, null, binding, false));
                                     lodash_1._.forEach(keys, function (key) {
@@ -458,7 +463,8 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         }
                         else {
                             var item;
-                            this.findOnParent(function (bindings, templates) {
+                            this.findOnParent(function (_a) {
+                                var bindings = _a.bindings, templates = _a.templates;
                                 item = bindings[bindingName] || templates[bindingName] || (params ? _this.fromParams(params[bindingName]) : null);
                                 if (item) {
                                     return false;
@@ -486,13 +492,16 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  */
                 Injector.prototype.findOnParent = function (cb) {
                     var injector = this;
+                    var ret = [];
                     while (injector) {
-                        var ret = cb(injector.bindings, injector.templates);
-                        if (!ret) {
-                            return;
+                        var result = cb(injector);
+                        if (!result) {
+                            return ret;
                         }
+                        ret.push(result);
                         injector = injector.parent;
                     }
+                    return ret;
                 };
                 /**
                  * Create binding from additional parameter.
@@ -548,7 +557,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     else {
                         ret = null;
                     }
-                    if (this.intercepts.length > 0) {
+                    if (this.hasMethodProxyDefs) {
                         this.applyInterceptor(ret);
                     }
                     if (isTemplate && dynamicName) {
@@ -565,29 +574,33 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     if (inst[PROXIED_MARK]) {
                         return;
                     }
-                    lodash_1._.every(this.intercepts, function (i) {
-                        if (inst[i.targetSymbol]) {
-                            if (lodash_1._.isRegExp(inst[i.targetSymbol][0])) {
-                                var regexp_1 = inst[i.targetSymbol][0];
-                                lodash_1._.forIn(inst, function (v, k) {
-                                    if (regexp_1.test(k)) {
-                                        inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
-                                    }
-                                });
-                                return false;
-                            }
-                            else {
-                                lodash_1._.forIn(inst[i.targetSymbol], function (s) {
-                                    if (inst[s]) {
-                                        if (typeof inst[s] !== 'function') {
-                                            throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));
+                    this.findOnParent(function (_a) {
+                        var methodProxyDefs = _a.methodProxyDefs;
+                        lodash_1._.every(methodProxyDefs, function (i) {
+                            if (inst[i.targetSymbol]) {
+                                if (lodash_1._.isRegExp(inst[i.targetSymbol][0])) {
+                                    var regexp_1 = inst[i.targetSymbol][0];
+                                    lodash_1._.forIn(inst, function (v, k) {
+                                        if (regexp_1.test(k)) {
+                                            inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
                                         }
-                                        inst[s] = _this.getMethodProxy(inst, inst[s], _this.getInterceptorInstance(i), s);
-                                    }
-                                });
+                                    });
+                                    return false;
+                                }
+                                else {
+                                    lodash_1._.forIn(inst[i.targetSymbol], function (s) {
+                                        if (inst[s]) {
+                                            if (typeof inst[s] !== 'function') {
+                                                throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));
+                                            }
+                                            inst[s] = _this.getMethodProxy(inst, inst[s], _this.getInterceptorInstance(i), s);
+                                        }
+                                    });
+                                }
+                                inst[PROXIED_MARK] = true;
                             }
-                            inst[PROXIED_MARK] = true;
-                        }
+                            return true;
+                        });
                         return true;
                     });
                 };
@@ -618,6 +631,15 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         }
                         return interceptor.invoke(new method_proxy_1.MethodInvocation(base, context, args, context[INJECTION_NAME_SYMBOL], propertyKey));
                     };
+                };
+                Injector.prototype.hasInterceptors = function () {
+                    var has = false;
+                    this.findOnParent(function (_a) {
+                        var methodProxyDefs = _a.methodProxyDefs;
+                        has = methodProxyDefs.length > 0;
+                        return has ? false : true;
+                    });
+                    return has;
                 };
                 return Injector;
             }());

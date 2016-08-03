@@ -143,15 +143,15 @@ gulp.task('publish', ['pre-publish'], done => {
 
 
 gulp.task('update-core', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save`, done);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, done);
   });
 });
 
 
 gulp.task('update-core-and-publish', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
+    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
   });
 });
 

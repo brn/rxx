@@ -194,6 +194,7 @@ export interface HttpConfig {
   mode?: 'cors'|'same-origin'|'no-cors';
   json?: boolean;
   data?: string|Blob|FormData,
+  form?: boolean;
   responseType?: ResponseType
   sendToken?: boolean
 };

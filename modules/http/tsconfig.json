@@ -8,11 +8,5 @@
     "jsx": "React",
     "module": "system",
     "noImplicitAny": false
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "_references.d.ts"
-  ]
+  }
 }

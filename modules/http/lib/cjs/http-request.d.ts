@@ -19,8 +19,8 @@ import { IOResponse, HttpConfig, HttpMethod, ResponseType, Outlet } from '@react
 import { Subscription } from 'rxjs/Rx';
 import { Fetch } from './shims/fetch';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
-export declare const HTTP_INTERCEPT: any;
-export declare const HTTP_REQUEST_INTERCEPT: any;
+export declare const HTTP_INTERCEPT: symbol;
+export declare const HTTP_REQUEST_INTERCEPT: symbol;
 /**
  * Http request sender.
  */
@@ -47,21 +47,21 @@ export declare class HttpRequest extends Outlet {
      * @data data POST body.
      * @returns Promise that return response.
      */
-    private post({url, headers, data, json, mode});
+    private post({url, headers, data, json, form, mode});
     /**
      * Send PUT request.
      * @data url Target url.
      * @data data PUT body.
      * @returns Promise that return response.
      */
-    private put({url, headers, data, json, mode});
+    private put({url, headers, data, json, form, mode});
     /**
      * Send DELETE request.
      * @data url Target url.
      * @data data PUT body.
      * @returns Promise that return response.
      */
-    private delete<T>({url, headers, data, json, mode});
+    private delete<T>({url, headers, data, json, form, mode});
     /**
      * Get proper response from fetch response body.
      * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...
@@ -70,4 +70,7 @@ export declare class HttpRequest extends Outlet {
      */
     private getResponse(responseType, res);
     private getResponseTypeFromHeader(res);
+    private serialize(data);
+    private doSerialize(data, resultCollection, parentKey?);
+    private getType(value);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/http",
-  "version": "0.3.5",
+  "version": "0.3.12",
   "description": "Http IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "jspmNodeConversion": false,
     "main": "index.js",
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.6",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.3.11",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
       "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
@@ -50,7 +50,7 @@
       "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
       "domain": "github:jspm/nodelibs-domain@^0.2.0-alpha",
       "es6-promise": "npm:es6-promise@^3.2.1",
-      "es6-symbol": "npm:es6-symbol@^3.0.2",
+      "es6-symbol": "npm:es6-symbol@^3.1.0",
       "events": "github:jspm/nodelibs-events@^0.2.0-alpha",
       "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
       "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
@@ -124,6 +124,17 @@
           "process": "@empty",
           "readline": "@empty"
         }
+      },
+      "npm:typescript@2.0.0": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        }
       }
     }
   },
@@ -135,6 +146,6 @@
     "typescript": "^1.9.0-dev.20160526-1.0"
   },
   "dependencies": {
-    "@react-mvi/core": "^0.3.6"
+    "@react-mvi/core": "^0.3.11"
   }
 }

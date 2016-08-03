@@ -146,7 +146,7 @@ export class Injector {
   /**
    * Definition of interceptor bindings.
    */
-  private intercepts: InterceptPlaceholder[] = [];
+  private methodProxyDefs: InterceptPlaceholder[] = [];
 
   /**
    * Definition of template bindings.
@@ -158,11 +158,15 @@ export class Injector {
    */
   private templateDefinitions: {[key: string]: any} = {};
 
+
+  private hasMethodProxyDefs = false;
+
   /**
    * @param modules The module array that is defined dependencies.
    */
   constructor(modules: Module[]) {
-    this.initialize(modules)
+    this.initialize(modules);
+    this.hasMethodProxyDefs = this.hasInterceptors();
   }
 
 
@@ -176,7 +180,7 @@ export class Injector {
       mod.configure();
       _.extend(obj, mod.getBindings());
       _.extend(this.templates, mod.getTemplates());
-      this.intercepts = this.intercepts.concat(mod.getIntercepts() || []);
+      this.methodProxyDefs = this.methodProxyDefs.concat(mod.getIntercepts() || []);
     });
     obj['injector'] = this.fromParams(this);
     this.bindings = obj;
@@ -290,6 +294,7 @@ export class Injector {
   public createChildInjector(modules: Module[]) {
     const injector = new Injector(modules);
     injector.parent = this;
+    injector.hasMethodProxyDefs = injector.hasInterceptors();
     return injector;
   }
 
@@ -348,8 +353,8 @@ export class Injector {
    */
   public keys(): string[] {
     let ret = [];
-    this.findOnParent(bindings => {
-      ret = ret.concat(_.map(bindings, (binding: Binding, name: string) => name));
+    this.findOnParent(injector => {
+      ret = ret.concat(_.map(injector.bindings, (binding: Binding, name: string) => name));
       return true
     });
     return ret;
@@ -362,7 +367,7 @@ export class Injector {
    */
   public find(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
     const results = {} as {[key: string]: Binding};
-    this.findOnParent((bindings: BindingRelation) => {
+    this.findOnParent(({bindings}) => {
       _.forIn(bindings, (v, k) => {
         if (predicate(v, k)) {
           results[k] = v;
@@ -403,7 +408,7 @@ export class Injector {
       let keyArgs = this.createArguments(new Injections<T>(null, ret), params, true) as {};
       _.assign(ret, keyArgs);
     }
-    if (this.intercepts.length > 0) {
+    if (this.hasMethodProxyDefs) {
       this.applyInterceptor(ret);
     }
     if (ret && ret['postInit']) {
@@ -492,7 +497,7 @@ export class Injector {
 
       if (_.isRegExp(bindingName)) {
         var inner = [];
-        this.findOnParent((bindings, templates) => {
+        this.findOnParent(({bindings, templates}) => {
           _.forEach(_.assign(bindings, templates) as any, (binding: Binding, name: string) => {
             bindingName.test(name) && inner.push(this.getInstance<T>(name, null, binding, false));
             _.forEach(keys, key => {
@@ -510,7 +515,7 @@ export class Injector {
         }
       } else {
         var item;
-        this.findOnParent((bindings, templates) => {
+        this.findOnParent(({bindings, templates}) => {
           item = bindings[bindingName] || templates[bindingName] || (params? this.fromParams(params[bindingName]): null);
           if (item) {
             return false;
@@ -539,15 +544,18 @@ export class Injector {
    * Until passed callback return true, traverse parents.
    * @param cb Callback function.
    */
-  private findOnParent(cb: Function) {
-    var injector = this as Injector;
+  private findOnParent(cb: (injector: Injector) => any) {
+    let injector = this as Injector;
+    let ret = [];
     while (injector) {
-      var ret = cb(injector.bindings, injector.templates);
-      if (!ret) {
-        return;
+      const result = cb(injector);
+      if (!result) {
+        return ret;
       }
+      ret.push(result);
       injector = injector.parent;
     }
+    return ret;
   }
 
 
@@ -605,7 +613,7 @@ export class Injector {
       ret = null;
     }
 
-    if (this.intercepts.length > 0) {
+    if (this.hasMethodProxyDefs) {
       this.applyInterceptor(ret);
     }
 
@@ -626,28 +634,31 @@ export class Injector {
       return;
     }
 
-    _.every(this.intercepts, (i: any) => {
-      if (inst[i.targetSymbol]) {
-        if (_.isRegExp(inst[i.targetSymbol][0])) {
-          const regexp = inst[i.targetSymbol][0];
-          _.forIn(inst, (v: Function, k) => {
-            if (regexp.test(k)) {
-              inst[k] = this.getMethodProxy(inst, v, this.getInterceptorInstance(i), k);
-            }
-          })
-          return false;
-        } else {
-          _.forIn(inst[i.targetSymbol], (s: string) => {
-            if (inst[s]) {
-              if (typeof inst[s] !== 'function') {
-                throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);
+    this.findOnParent(({methodProxyDefs}) => {
+      _.every(methodProxyDefs, (i: any) => {
+        if (inst[i.targetSymbol]) {
+          if (_.isRegExp(inst[i.targetSymbol][0])) {
+            const regexp = inst[i.targetSymbol][0];
+            _.forIn(inst, (v: Function, k) => {
+              if (regexp.test(k)) {
+                inst[k] = this.getMethodProxy(inst, v, this.getInterceptorInstance(i), k);
               }
-              inst[s] = this.getMethodProxy(inst, inst[s], this.getInterceptorInstance(i), s);
-            }
-          })
+            })
+            return false;
+          } else {
+            _.forIn(inst[i.targetSymbol], (s: string) => {
+              if (inst[s]) {
+                if (typeof inst[s] !== 'function') {
+                  throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);
+                }
+                inst[s] = this.getMethodProxy(inst, inst[s], this.getInterceptorInstance(i), s);
+              }
+            })
+          }
+          inst[PROXIED_MARK] = true;
         }
-        inst[PROXIED_MARK] = true;
-      }
+        return true;
+      });
       return true;
     });
   }
@@ -678,5 +689,15 @@ export class Injector {
     return (...args) => {
       return interceptor.invoke(new MethodInvocation(base, context, args, context[INJECTION_NAME_SYMBOL], propertyKey));
     }
+  }
+
+
+  private hasInterceptors() {
+    let has = false;
+    this.findOnParent(({methodProxyDefs}) => {
+      has = methodProxyDefs.length > 0;
+      return has? false: true;
+    });
+    return has;
   }
 }

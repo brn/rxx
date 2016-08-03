@@ -36,7 +36,7 @@ export declare class Injector {
     /**
      * Definition of interceptor bindings.
      */
-    private intercepts;
+    private methodProxyDefs;
     /**
      * Definition of template bindings.
      */
@@ -45,6 +45,7 @@ export declare class Injector {
      * Definition of template.
      */
     private templateDefinitions;
+    private hasMethodProxyDefs;
     /**
      * @param modules The module array that is defined dependencies.
      */
@@ -226,4 +227,5 @@ export declare class Injector {
      * @returns Wrapped function.
      */
     private getMethodProxy(context, base, interceptor, propertyKey);
+    private hasInterceptors();
 }

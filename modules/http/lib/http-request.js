@@ -33,7 +33,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1;
-    var HTTP_INTERCEPT, HTTP_REQUEST_INTERCEPT, HttpRequest;
+    var HTTP_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
     return {
         setters:[
             function (core_1_1) {
@@ -60,6 +60,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
             exports_1("ResponseType", core_1.ResponseType);
             exports_1("HTTP_INTERCEPT", HTTP_INTERCEPT = core_1.Symbol('__http_request_intercept__'));
             exports_1("HTTP_REQUEST_INTERCEPT", HTTP_REQUEST_INTERCEPT = core_1.Symbol('__http_request_request_intercept__'));
+            typeMatcher = /\[object ([^\]]+)\]/;
             /**
              * Http request sender.
              */
@@ -158,12 +159,12 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  * @returns Promise that return response.
                  */
                 HttpRequest.prototype.post = function (_a) {
-                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
                     return this.fetch(url, {
                         headers: headers,
                         method: 'POST',
                         mode: mode || 'same-origin',
-                        body: json ? JSON.stringify(data) : data
+                        body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
                     });
                 };
                 /**
@@ -173,12 +174,12 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  * @returns Promise that return response.
                  */
                 HttpRequest.prototype.put = function (_a) {
-                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
                     return this.fetch(url, {
                         headers: headers,
                         method: 'PUT',
                         mode: mode || 'same-origin',
-                        body: json ? JSON.stringify(data) : data
+                        body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
                     });
                 };
                 /**
@@ -188,12 +189,12 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  * @returns Promise that return response.
                  */
                 HttpRequest.prototype.delete = function (_a) {
-                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, mode = _a.mode;
+                    var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
                     return this.fetch(url, {
                         headers: headers,
                         method: 'DELETE',
                         mode: mode || 'same-origin',
-                        body: json ? JSON.stringify(data) : data
+                        body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
                     });
                 };
                 /**
@@ -230,6 +231,44 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                         return core_1.ResponseType.BLOB;
                     }
                     return core_1.ResponseType.TEXT;
+                };
+                HttpRequest.prototype.serialize = function (data) {
+                    var ret = [];
+                    this.doSerialize(data, ret);
+                    return ret.join('&');
+                };
+                HttpRequest.prototype.doSerialize = function (data, resultCollection, parentKey) {
+                    if (parentKey === void 0) { parentKey = ''; }
+                    var type = this.getType(data);
+                    if (type === 'Object') {
+                        for (var key in data) {
+                            var valueType = this.getType(data[key]);
+                            var keyValue = "" + (parentKey ? parentKey + '.' : '') + key;
+                            if (valueType === 'String' ||
+                                valueType === 'Number' ||
+                                valueType === 'RegExp' ||
+                                valueType === 'Boolean') {
+                                resultCollection.push(keyValue + "=" + String(data[key]));
+                            }
+                            else if (valueType === 'Date') {
+                                resultCollection.push(keyValue + "=" + +(data[key]));
+                            }
+                            else if (valueType === 'Object') {
+                                this.doSerialize(data[key], resultCollection, key);
+                            }
+                            else if (valueType === 'Array') {
+                                this.doSerialize(data[key], resultCollection, key);
+                            }
+                        }
+                    }
+                    else if (type === 'Array') {
+                        for (var i = 0, len = data.length; i < len; i++) {
+                            resultCollection.push(parentKey + "[i]=" + data[i]);
+                        }
+                    }
+                };
+                HttpRequest.prototype.getType = function (value) {
+                    return Object.prototype.toString.call(value).match(typeMatcher)[1];
                 };
                 __decorate([
                     core_1.intercept(HTTP_REQUEST_INTERCEPT), 
