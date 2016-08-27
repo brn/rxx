@@ -72,6 +72,33 @@ describe('combinator.tsx', () => {
         done();
       }, 100);
     });
+
+
+    it('Subscribe only root tree.', done => {
+      const className1 = new Subject();
+      const className2 = new Subject();
+      const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
+      const el = render(
+        <Subscriber ignoreSubtree={true}>
+          <div className={className1}>
+            <div className="hoge">
+              <span id="test-el" className={className2}></span>
+            </div>
+          </div>
+        </Subscriber>,
+        div);
+
+      className1.next('className1');
+      className2.next('className2');
+
+      setTimeout(() => {
+        Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
+        Chai.expect(!div.querySelector('.className2')).to.be.eq(true);
+        Chai.expect(div.querySelector('#test-el').className).to.be.eq('[object Object]');
+        div.parentNode.removeChild(div);
+        done();
+      }, 100);
+    });
   });
 
   describe('Tags', () => {
@@ -148,6 +175,28 @@ describe('combinator.tsx', () => {
         Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
         Chai.expect(!!div.querySelector('.className2')).to.be.eq(true);
         Chai.expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
+        div.parentNode.removeChild(div);
+        done();
+      }, 100);
+    });
+
+
+    it('If direct child is Observable, listen that.', done => {
+      const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
+      const ob = Observable.of(1);
+      class Test extends React.Component<any, any> {
+        public render() {
+          return (
+            <Subscriber>
+              {ob.map(v => <span className={`test-${v}`}/>)}
+            </Subscriber>
+          );
+        }
+      };
+
+      render(<Test/>, div);
+      setTimeout(() => {
+        Chai.expect(!!div.querySelector('.test-1')).to.be.eq(true);
         div.parentNode.removeChild(div);
         done();
       }, 100);

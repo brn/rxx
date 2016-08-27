@@ -34,8 +34,8 @@ const toSubscribable = (name: string) => {
   const ret = class extends React.Component<any, any> {
     public render() {
       return (
-        <Subscriber>
-          {React.createElement(name, _.assign(_.omit(this.props, 'ref'), {ref: 'element'}))}
+        <Subscriber ignoreSubtree={this.props.ignoreSubtree}>
+          {React.createElement(name, _.assign(_.omit(this.props, ['ref', 'ignoreSubtree']), {ref: 'element'}))}
         </Subscriber>
       )
     }
@@ -51,7 +51,9 @@ const toSubscribable = (name: string) => {
 /**
  * Attributes of the Subscriber that passed through html tag.
  */
-export interface Attr extends React.HTMLAttributes, React.DOMAttributes, React.ClassAttributes<Element> {}
+export interface Attr extends React.HTMLAttributes, React.DOMAttributes, React.ClassAttributes<Element> {
+  ignoreSubtree?: boolean;
+}
 
 
 /**

@@ -198,25 +198,49 @@ export var Subscriber = (function (_super) {
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    Subscriber.prototype.areThereObservableInChildren = function (el) {
+    Subscriber.prototype.areThereObservableInChildren = function (el, depth) {
         var _this = this;
-        var target = _.filter(el.props ? (el.props.children ? (!_.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return isDefined(v); });
-        return _.some(target, function (child, i) {
-            if (child instanceof Observable) {
-                return true;
-            }
-            return _this.areThereObservableInChildren(child);
-        }) || _.some(_.omit(el.props, 'children'), function (v, k) {
-            return v instanceof Observable;
-        });
+        if (depth === void 0) { depth = 0; }
+        if (el instanceof Observable) {
+            return true;
+        }
+        else {
+            var target_1 = _.filter(el.props ? (el.props.children ? (!_.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return isDefined(v); });
+            var checkChildren = function () { return _.some(target_1, function (child, i) {
+                if (child instanceof Observable) {
+                    return true;
+                }
+                if (_this.props.ignoreSubtree && depth === 1) {
+                    return false;
+                }
+                return _this.areThereObservableInChildren(child, depth + 1);
+            }); };
+            var props_1 = el.props;
+            var checkProps = function () { return _.some(_.omit(props_1, 'children'), function (v, k) {
+                return v instanceof Observable;
+            }); };
+            return checkChildren() || checkProps();
+        }
     };
     /**
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    Subscriber.prototype.cloneChildren = function (el, parent, index) {
+    Subscriber.prototype.cloneChildren = function (el, parent, index, depth) {
         var _this = this;
+        if (depth === void 0) { depth = 0; }
         var newElement = this.createMutableElement(el);
+        _.forEach(_.omit(newElement.props, 'children'), function (v, k) {
+            if (v instanceof Observable) {
+                _this.bindings.push(new ObservableBinding(function (value) {
+                    newElement.props[k] = value;
+                    _this.updateElement(parent, newElement, index);
+                }, v));
+            }
+        });
+        if (this.props.ignoreSubtree && depth === 1) {
+            return newElement;
+        }
         var target = _.filter(newElement.props.children ? (!_.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [], function (v) { return isDefined(v); });
         var children = _.map(target, function (child, i) {
             if (child instanceof Observable) {
@@ -226,17 +250,9 @@ export var Subscriber = (function (_super) {
                 }, child));
             }
             else if (React.isValidElement(child) && !_this.isSubscriber(child)) {
-                return _this.cloneChildren(child, newElement, i);
+                return _this.cloneChildren(child, newElement, i, depth + 1);
             }
             return child;
-        });
-        _.forEach(_.omit(newElement.props, 'children'), function (v, k) {
-            if (v instanceof Observable) {
-                _this.bindings.push(new ObservableBinding(function (value) {
-                    newElement.props[k] = value;
-                    _this.updateElement(parent, newElement, index);
-                }, v));
-            }
         });
         if (newElement.props.children) {
             if (_.isArray(newElement.props.children)) {
@@ -258,7 +274,7 @@ export var Subscriber = (function (_super) {
             this.updateChildren(parent, this.createMutableElement(el), index);
         }
         else {
-            this.mutableTree = this.createMutableElement(this.mutableTree);
+            this.mutableTree = this.createMutableElement(el);
         }
     };
     /**

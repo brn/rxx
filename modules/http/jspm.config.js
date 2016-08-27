@@ -62,7 +62,7 @@ SystemJS.config({
   ],
   map: {
     "@react-mvi/testing": "npm:@react-mvi/testing@0.0.16",
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.11",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.19",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -94,7 +94,7 @@ SystemJS.config({
   packages: {
     "github:jspm/nodelibs-buffer@0.2.0-alpha": {
       "map": {
-        "buffer-browserify": "npm:buffer@4.7.1"
+        "buffer-browserify": "npm:buffer@4.9.1"
       }
     },
     "github:jspm/nodelibs-crypto@0.2.0-alpha": {
@@ -178,7 +178,7 @@ SystemJS.config({
     "npm:browserify-zlib@0.1.4": {
       "map": {
         "pako": "npm:pako@0.2.9",
-        "readable-stream": "npm:readable-stream@2.1.4"
+        "readable-stream": "npm:readable-stream@2.1.5"
       }
     },
     "npm:buffer-shims@1.0.0": {
@@ -264,17 +264,6 @@ SystemJS.config({
         "create-hash": "npm:create-hash@1.1.2"
       }
     },
-    "npm:fbjs@0.8.3": {
-      "map": {
-        "core-js": "npm:core-js@1.2.7",
-        "immutable": "npm:immutable@3.8.1",
-        "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
-        "loose-envify": "npm:loose-envify@1.2.0",
-        "object-assign": "npm:object-assign@4.1.0",
-        "promise": "npm:promise@7.1.1",
-        "ua-parser-js": "npm:ua-parser-js@0.7.10"
-      }
-    },
     "npm:hash.js@1.0.3": {
       "map": {
         "inherits": "npm:inherits@2.0.1"
@@ -290,7 +279,7 @@ SystemJS.config({
     },
     "npm:isomorphic-fetch@2.2.1": {
       "map": {
-        "node-fetch": "npm:node-fetch@1.5.3",
+        "node-fetch": "npm:node-fetch@1.6.0",
         "whatwg-fetch": "npm:whatwg-fetch@1.0.0"
       }
     },
@@ -303,12 +292,6 @@ SystemJS.config({
       "map": {
         "bn.js": "npm:bn.js@4.11.6",
         "brorand": "npm:brorand@1.0.5"
-      }
-    },
-    "npm:node-fetch@1.5.3": {
-      "map": {
-        "encoding": "npm:encoding@0.1.12",
-        "is-stream": "npm:is-stream@1.1.0"
       }
     },
     "npm:parse-asn1@5.0.0": {
@@ -357,20 +340,9 @@ SystemJS.config({
     },
     "npm:react@15.1.0": {
       "map": {
-        "fbjs": "npm:fbjs@0.8.3",
+        "fbjs": "npm:fbjs@0.8.4",
         "loose-envify": "npm:loose-envify@1.2.0",
         "object-assign": "npm:object-assign@4.1.0"
-      }
-    },
-    "npm:readable-stream@2.1.4": {
-      "map": {
-        "buffer-shims": "npm:buffer-shims@1.0.0",
-        "core-util-is": "npm:core-util-is@1.0.2",
-        "inherits": "npm:inherits@2.0.1",
-        "isarray": "npm:isarray@1.0.0",
-        "process-nextick-args": "npm:process-nextick-args@1.0.7",
-        "string_decoder": "npm:string_decoder@0.10.31",
-        "util-deprecate": "npm:util-deprecate@1.0.2"
       }
     },
     "npm:rxjs@5.0.0-beta.8": {
@@ -386,7 +358,7 @@ SystemJS.config({
     "npm:stream-browserify@2.0.1": {
       "map": {
         "inherits": "npm:inherits@2.0.1",
-        "readable-stream": "npm:readable-stream@2.1.4"
+        "readable-stream": "npm:readable-stream@2.1.5"
       }
     },
     "npm:string_decoder@0.10.31": {
@@ -480,31 +452,59 @@ SystemJS.config({
         "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
       }
     },
-    "npm:buffer@4.7.1": {
-      "map": {
-        "ieee754": "npm:ieee754@1.1.6",
-        "isarray": "npm:isarray@1.0.0",
-        "base64-js": "npm:base64-js@1.1.2"
-      }
-    },
     "npm:stream-http@2.3.1": {
       "map": {
-        "readable-stream": "npm:readable-stream@2.1.4",
+        "readable-stream": "npm:readable-stream@2.1.5",
         "inherits": "npm:inherits@2.0.1",
         "builtin-status-codes": "npm:builtin-status-codes@2.0.0",
         "xtend": "npm:xtend@4.0.1",
         "to-arraybuffer": "npm:to-arraybuffer@1.0.1"
       }
     },
-    "github:frankwallis/plugin-typescript@5.0.8": {
+    "npm:node-fetch@1.6.0": {
+      "map": {
+        "is-stream": "npm:is-stream@1.1.0",
+        "encoding": "npm:encoding@0.1.12"
+      }
+    },
+    "npm:fbjs@0.8.4": {
+      "map": {
+        "core-js": "npm:core-js@1.2.7",
+        "loose-envify": "npm:loose-envify@1.2.0",
+        "object-assign": "npm:object-assign@4.1.0",
+        "ua-parser-js": "npm:ua-parser-js@0.7.10",
+        "promise": "npm:promise@7.1.1",
+        "immutable": "npm:immutable@3.8.1",
+        "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1"
+      }
+    },
+    "npm:buffer@4.9.1": {
+      "map": {
+        "base64-js": "npm:base64-js@1.1.2",
+        "isarray": "npm:isarray@1.0.0",
+        "ieee754": "npm:ieee754@1.1.6"
+      }
+    },
+    "npm:readable-stream@2.1.5": {
+      "map": {
+        "inherits": "npm:inherits@2.0.1",
+        "isarray": "npm:isarray@1.0.0",
+        "string_decoder": "npm:string_decoder@0.10.31",
+        "buffer-shims": "npm:buffer-shims@1.0.0",
+        "core-util-is": "npm:core-util-is@1.0.2",
+        "process-nextick-args": "npm:process-nextick-args@1.0.7",
+        "util-deprecate": "npm:util-deprecate@1.0.2"
+      }
+    },
+    "github:frankwallis/plugin-typescript@5.0.11": {
       "map": {
         "typescript": "npm:typescript@2.0.0"
       }
     },
-    "npm:@react-mvi/core@0.3.11": {
+    "npm:@react-mvi/core@0.3.19": {
       "map": {
         "core-js": "npm:core-js@2.4.1",
-        "ts": "github:frankwallis/plugin-typescript@5.0.8"
+        "ts": "github:frankwallis/plugin-typescript@5.0.11"
       }
     }
   }

@@ -19,7 +19,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var method_proxy_1, inject_1, symbol_1, lodash_1;
-    var INJECTION_NAME_SYMBOL, SINGLETON_KEY, PROXIED_MARK, Injections, Injector;
+    var INJECTION_NAME_SYMBOL, SINGLETON_KEY, PROXIED_GUARD_PROP, PROXY_ID, proxyIdValue, Injections, Injector;
     return {
         setters:[
             function (method_proxy_1_1) {
@@ -46,7 +46,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
             /**
              * The key to distinct proxied class.
              */
-            PROXIED_MARK = symbol_1.Symbol('__proxied__');
+            PROXIED_GUARD_PROP = symbol_1.Symbol('__proxied__');
+            PROXY_ID = symbol_1.Symbol('__proxy_id__');
+            proxyIdValue = 0;
             /**
              * Dependency definition.
              */
@@ -135,6 +137,7 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                      */
                     this.templateDefinitions = {};
                     this.hasMethodProxyDefs = false;
+                    this.singletons = {};
                     this.initialize(modules);
                     this.hasMethodProxyDefs = this.hasInterceptors();
                 }
@@ -163,6 +166,12 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     lodash_1._.forIn(this.bindings, function (v, k) {
                         if (v.eagerSingleton) {
                             _this.getInstanceFromSelf(k);
+                        }
+                    });
+                    lodash_1._.forEach(this.methodProxyDefs, function (proxy, k) {
+                        proxy['interceptor'][PROXY_ID] = proxyIdValue++;
+                        if (proxy['eagerSingleton']) {
+                            _this.getInterceptorInstance(proxy);
                         }
                     });
                 };
@@ -515,7 +524,8 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         eagerSingleton: false,
                         instance: true,
                         provider: false,
-                        template: false
+                        template: false,
+                        id: -1
                     };
                 };
                 /**
@@ -531,11 +541,11 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                     var ret;
                     if (item && !item.instance && !item.provider) {
                         if (item.singleton) {
-                            if (!item['_instance']) {
-                                item['_instance'] = this.inject(item.val);
-                                item['_instance'][INJECTION_NAME_SYMBOL] = bindingName;
+                            ret = this.getSingletonInstance(item.id);
+                            if (!ret) {
+                                ret = this.singletons[item.id] = this.inject(item.val);
+                                this.singletons[item.id][INJECTION_NAME_SYMBOL] = bindingName;
                             }
-                            ret = item['_instance'];
                         }
                         else {
                             var instance = this.inject(item.val);
@@ -571,9 +581,6 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  */
                 Injector.prototype.applyInterceptor = function (inst) {
                     var _this = this;
-                    if (inst[PROXIED_MARK]) {
-                        return;
-                    }
                     this.findOnParent(function (_a) {
                         var methodProxyDefs = _a.methodProxyDefs;
                         lodash_1._.every(methodProxyDefs, function (i) {
@@ -582,10 +589,9 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                                     var regexp_1 = inst[i.targetSymbol][0];
                                     lodash_1._.forIn(inst, function (v, k) {
                                         if (regexp_1.test(k)) {
-                                            inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
+                                            _this.doApplyInterceptorIfNeccessary(inst, k, i);
                                         }
                                     });
-                                    return false;
                                 }
                                 else {
                                     lodash_1._.forIn(inst[i.targetSymbol], function (s) {
@@ -593,16 +599,27 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                                             if (typeof inst[s] !== 'function') {
                                                 throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));
                                             }
-                                            inst[s] = _this.getMethodProxy(inst, inst[s], _this.getInterceptorInstance(i), s);
+                                            _this.doApplyInterceptorIfNeccessary(inst, s, i);
                                         }
                                     });
                                 }
-                                inst[PROXIED_MARK] = true;
                             }
                             return true;
                         });
                         return true;
                     });
+                };
+                Injector.prototype.doApplyInterceptorIfNeccessary = function (instance, method, proxyDef) {
+                    var interceptor = this.getInterceptorInstance(proxyDef);
+                    var id = method + ":" + interceptor[PROXY_ID];
+                    if (!instance[PROXIED_GUARD_PROP]) {
+                        instance[PROXIED_GUARD_PROP] = {};
+                    }
+                    if (instance[PROXIED_GUARD_PROP][id]) {
+                        return;
+                    }
+                    instance[PROXIED_GUARD_PROP][id] = true;
+                    instance[method] = this.getMethodProxy(instance, instance[method], interceptor, method);
                 };
                 /**
                  * Get interceptor instance.
@@ -610,10 +627,14 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                  * @returns INterceptor instance.
                  */
                 Injector.prototype.getInterceptorInstance = function (i) {
-                    if (!i.interceptor[SINGLETON_KEY]) {
-                        return this.inject(i.interceptor);
+                    if (i.singleton) {
+                        var ret = this.getSingletonInstance(i.id);
+                        if (!ret) {
+                            return this.singletons[i.id] = this.inject(i.interceptor);
+                        }
+                        return ret;
                     }
-                    return i.interceptor[SINGLETON_KEY];
+                    return this.inject(i.interceptor);
                 };
                 /**
                  * Return wrapped method by interceptor.
@@ -640,6 +661,17 @@ System.register(['./method-proxy', './inject', '../shims/symbol', '../shims/loda
                         return has ? false : true;
                     });
                     return has;
+                };
+                Injector.prototype.getSingletonInstance = function (id) {
+                    var instance = null;
+                    this.findOnParent(function (injector) {
+                        if (injector.singletons[id]) {
+                            instance = injector.singletons[id];
+                            return false;
+                        }
+                        return true;
+                    });
+                    return instance;
                 };
                 return Injector;
             }());

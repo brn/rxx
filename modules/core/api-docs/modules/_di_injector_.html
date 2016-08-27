@@ -82,8 +82,10 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_di_injector_.html#injection_name_symbol" class="tsd-kind-icon">INJECTION_<wbr>NAME_<wbr>SYMBOL</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_di_injector_.html#proxied_mark" class="tsd-kind-icon">PROXIED_<wbr>MARK</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_di_injector_.html#proxied_guard_prop" class="tsd-kind-icon">PROXIED_<wbr>GUARD_<wbr>PROP</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_di_injector_.html#proxy_id" class="tsd-kind-icon">PROXY_<wbr>ID</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_di_injector_.html#singleton_key" class="tsd-kind-icon">SINGLETON_<wbr>KEY</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_di_injector_.html#proxyidvalue" class="tsd-kind-icon">proxy<wbr>IdValue</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,7 +99,7 @@
 					<div class="tsd-signature tsd-kind-icon">INJECTION_<wbr>NAME_<wbr>SYMBOL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;__injectionname__&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L51">di/injector.tsx:51</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/injector.tsx#L51">di/injector.tsx:51</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -107,12 +109,12 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="proxied_mark" class="tsd-anchor"></a>
-					<h3>PROXIED_<wbr>MARK</h3>
-					<div class="tsd-signature tsd-kind-icon">PROXIED_<wbr>MARK<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;__proxied__&#x27;)</span></div>
+					<a name="proxied_guard_prop" class="tsd-anchor"></a>
+					<h3>PROXIED_<wbr>GUARD_<wbr>PROP</h3>
+					<div class="tsd-signature tsd-kind-icon">PROXIED_<wbr>GUARD_<wbr>PROP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;__proxied__&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L63">di/injector.tsx:63</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/injector.tsx#L63">di/injector.tsx:63</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -122,12 +124,22 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="proxy_id" class="tsd-anchor"></a>
+					<h3>PROXY_<wbr>ID</h3>
+					<div class="tsd-signature tsd-kind-icon">PROXY_<wbr>ID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;__proxy_id__&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/injector.tsx#L66">di/injector.tsx:66</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="singleton_key" class="tsd-anchor"></a>
 					<h3>SINGLETON_<wbr>KEY</h3>
 					<div class="tsd-signature tsd-kind-icon">SINGLETON_<wbr>KEY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> =&nbsp;Symbol(&#x27;__instance__&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/injector.tsx#L57">di/injector.tsx:57</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/injector.tsx#L57">di/injector.tsx:57</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -135,6 +147,16 @@
 							<p>The key to hold singleton instance.</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="proxyidvalue" class="tsd-anchor"></a>
+					<h3>proxy<wbr>IdValue</h3>
+					<div class="tsd-signature tsd-kind-icon">proxy<wbr>IdValue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/injector.tsx#L69">di/injector.tsx:69</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -221,10 +243,16 @@
 						<a href="_di_injector_.html#injection_name_symbol" class="tsd-kind-icon">INJECTION_<wbr>NAME_<wbr>SYMBOL</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_di_injector_.html#proxied_mark" class="tsd-kind-icon">PROXIED_<wbr>MARK</a>
+						<a href="_di_injector_.html#proxied_guard_prop" class="tsd-kind-icon">PROXIED_<wbr>GUARD_<wbr>PROP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_di_injector_.html#proxy_id" class="tsd-kind-icon">PROXY_<wbr>ID</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_di_injector_.html#singleton_key" class="tsd-kind-icon">SINGLETON_<wbr>KEY</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_di_injector_.html#proxyidvalue" class="tsd-kind-icon">proxy<wbr>IdValue</a>
 					</li>
 				</ul>
 			</nav>

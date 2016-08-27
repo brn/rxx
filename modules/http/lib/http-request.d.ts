@@ -19,7 +19,7 @@ import { IOResponse, HttpConfig, HttpMethod, ResponseType, Outlet } from '@react
 import { Subscription } from 'rxjs/Rx';
 import { Fetch } from './shims/fetch';
 export { IOResponse, HttpConfig, HttpMethod, ResponseType };
-export declare const HTTP_INTERCEPT: symbol;
+export declare const HTTP_RESPONSE_INTERCEPT: symbol;
 export declare const HTTP_REQUEST_INTERCEPT: symbol;
 /**
  * Http request sender.

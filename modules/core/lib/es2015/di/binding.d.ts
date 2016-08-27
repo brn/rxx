@@ -44,6 +44,10 @@ export interface Binding {
      * Template or not.
      */
     template: boolean;
+    /**
+     * Binding unique id.
+     */
+    id: number;
 }
 /**
  * Dictionary to look up config from bindings.
@@ -114,6 +118,15 @@ export declare class InterceptPlaceholder {
      */
     private interceptor;
     /**
+     * Singleton flag.
+     */
+    private singleton;
+    /**
+     * Eager singleton flag.
+     */
+    private eagerSingleton;
+    private id;
+    /**
      * @param targetSymbol The symbol that set to intercepted.
      */
     constructor(targetSymbol: symbol);
@@ -121,7 +134,7 @@ export declare class InterceptPlaceholder {
      * Do binding.
      * @param methodProxyCtor MethodProxy constructor funciton.
      */
-    to(methodProxyCtor: new () => MethodProxy): void;
+    to(methodProxyCtor: new () => MethodProxy): ClassTypeOption;
 }
 /**
  * Hold template definitions and values.

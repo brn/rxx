@@ -43,7 +43,7 @@ export interface Lodash {
     isArray(v: any): v is any[];
     isObject(v: any): boolean;
     clone<T>(v: T): T;
-    omit<T>(v: T, prop: string): T;
+    omit<T>(v: T, prop: string | string[]): T;
     assign<A, B>(v: A, s: B): A & B;
     extend<A, B>(v: A, s: B): A & B;
     isNil(v: any): boolean;

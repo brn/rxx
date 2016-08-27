@@ -199,25 +199,49 @@ var Subscriber = (function (_super) {
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    Subscriber.prototype.areThereObservableInChildren = function (el) {
+    Subscriber.prototype.areThereObservableInChildren = function (el, depth) {
         var _this = this;
-        var target = lodash_1._.filter(el.props ? (el.props.children ? (!lodash_1._.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return utils_1.isDefined(v); });
-        return lodash_1._.some(target, function (child, i) {
-            if (child instanceof Rx_1.Observable) {
-                return true;
-            }
-            return _this.areThereObservableInChildren(child);
-        }) || lodash_1._.some(lodash_1._.omit(el.props, 'children'), function (v, k) {
-            return v instanceof Rx_1.Observable;
-        });
+        if (depth === void 0) { depth = 0; }
+        if (el instanceof Rx_1.Observable) {
+            return true;
+        }
+        else {
+            var target_1 = lodash_1._.filter(el.props ? (el.props.children ? (!lodash_1._.isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], function (v) { return utils_1.isDefined(v); });
+            var checkChildren = function () { return lodash_1._.some(target_1, function (child, i) {
+                if (child instanceof Rx_1.Observable) {
+                    return true;
+                }
+                if (_this.props.ignoreSubtree && depth === 1) {
+                    return false;
+                }
+                return _this.areThereObservableInChildren(child, depth + 1);
+            }); };
+            var props_1 = el.props;
+            var checkProps = function () { return lodash_1._.some(lodash_1._.omit(props_1, 'children'), function (v, k) {
+                return v instanceof Rx_1.Observable;
+            }); };
+            return checkChildren() || checkProps();
+        }
     };
     /**
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    Subscriber.prototype.cloneChildren = function (el, parent, index) {
+    Subscriber.prototype.cloneChildren = function (el, parent, index, depth) {
         var _this = this;
+        if (depth === void 0) { depth = 0; }
         var newElement = this.createMutableElement(el);
+        lodash_1._.forEach(lodash_1._.omit(newElement.props, 'children'), function (v, k) {
+            if (v instanceof Rx_1.Observable) {
+                _this.bindings.push(new ObservableBinding(function (value) {
+                    newElement.props[k] = value;
+                    _this.updateElement(parent, newElement, index);
+                }, v));
+            }
+        });
+        if (this.props.ignoreSubtree && depth === 1) {
+            return newElement;
+        }
         var target = lodash_1._.filter(newElement.props.children ? (!lodash_1._.isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [], function (v) { return utils_1.isDefined(v); });
         var children = lodash_1._.map(target, function (child, i) {
             if (child instanceof Rx_1.Observable) {
@@ -227,17 +251,9 @@ var Subscriber = (function (_super) {
                 }, child));
             }
             else if (React.isValidElement(child) && !_this.isSubscriber(child)) {
-                return _this.cloneChildren(child, newElement, i);
+                return _this.cloneChildren(child, newElement, i, depth + 1);
             }
             return child;
-        });
-        lodash_1._.forEach(lodash_1._.omit(newElement.props, 'children'), function (v, k) {
-            if (v instanceof Rx_1.Observable) {
-                _this.bindings.push(new ObservableBinding(function (value) {
-                    newElement.props[k] = value;
-                    _this.updateElement(parent, newElement, index);
-                }, v));
-            }
         });
         if (newElement.props.children) {
             if (lodash_1._.isArray(newElement.props.children)) {
@@ -259,7 +275,7 @@ var Subscriber = (function (_super) {
             this.updateChildren(parent, this.createMutableElement(el), index);
         }
         else {
-            this.mutableTree = this.createMutableElement(this.mutableTree);
+            this.mutableTree = this.createMutableElement(el);
         }
     };
     /**

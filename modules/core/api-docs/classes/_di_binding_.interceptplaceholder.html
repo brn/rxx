@@ -98,7 +98,10 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_binding_.interceptplaceholder.html#eagersingleton" class="tsd-kind-icon">eager<wbr>Singleton</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_binding_.interceptplaceholder.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_binding_.interceptplaceholder.html#interceptor" class="tsd-kind-icon">interceptor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_binding_.interceptplaceholder.html#singleton" class="tsd-kind-icon">singleton</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_di_binding_.interceptplaceholder.html#targetsymbol" class="tsd-kind-icon">target<wbr>Symbol</a></li>
 							</ul>
 						</section>
@@ -123,7 +126,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/binding.tsx#L158">di/binding.tsx:158</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L178">di/binding.tsx:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -147,12 +150,37 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="eagersingleton" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> eager<wbr>Singleton</h3>
+					<div class="tsd-signature tsd-kind-icon">eager<wbr>Singleton<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L176">di/binding.tsx:176</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Eager singleton flag.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;bindingId++</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L178">di/binding.tsx:178</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="interceptor" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> interceptor</h3>
 					<div class="tsd-signature tsd-kind-icon">interceptor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/binding.tsx#L158">di/binding.tsx:158</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L166">di/binding.tsx:166</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -167,12 +195,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="singleton" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> singleton</h3>
+					<div class="tsd-signature tsd-kind-icon">singleton<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L171">di/binding.tsx:171</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Singleton flag.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="targetsymbol" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> target<wbr>Symbol</h3>
 					<div class="tsd-signature tsd-kind-icon">target<wbr>Symbol<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">symbol</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/binding.tsx#L163">di/binding.tsx:163</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L183">di/binding.tsx:183</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -188,13 +231,13 @@
 					<a name="to" class="tsd-anchor"></a>
 					<h3>to</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">to<span class="tsd-signature-symbol">(</span>methodProxyCtor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">to<span class="tsd-signature-symbol">(</span>methodProxyCtor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_di_binding_.classtypeoption.html" class="tsd-signature-type">ClassTypeOption</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/c55cdbd/modules/core/src/di/binding.tsx#L169">di/binding.tsx:169</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/core/src/di/binding.tsx#L189">di/binding.tsx:189</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -213,7 +256,7 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_di_binding_.classtypeoption.html" class="tsd-signature-type">ClassTypeOption</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -307,7 +350,16 @@
 								<a href="_di_binding_.interceptplaceholder.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_di_binding_.interceptplaceholder.html#eagersingleton" class="tsd-kind-icon">eager<wbr>Singleton</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_di_binding_.interceptplaceholder.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_di_binding_.interceptplaceholder.html#interceptor" class="tsd-kind-icon">interceptor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_di_binding_.interceptplaceholder.html#singleton" class="tsd-kind-icon">singleton</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_di_binding_.interceptplaceholder.html#targetsymbol" class="tsd-kind-icon">target<wbr>Symbol</a>
@@ -330,6 +382,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="../interfaces/_di_binding_.provider.html" class="tsd-kind-icon">Provider</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_di_binding_.html#bindingid" class="tsd-kind-icon">binding<wbr>Id</a>
 					</li>
 				</ul>
 			</nav>

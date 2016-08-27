@@ -30,7 +30,9 @@ var SINGLETON_KEY = Symbol('__instance__');
 /**
  * The key to distinct proxied class.
  */
-var PROXIED_MARK = Symbol('__proxied__');
+var PROXIED_GUARD_PROP = Symbol('__proxied__');
+var PROXY_ID = Symbol('__proxy_id__');
+var proxyIdValue = 0;
 /**
  * Dependency definition.
  */
@@ -119,6 +121,7 @@ export var Injector = (function () {
          */
         this.templateDefinitions = {};
         this.hasMethodProxyDefs = false;
+        this.singletons = {};
         this.initialize(modules);
         this.hasMethodProxyDefs = this.hasInterceptors();
     }
@@ -147,6 +150,12 @@ export var Injector = (function () {
         _.forIn(this.bindings, function (v, k) {
             if (v.eagerSingleton) {
                 _this.getInstanceFromSelf(k);
+            }
+        });
+        _.forEach(this.methodProxyDefs, function (proxy, k) {
+            proxy['interceptor'][PROXY_ID] = proxyIdValue++;
+            if (proxy['eagerSingleton']) {
+                _this.getInterceptorInstance(proxy);
             }
         });
     };
@@ -499,7 +508,8 @@ export var Injector = (function () {
             eagerSingleton: false,
             instance: true,
             provider: false,
-            template: false
+            template: false,
+            id: -1
         };
     };
     /**
@@ -515,11 +525,11 @@ export var Injector = (function () {
         var ret;
         if (item && !item.instance && !item.provider) {
             if (item.singleton) {
-                if (!item['_instance']) {
-                    item['_instance'] = this.inject(item.val);
-                    item['_instance'][INJECTION_NAME_SYMBOL] = bindingName;
+                ret = this.getSingletonInstance(item.id);
+                if (!ret) {
+                    ret = this.singletons[item.id] = this.inject(item.val);
+                    this.singletons[item.id][INJECTION_NAME_SYMBOL] = bindingName;
                 }
-                ret = item['_instance'];
             }
             else {
                 var instance = this.inject(item.val);
@@ -555,9 +565,6 @@ export var Injector = (function () {
      */
     Injector.prototype.applyInterceptor = function (inst) {
         var _this = this;
-        if (inst[PROXIED_MARK]) {
-            return;
-        }
         this.findOnParent(function (_a) {
             var methodProxyDefs = _a.methodProxyDefs;
             _.every(methodProxyDefs, function (i) {
@@ -566,10 +573,9 @@ export var Injector = (function () {
                         var regexp_1 = inst[i.targetSymbol][0];
                         _.forIn(inst, function (v, k) {
                             if (regexp_1.test(k)) {
-                                inst[k] = _this.getMethodProxy(inst, v, _this.getInterceptorInstance(i), k);
+                                _this.doApplyInterceptorIfNeccessary(inst, k, i);
                             }
                         });
-                        return false;
                     }
                     else {
                         _.forIn(inst[i.targetSymbol], function (s) {
@@ -577,16 +583,27 @@ export var Injector = (function () {
                                 if (typeof inst[s] !== 'function') {
                                     throw new Error("Interceptor only applyable to function.\nBut property " + s + " is " + Object.prototype.toString.call(inst[s]));
                                 }
-                                inst[s] = _this.getMethodProxy(inst, inst[s], _this.getInterceptorInstance(i), s);
+                                _this.doApplyInterceptorIfNeccessary(inst, s, i);
                             }
                         });
                     }
-                    inst[PROXIED_MARK] = true;
                 }
                 return true;
             });
             return true;
         });
+    };
+    Injector.prototype.doApplyInterceptorIfNeccessary = function (instance, method, proxyDef) {
+        var interceptor = this.getInterceptorInstance(proxyDef);
+        var id = method + ":" + interceptor[PROXY_ID];
+        if (!instance[PROXIED_GUARD_PROP]) {
+            instance[PROXIED_GUARD_PROP] = {};
+        }
+        if (instance[PROXIED_GUARD_PROP][id]) {
+            return;
+        }
+        instance[PROXIED_GUARD_PROP][id] = true;
+        instance[method] = this.getMethodProxy(instance, instance[method], interceptor, method);
     };
     /**
      * Get interceptor instance.
@@ -594,10 +611,14 @@ export var Injector = (function () {
      * @returns INterceptor instance.
      */
     Injector.prototype.getInterceptorInstance = function (i) {
-        if (!i.interceptor[SINGLETON_KEY]) {
-            return this.inject(i.interceptor);
+        if (i.singleton) {
+            var ret = this.getSingletonInstance(i.id);
+            if (!ret) {
+                return this.singletons[i.id] = this.inject(i.interceptor);
+            }
+            return ret;
         }
-        return i.interceptor[SINGLETON_KEY];
+        return this.inject(i.interceptor);
     };
     /**
      * Return wrapped method by interceptor.
@@ -624,6 +645,17 @@ export var Injector = (function () {
             return has ? false : true;
         });
         return has;
+    };
+    Injector.prototype.getSingletonInstance = function (id) {
+        var instance = null;
+        this.findOnParent(function (injector) {
+            if (injector.singletons[id]) {
+                instance = injector.singletons[id];
+                return false;
+            }
+            return true;
+        });
+        return instance;
     };
     return Injector;
 }());

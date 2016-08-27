@@ -60,7 +60,13 @@ const SINGLETON_KEY = Symbol('__instance__');
 /**
  * The key to distinct proxied class.
  */
-const PROXIED_MARK = Symbol('__proxied__');
+const PROXIED_GUARD_PROP = Symbol('__proxied__');
+
+
+const PROXY_ID = Symbol('__proxy_id__');
+
+
+let proxyIdValue = 0;
 
 
 /**
@@ -161,6 +167,8 @@ export class Injector {
 
   private hasMethodProxyDefs = false;
 
+  private singletons: {[key: number]: any} = {};
+
   /**
    * @param modules The module array that is defined dependencies.
    */
@@ -195,6 +203,13 @@ export class Injector {
     _.forIn(this.bindings, (v, k) => {
       if (v.eagerSingleton) {
         this.getInstanceFromSelf(k);
+      }
+    });
+
+    _.forEach(this.methodProxyDefs, (proxy, k) => {
+      proxy['interceptor'][PROXY_ID] = proxyIdValue++;
+      if (proxy['eagerSingleton']) {
+        this.getInterceptorInstance(proxy);
       }
     })
   }
@@ -571,7 +586,8 @@ export class Injector {
       eagerSingleton: false,
       instance: true,
       provider: false,
-      template: false
+      template: false,
+      id: -1
     };
   }
 
@@ -590,11 +606,11 @@ export class Injector {
     var ret;
     if (item && !item.instance && !item.provider) {
       if (item.singleton) {
-        if (!item['_instance']) {
-          item['_instance'] = this.inject(item.val);
-          item['_instance'][INJECTION_NAME_SYMBOL] = bindingName;
+        ret = this.getSingletonInstance(item.id);
+        if (!ret) {
+          ret = this.singletons[item.id] = this.inject(item.val);
+          this.singletons[item.id][INJECTION_NAME_SYMBOL] = bindingName;
         }
-        ret = item['_instance'];
       } else {
         var instance = this.inject(item.val);
         instance[INJECTION_NAME_SYMBOL] = bindingName;
@@ -630,10 +646,6 @@ export class Injector {
    * @param Target instance.
    */
   private applyInterceptor<T>(inst: T): void {
-    if (inst[PROXIED_MARK]) {
-      return;
-    }
-
     this.findOnParent(({methodProxyDefs}) => {
       _.every(methodProxyDefs, (i: any) => {
         if (inst[i.targetSymbol]) {
@@ -641,26 +653,38 @@ export class Injector {
             const regexp = inst[i.targetSymbol][0];
             _.forIn(inst, (v: Function, k) => {
               if (regexp.test(k)) {
-                inst[k] = this.getMethodProxy(inst, v, this.getInterceptorInstance(i), k);
+                this.doApplyInterceptorIfNeccessary(inst, k, i);
               }
-            })
-            return false;
+            });
           } else {
             _.forIn(inst[i.targetSymbol], (s: string) => {
               if (inst[s]) {
                 if (typeof inst[s] !== 'function') {
                   throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);
                 }
-                inst[s] = this.getMethodProxy(inst, inst[s], this.getInterceptorInstance(i), s);
+                this.doApplyInterceptorIfNeccessary(inst, s, i);
               }
             })
           }
-          inst[PROXIED_MARK] = true;
         }
         return true;
       });
       return true;
     });
+  }
+
+
+  private doApplyInterceptorIfNeccessary(instance: any, method: string, proxyDef) {
+    const interceptor = this.getInterceptorInstance(proxyDef);
+    const id = `${method}:${interceptor[PROXY_ID]}`;
+    if (!instance[PROXIED_GUARD_PROP]) {
+      instance[PROXIED_GUARD_PROP] = {};
+    }
+    if (instance[PROXIED_GUARD_PROP][id]) {
+      return;
+    }
+    instance[PROXIED_GUARD_PROP][id] = true;
+    instance[method] = this.getMethodProxy(instance, instance[method], interceptor, method);
   }
 
 
@@ -670,10 +694,14 @@ export class Injector {
    * @returns INterceptor instance.
    */
   private getInterceptorInstance(i: any): MethodProxy {
-    if (!i.interceptor[SINGLETON_KEY]) {
-      return this.inject(i.interceptor as new() => MethodProxy);
+    if (i.singleton) {
+      let ret = this.getSingletonInstance(i.id);
+      if (!ret) {
+        return this.singletons[i.id] = this.inject(i.interceptor as new() => MethodProxy);
+      }
+      return ret as MethodProxy;
     }
-    return i.interceptor[SINGLETON_KEY] as MethodProxy;
+    return this.inject(i.interceptor as new() => MethodProxy);
   }
 
 
@@ -699,5 +727,18 @@ export class Injector {
       return has? false: true;
     });
     return has;
+  }
+
+
+  private getSingletonInstance(id: number) {
+    let instance = null;
+    this.findOnParent(injector => {
+      if (injector.singletons[id]) {
+        instance = injector.singletons[id];
+        return false;
+      }
+      return true;
+    });
+    return instance;
   }
 }

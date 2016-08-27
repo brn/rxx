@@ -18,7 +18,7 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var ClassTypeOption, BindingPlaceholder, InterceptPlaceholder, TemplatePlaceholder;
+    var ClassTypeOption, bindingId, BindingPlaceholder, InterceptPlaceholder, TemplatePlaceholder;
     return {
         setters:[],
         execute: function() {
@@ -45,6 +45,7 @@ System.register([], function(exports_1, context_1) {
                 return ClassTypeOption;
             }());
             exports_1("ClassTypeOption", ClassTypeOption);
+            bindingId = 0;
             /**
              * Link binding to value.
              */
@@ -58,7 +59,7 @@ System.register([], function(exports_1, context_1) {
                     this.holder = holder;
                 }
                 BindingPlaceholder.prototype.to = function (ctor) {
-                    this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false };
+                    this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false, id: bindingId++ };
                     return new ClassTypeOption(this.holder[this.id]);
                 };
                 /**
@@ -66,14 +67,14 @@ System.register([], function(exports_1, context_1) {
                  * @param value Immediate value.
                  */
                 BindingPlaceholder.prototype.toInstance = function (value) {
-                    this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false };
+                    this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false, id: bindingId++ };
                 };
                 /**
                  * Link Provider to binding id.
                  * @param value Provider constructor function.
                  */
                 BindingPlaceholder.prototype.toProvider = function (value) {
-                    this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false };
+                    this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false, id: bindingId++ };
                 };
                 return BindingPlaceholder;
             }());
@@ -87,6 +88,15 @@ System.register([], function(exports_1, context_1) {
                  */
                 function InterceptPlaceholder(targetSymbol) {
                     this.targetSymbol = targetSymbol;
+                    /**
+                     * Singleton flag.
+                     */
+                    this.singleton = false;
+                    /**
+                     * Eager singleton flag.
+                     */
+                    this.eagerSingleton = false;
+                    this.id = bindingId++;
                 }
                 /**
                  * Do binding.
@@ -94,6 +104,7 @@ System.register([], function(exports_1, context_1) {
                  */
                 InterceptPlaceholder.prototype.to = function (methodProxyCtor) {
                     this.interceptor = methodProxyCtor;
+                    return new ClassTypeOption(this);
                 };
                 return InterceptPlaceholder;
             }());
@@ -115,7 +126,7 @@ System.register([], function(exports_1, context_1) {
                  * @param ctor Constructor function.
                  */
                 TemplatePlaceholder.prototype.to = function (ctor) {
-                    this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true };
+                    this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true, id: bindingId++ };
                 };
                 return TemplatePlaceholder;
             }());

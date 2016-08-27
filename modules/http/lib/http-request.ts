@@ -55,7 +55,7 @@ import {
 
 export {IOResponse, HttpConfig, HttpMethod, ResponseType};
 
-export const HTTP_INTERCEPT = Symbol('__http_request_intercept__');
+export const HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 
 const typeMatcher = /\[object ([^\]]+)\]/
@@ -201,7 +201,7 @@ export class HttpRequest extends Outlet {
    * @param res Http response.
    * @returns 
    */
-  @intercept(HTTP_INTERCEPT)
+  @intercept(HTTP_RESPONSE_INTERCEPT)
   private getResponse(responseType: ResponseType, res: Response): Promise<Blob|FormData|string|ArrayBuffer|Object> {
     switch (responseType) {
     case ResponseType.ARRAY_BUFFER:

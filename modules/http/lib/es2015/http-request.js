@@ -36,7 +36,7 @@ import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
 import { fetch, Response } from './shims/fetch';
 export { IOResponse, HttpMethod, ResponseType };
-export var HTTP_INTERCEPT = Symbol('__http_request_intercept__');
+export var HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export var HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 var typeMatcher = /\[object ([^\]]+)\]/;
 /**
@@ -273,7 +273,7 @@ export var HttpRequest = (function (_super) {
         __metadata('design:returntype', Promise)
     ], HttpRequest.prototype, "delete", null);
     __decorate([
-        intercept(HTTP_INTERCEPT), 
+        intercept(HTTP_RESPONSE_INTERCEPT), 
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', [Number, Response]), 
         __metadata('design:returntype', Promise)

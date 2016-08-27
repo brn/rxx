@@ -37,6 +37,7 @@ export var ClassTypeOption = (function () {
     };
     return ClassTypeOption;
 }());
+var bindingId = 0;
 /**
  * Link binding to value.
  */
@@ -50,7 +51,7 @@ export var BindingPlaceholder = (function () {
         this.holder = holder;
     }
     BindingPlaceholder.prototype.to = function (ctor) {
-        this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false };
+        this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false, id: bindingId++ };
         return new ClassTypeOption(this.holder[this.id]);
     };
     /**
@@ -58,14 +59,14 @@ export var BindingPlaceholder = (function () {
      * @param value Immediate value.
      */
     BindingPlaceholder.prototype.toInstance = function (value) {
-        this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false };
+        this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false, id: bindingId++ };
     };
     /**
      * Link Provider to binding id.
      * @param value Provider constructor function.
      */
     BindingPlaceholder.prototype.toProvider = function (value) {
-        this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false };
+        this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false, id: bindingId++ };
     };
     return BindingPlaceholder;
 }());
@@ -78,6 +79,15 @@ export var InterceptPlaceholder = (function () {
      */
     function InterceptPlaceholder(targetSymbol) {
         this.targetSymbol = targetSymbol;
+        /**
+         * Singleton flag.
+         */
+        this.singleton = false;
+        /**
+         * Eager singleton flag.
+         */
+        this.eagerSingleton = false;
+        this.id = bindingId++;
     }
     /**
      * Do binding.
@@ -85,6 +95,7 @@ export var InterceptPlaceholder = (function () {
      */
     InterceptPlaceholder.prototype.to = function (methodProxyCtor) {
         this.interceptor = methodProxyCtor;
+        return new ClassTypeOption(this);
     };
     return InterceptPlaceholder;
 }());
@@ -105,7 +116,7 @@ export var TemplatePlaceholder = (function () {
      * @param ctor Constructor function.
      */
     TemplatePlaceholder.prototype.to = function (ctor) {
-        this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true };
+        this.holder[this.id] = { val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true, id: bindingId++ };
     };
     return TemplatePlaceholder;
 }());

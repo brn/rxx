@@ -40,7 +40,7 @@ var http_response_1 = require('./http-response');
 var query_string_1 = require('./shims/query-string');
 var promise_1 = require('./shims/promise');
 var fetch_1 = require('./shims/fetch');
-exports.HTTP_INTERCEPT = core_1.Symbol('__http_request_intercept__');
+exports.HTTP_RESPONSE_INTERCEPT = core_1.Symbol('__http_request_intercept__');
 exports.HTTP_REQUEST_INTERCEPT = core_1.Symbol('__http_request_request_intercept__');
 var typeMatcher = /\[object ([^\]]+)\]/;
 /**
@@ -277,7 +277,7 @@ var HttpRequest = (function (_super) {
         __metadata('design:returntype', promise_1.Promise)
     ], HttpRequest.prototype, "delete", null);
     __decorate([
-        core_1.intercept(exports.HTTP_INTERCEPT), 
+        core_1.intercept(exports.HTTP_RESPONSE_INTERCEPT), 
         __metadata('design:type', Function), 
         __metadata('design:paramtypes', [Number, fetch_1.Response]), 
         __metadata('design:returntype', promise_1.Promise)

@@ -47,7 +47,7 @@ System.register(['react', './subscriber', '../shims/lodash'], function(exports_1
                         _super.apply(this, arguments);
                     }
                     class_1.prototype.render = function () {
-                        return (React.createElement(subscriber_1.Subscriber, null, React.createElement(name, lodash_1._.assign(lodash_1._.omit(this.props, 'ref'), { ref: 'element' }))));
+                        return (React.createElement(subscriber_1.Subscriber, {ignoreSubtree: this.props.ignoreSubtree}, React.createElement(name, lodash_1._.assign(lodash_1._.omit(this.props, ['ref', 'ignoreSubtree']), { ref: 'element' }))));
                     };
                     class_1.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1);
                     return class_1;

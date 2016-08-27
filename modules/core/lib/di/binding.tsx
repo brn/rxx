@@ -59,6 +59,11 @@ export interface Binding {
    * Template or not.
    */
   template: boolean;
+
+  /**
+   * Binding unique id.
+   */
+  id: number;
 }
 
 
@@ -105,6 +110,9 @@ export class ClassTypeOption {
 }
 
 
+let bindingId = 0;
+
+
 /**
  * Link binding to value.
  */
@@ -123,8 +131,8 @@ export class BindingPlaceholder {
    * @returns Option.
    */
   public to<T>(ctor: any);
-  public to<T>(ctor: ClassType<T>) {
-    this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false};
+  public to<T>(ctor: ClassType<T>): ClassTypeOption {
+    this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false, id: bindingId++};
     return new ClassTypeOption(this.holder[this.id]);
   }
 
@@ -134,7 +142,7 @@ export class BindingPlaceholder {
    * @param value Immediate value.
    */
   public toInstance<T>(value: T) {
-    this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false};
+    this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: true, provider: false, template: false, id: bindingId++};
   }
 
 
@@ -143,7 +151,7 @@ export class BindingPlaceholder {
    * @param value Provider constructor function.
    */
   public toProvider<T>(value: ClassType<Provider<T>>) {
-    this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false}
+    this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false, id: bindingId++}
   }
 }
 
@@ -158,6 +166,18 @@ export class InterceptPlaceholder {
   private interceptor: new() => MethodProxy;
 
   /**
+   * Singleton flag.
+   */
+  private singleton = false;
+
+  /**
+   * Eager singleton flag.
+   */
+  private eagerSingleton = false;
+
+  private id = bindingId++;
+
+  /**
    * @param targetSymbol The symbol that set to intercepted.
    */
   public constructor(private targetSymbol: symbol) {}
@@ -166,8 +186,9 @@ export class InterceptPlaceholder {
    * Do binding.
    * @param methodProxyCtor MethodProxy constructor funciton.
    */
-  public to(methodProxyCtor: new() => MethodProxy) {
+  public to(methodProxyCtor: new() => MethodProxy): ClassTypeOption {
     this.interceptor = methodProxyCtor;
+    return new ClassTypeOption(this as any);
   }
 }
 
@@ -189,6 +210,6 @@ export class TemplatePlaceholder {
    * @param ctor Constructor function.
    */
   public to<T>(ctor: ClassType<T>) {
-    this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true};
+    this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: true, id: bindingId++};
   }
 }

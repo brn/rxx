@@ -212,6 +212,115 @@ describe('Injector', () => {
       expect(targetId).equal(1);
     });
 
+    it('Singleton binding lifecycle is same as injector.', () => {
+      let targetId = 0;
+
+      class Target {
+        constructor() {
+          targetId++;
+        }
+      }
+
+      class Test {
+        @inject()
+        public target;
+      }
+
+      class TestModule extends AbstractModule {
+        public configure() {
+          this.bind('target').to(Target).asSingleton();
+        }
+      }
+
+      const injector = new Injector([new TestModule()]);
+      const injector2 = new Injector([new TestModule()]);
+
+      let instance = injector.inject(Test);
+      let instance2 = injector2.inject(Test);
+      instance = injector.inject(Test);
+      instance = injector.inject(Test);
+      instance = injector.inject(Test);
+
+      instance2 = injector2.inject(Test);
+      instance2 = injector2.inject(Test);
+      instance2 = injector2.inject(Test);
+
+      expect(targetId).equal(2);
+    });
+
+    it('Singleton binding is shared by children injectors.', () => {
+      let targetId = 0;
+
+      class Target {
+        constructor() {
+          targetId++;
+        }
+      }
+
+      class Test {
+        @inject()
+        public target;
+      }
+
+      class TestModule extends AbstractModule {
+        public configure() {
+          this.bind('target').to(Target).asSingleton();
+        }
+      }
+
+      const injector = new Injector([new TestModule()]);
+      const injector2 = injector.createChildInjector([]);
+
+      let instance = injector.inject(Test);
+      let instance2 = injector2.inject(Test);
+      instance = injector.inject(Test);
+      instance = injector.inject(Test);
+      instance = injector.inject(Test);
+
+      instance2 = injector2.inject(Test);
+      instance2 = injector2.inject(Test);
+      instance2 = injector2.inject(Test);
+
+      expect(targetId).equal(1);
+    });
+
+    it('Singleton binding is shared by children injectors if injector#get called.', () => {
+      let targetId = 0;
+
+      class Target {
+        constructor() {
+          targetId++;
+        }
+      }
+
+      class Test {
+        @inject()
+        public target;
+      }
+
+      class TestModule extends AbstractModule {
+        public configure() {
+          this.bind('test').to(Test);
+          this.bind('target').to(Target).asSingleton();
+        }
+      }
+
+      const injector = new Injector([new TestModule()]);
+      const injector2 = injector.createChildInjector([]);
+
+      let instance = injector.get('test');
+      let instance2 = injector2.get('test');
+      instance = injector.get('test');
+      instance = injector.get('test');
+      instance = injector.get('test');
+
+      instance2 = injector2.get('test');
+      instance2 = injector2.get('test');
+      instance2 = injector2.get('test');
+
+      expect(targetId).equal(1);
+    });
+
     it('Apply interceptor to simple dependency.', () => {
       const testInterceptor = Symbol('__test__');
 
@@ -275,6 +384,6 @@ describe('Injector', () => {
       const injector = new Injector([new TestModule()]);
       const inst     = injector.inject(ParentClass);
       expect(inst.test()).eq(2);
-    })
+    });
   });
 });

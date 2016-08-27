@@ -20,11 +20,14 @@ import * as React from 'react';
  * that mean this component is process Observable.
  */
 export declare const SUBSCRIBER_MARK: symbol;
+export interface SubscriberProps {
+    ignoreSubtree?: boolean;
+}
 /**
  * Subscriber component for Rx.Observable.
  * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
  */
-export declare class Subscriber extends React.Component<any, any> {
+export declare class Subscriber extends React.Component<SubscriberProps, any> {
     /**
      * All subscriptions that are subscribed observable embeded in virtual dom trees.
      */
@@ -84,12 +87,12 @@ export declare class Subscriber extends React.Component<any, any> {
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    private areThereObservableInChildren(el);
+    private areThereObservableInChildren(el, depth?);
     /**
      * Clone all children trees that has mutable props, mutable children, recursively from root.
      * @param el Root React.ReactElement.
      */
-    private cloneChildren(el, parent, index);
+    private cloneChildren(el, parent, index, depth?);
     /**
      * Update ReactElement to force update state of React Element Tree.
      * @param parent Parent ReactElement of current updated ReactElement.

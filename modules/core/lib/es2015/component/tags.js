@@ -33,7 +33,7 @@ var toSubscribable = function (name) {
             _super.apply(this, arguments);
         }
         class_1.prototype.render = function () {
-            return (React.createElement(Subscriber, null, React.createElement(name, _.assign(_.omit(this.props, 'ref'), { ref: 'element' }))));
+            return (React.createElement(Subscriber, {ignoreSubtree: this.props.ignoreSubtree}, React.createElement(name, _.assign(_.omit(this.props, ['ref', 'ignoreSubtree']), { ref: 'element' }))));
         };
         class_1.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1);
         return class_1;

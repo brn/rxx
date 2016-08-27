@@ -19,6 +19,7 @@ import * as React from 'react';
  * Attributes of the Subscriber that passed through html tag.
  */
 export interface Attr extends React.HTMLAttributes, React.DOMAttributes, React.ClassAttributes<Element> {
+    ignoreSubtree?: boolean;
 }
 /**
  * All suppoertd subscriberified tag list.

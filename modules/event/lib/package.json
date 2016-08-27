@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/event",
-  "version": "0.3.8",
+  "version": "0.3.15",
   "description": "Event IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,7 @@
     "jspmNodeConversion": false,
     "main": "index.js",
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.11",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.3.19",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
       "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
@@ -140,6 +140,6 @@
     "typescript": "^1.9.0-dev.20160526-1.0"
   },
   "dependencies": {
-    "@react-mvi/core": "^0.3.11"
+    "@react-mvi/core": "^0.3.19"
   }
 }

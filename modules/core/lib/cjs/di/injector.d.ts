@@ -46,6 +46,7 @@ export declare class Injector {
      */
     private templateDefinitions;
     private hasMethodProxyDefs;
+    private singletons;
     /**
      * @param modules The module array that is defined dependencies.
      */
@@ -212,6 +213,7 @@ export declare class Injector {
      * @param Target instance.
      */
     private applyInterceptor<T>(inst);
+    private doApplyInterceptorIfNeccessary(instance, method, proxyDef);
     /**
      * Get interceptor instance.
      * @param i Interceptor class.
@@ -228,4 +230,5 @@ export declare class Injector {
      */
     private getMethodProxy(context, base, interceptor, propertyKey);
     private hasInterceptors();
+    private getSingletonInstance(id);
 }

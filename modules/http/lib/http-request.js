@@ -33,7 +33,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1;
-    var HTTP_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
+    var HTTP_RESPONSE_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
     return {
         setters:[
             function (core_1_1) {
@@ -58,7 +58,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
             exports_1("IOResponse", core_1.IOResponse);
             exports_1("HttpMethod", core_1.HttpMethod);
             exports_1("ResponseType", core_1.ResponseType);
-            exports_1("HTTP_INTERCEPT", HTTP_INTERCEPT = core_1.Symbol('__http_request_intercept__'));
+            exports_1("HTTP_RESPONSE_INTERCEPT", HTTP_RESPONSE_INTERCEPT = core_1.Symbol('__http_request_intercept__'));
             exports_1("HTTP_REQUEST_INTERCEPT", HTTP_REQUEST_INTERCEPT = core_1.Symbol('__http_request_request_intercept__'));
             typeMatcher = /\[object ([^\]]+)\]/;
             /**
@@ -295,7 +295,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     __metadata('design:returntype', promise_1.Promise)
                 ], HttpRequest.prototype, "delete", null);
                 __decorate([
-                    core_1.intercept(HTTP_INTERCEPT), 
+                    core_1.intercept(HTTP_RESPONSE_INTERCEPT), 
                     __metadata('design:type', Function), 
                     __metadata('design:paramtypes', [Number, fetch_1.Response]), 
                     __metadata('design:returntype', promise_1.Promise)
