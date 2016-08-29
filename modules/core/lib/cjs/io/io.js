@@ -119,43 +119,4 @@ var Outlet = (function () {
     return Outlet;
 }());
 exports.Outlet = Outlet;
-/**
- * The methods of the Http request.
- */
-(function (HttpMethod) {
-    HttpMethod[HttpMethod["GET"] = 1] = "GET";
-    HttpMethod[HttpMethod["POST"] = 2] = "POST";
-    HttpMethod[HttpMethod["PUT"] = 3] = "PUT";
-})(exports.HttpMethod || (exports.HttpMethod = {}));
-var HttpMethod = exports.HttpMethod;
-/**
- * Response type of the Http request.
- */
-(function (ResponseType) {
-    ResponseType[ResponseType["JSON"] = 1] = "JSON";
-    ResponseType[ResponseType["BLOB"] = 2] = "BLOB";
-    ResponseType[ResponseType["ARRAY_BUFFER"] = 3] = "ARRAY_BUFFER";
-    ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
-    ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
-})(exports.ResponseType || (exports.ResponseType = {}));
-var ResponseType = exports.ResponseType;
-;
-/**
- * The methods of the StorageIO.
- */
-(function (StorageMethod) {
-    StorageMethod[StorageMethod["PUT"] = 1] = "PUT";
-    StorageMethod[StorageMethod["GET"] = 2] = "GET";
-    StorageMethod[StorageMethod["DEL"] = 3] = "DEL";
-})(exports.StorageMethod || (exports.StorageMethod = {}));
-var StorageMethod = exports.StorageMethod;
-/**
- * The type of the Storage.
- */
-(function (StorageType) {
-    StorageType[StorageType["LOCAL_STORAGE"] = 1] = "LOCAL_STORAGE";
-    StorageType[StorageType["SESSION_STORAGE"] = 2] = "SESSION_STORAGE";
-    StorageType[StorageType["COOKIE"] = 3] = "COOKIE";
-})(exports.StorageType || (exports.StorageType = {}));
-var StorageType = exports.StorageType;
 ;

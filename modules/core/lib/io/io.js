@@ -19,7 +19,7 @@ System.register(['rxjs/Subject', '../shims/symbol'], function(exports_1, context
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var Subject_1, symbol_1;
-    var IO_MARK, IOResponse, SubjectStore, Outlet, HttpMethod, ResponseType, StorageMethod, StorageType;
+    var IO_MARK, IOResponse, SubjectStore, Outlet;
     /**
      * Decorator for io module.
      */
@@ -130,45 +130,6 @@ System.register(['rxjs/Subject', '../shims/symbol'], function(exports_1, context
                 return Outlet;
             }());
             exports_1("Outlet", Outlet);
-            /**
-             * The methods of the Http request.
-             */
-            (function (HttpMethod) {
-                HttpMethod[HttpMethod["GET"] = 1] = "GET";
-                HttpMethod[HttpMethod["POST"] = 2] = "POST";
-                HttpMethod[HttpMethod["PUT"] = 3] = "PUT";
-            })(HttpMethod || (HttpMethod = {}));
-            exports_1("HttpMethod", HttpMethod);
-            /**
-             * Response type of the Http request.
-             */
-            (function (ResponseType) {
-                ResponseType[ResponseType["JSON"] = 1] = "JSON";
-                ResponseType[ResponseType["BLOB"] = 2] = "BLOB";
-                ResponseType[ResponseType["ARRAY_BUFFER"] = 3] = "ARRAY_BUFFER";
-                ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
-                ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
-            })(ResponseType || (ResponseType = {}));
-            exports_1("ResponseType", ResponseType);
-            ;
-            /**
-             * The methods of the StorageIO.
-             */
-            (function (StorageMethod) {
-                StorageMethod[StorageMethod["PUT"] = 1] = "PUT";
-                StorageMethod[StorageMethod["GET"] = 2] = "GET";
-                StorageMethod[StorageMethod["DEL"] = 3] = "DEL";
-            })(StorageMethod || (StorageMethod = {}));
-            exports_1("StorageMethod", StorageMethod);
-            /**
-             * The type of the Storage.
-             */
-            (function (StorageType) {
-                StorageType[StorageType["LOCAL_STORAGE"] = 1] = "LOCAL_STORAGE";
-                StorageType[StorageType["SESSION_STORAGE"] = 2] = "SESSION_STORAGE";
-                StorageType[StorageType["COOKIE"] = 3] = "COOKIE";
-            })(StorageType || (StorageType = {}));
-            exports_1("StorageType", StorageType);
             ;
         }
     }

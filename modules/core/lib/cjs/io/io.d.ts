@@ -76,6 +76,19 @@ export interface IO {
     subscribe(props: {
         [key: string]: any;
     }): Subscription;
+    /**
+     * Publish specified key io event.
+     * @param key Event name.
+     * @param args Event args.
+     */
+    push(key: string, args?: any): void;
+    /**
+     * Get callback function that publish specified key event.
+     * @param key Event name.
+     * @param v Event args that override event args.
+     * @returns Function that publish event.
+     */
+    callback(key: string, value?: any): (args?: any) => void;
 }
 export declare abstract class Outlet implements IO {
     protected store: SubjectStore;
@@ -85,127 +98,11 @@ export declare abstract class Outlet implements IO {
         [key: string]: any;
     }): Subscription;
     readonly response: IOResponse;
-}
-/**
- * The methods of the Http request.
- */
-export declare enum HttpMethod {
-    GET = 1,
-    POST = 2,
-    PUT = 3,
-}
-/**
- * Response type of the Http request.
- */
-export declare enum ResponseType {
-    JSON = 1,
-    BLOB = 2,
-    ARRAY_BUFFER = 3,
-    FORM_DATA = 4,
-    TEXT = 5,
-}
-/**
- * Type for Http request options.
- */
-export interface HttpConfig {
-    url: string;
-    method?: HttpMethod;
-    headers?: any;
-    mode?: 'cors' | 'same-origin' | 'no-cors';
-    json?: boolean;
-    data?: string | Blob | FormData;
-    form?: boolean;
-    responseType?: ResponseType;
-    sendToken?: boolean;
-}
-export interface HttpResponse<T, E> {
-    ok: boolean;
-    headers: {
-        [key: string]: string;
-    };
-    status: number;
-    response: T;
-    error: E;
-}
-/**
- * Interface for Event IO
- */
-export interface Event extends IO {
-    /**
-     * Publish specified key event.
-     * @param key Event name.
-     * @param args Event args.
-     */
-    fire(key: string, args?: any): void;
-    /**
-     * Get callback function that publish specified key event.
-     * @param key Event name.
-     * @param v Event args that override event args.
-     * @returns Function that publish event.
-     */
-    asCallback(key: string, v?: any): (args?: any) => void;
-    /**
-     * Same as asCallback
-     * @param key Event name.
-     * @param v Event args that override event args.
-     * @returns Function that publish event.
-     */
-    asc(key: string, v?: any): (args?: any) => void;
-    /**
-     * Fire event after specified time.
-     * @param time Time to delay.
-     * @param key Event name.
-     * @param args Event args
-     */
-    throttle(time: number, key: string, args: any): void;
-}
-/**
- * The methods of the StorageIO.
- */
-export declare enum StorageMethod {
-    PUT = 1,
-    GET = 2,
-    DEL = 3,
-}
-/**
- * The type of the Storage.
- */
-export declare enum StorageType {
-    LOCAL_STORAGE = 1,
-    SESSION_STORAGE = 2,
-    COOKIE = 3,
-}
-/**
- * Option interface of the Storage.
- */
-export interface StorageOptions {
-    type: StorageType;
-    name: string;
-    value: any;
-    method: StorageMethod;
-    options: {
-        expires?: number;
-        path?: string;
-        domain?: string;
-        secure?: boolean;
-    };
-}
-/**
- * Interface for Storages.
- */
-export interface DOMStorage {
-    put<T>(key: string, value: T, opt: StorageOptions): any;
-    get<T>(key: string): T;
-    del(key: string): any;
-}
-/**
- * Interface for storage io processor.
- */
-export interface StorageIO extends IO {
-    wait(ob: Observable<StorageOptions>): void;
+    abstract push(key: string, args?: any): any;
+    abstract callback(key: string, value?: any): any;
 }
 export interface BasicIOTypes {
     http: IO;
-    event: Event;
-    storage: StorageIO;
+    event: IO;
+    storage: IO;
 }

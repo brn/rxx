@@ -31,8 +31,6 @@ import {
 }                 from '../di/injector';
 import {
   IO,
-  Event,
-  StorageIO,
   BasicIOTypes,
   IO_MARK
 }                 from '../io/io';
