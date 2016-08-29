@@ -104,7 +104,7 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.19",
+    "@react-mvi/core": "npm:@react-mvi/core@0.3.20",
     "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
     "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
     "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
@@ -473,11 +473,6 @@ SystemJS.config({
         "ua-parser-js": "npm:ua-parser-js@0.7.10"
       }
     },
-    "github:frankwallis/plugin-typescript@5.0.11": {
-      "map": {
-        "typescript": "npm:typescript@2.0.0"
-      }
-    },
     "npm:buffer@4.9.1": {
       "map": {
         "isarray": "npm:isarray@1.0.0",
@@ -496,10 +491,15 @@ SystemJS.config({
         "process-nextick-args": "npm:process-nextick-args@1.0.7"
       }
     },
-    "npm:@react-mvi/core@0.3.19": {
+    "npm:@react-mvi/core@0.3.20": {
       "map": {
         "core-js": "npm:core-js@2.4.1",
-        "ts": "github:frankwallis/plugin-typescript@5.0.11"
+        "ts": "github:frankwallis/plugin-typescript@5.0.19"
+      }
+    },
+    "github:frankwallis/plugin-typescript@5.0.19": {
+      "map": {
+        "typescript": "npm:typescript@2.0.0"
       }
     }
   }

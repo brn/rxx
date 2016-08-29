@@ -10,13 +10,17 @@ export declare type HttpMockArgs = {
      */
     get?: (uri: string, req: RequestInit) => Response;
     /**
-       * Specify post method return value.
-       */
+     * Specify post method return value.
+     */
     post?: (uri: string, req: RequestInit) => Response;
     /**
-       * Specify put method return value.
-       */
+     * Specify put method return value.
+     */
     put?: (uri: string, req: RequestInit) => Response;
+    /**
+     * Specify delete method return value.
+     */
+    delete?: (uri: string, req: RequestInit) => Response;
 };
 /**
  * Mock class for HttpRequest.

@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query-string', './shims/promise', './shims/fetch'], function(exports_1, context_1) {
+System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query-string', './shims/promise', './shims/fetch', './types'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
@@ -32,7 +32,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1;
+    var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1, types_1;
     var HTTP_RESPONSE_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
     return {
         setters:[
@@ -53,11 +53,11 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
             },
             function (fetch_1_1) {
                 fetch_1 = fetch_1_1;
+            },
+            function (types_1_1) {
+                types_1 = types_1_1;
             }],
         execute: function() {
-            exports_1("IOResponse", core_1.IOResponse);
-            exports_1("HttpMethod", core_1.HttpMethod);
-            exports_1("ResponseType", core_1.ResponseType);
             exports_1("HTTP_RESPONSE_INTERCEPT", HTTP_RESPONSE_INTERCEPT = core_1.Symbol('__http_request_intercept__'));
             exports_1("HTTP_REQUEST_INTERCEPT", HTTP_REQUEST_INTERCEPT = core_1.Symbol('__http_request_request_intercept__'));
             typeMatcher = /\[object ([^\]]+)\]/;
@@ -80,44 +80,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     if (props['http']) {
                         var _loop_1 = function(reqKey) {
                             var req = props['http'][reqKey];
-                            subscription.add(req.subscribe(function (config) {
-                                var subjects = _this.store.get(reqKey);
-                                (function () {
-                                    switch (config.method) {
-                                        case core_1.HttpMethod.GET:
-                                            return _this.get(config);
-                                        case core_1.HttpMethod.POST:
-                                            return _this.post(config);
-                                        case core_1.HttpMethod.PUT:
-                                            return _this.put(config);
-                                        default:
-                                            return _this.get(config);
-                                    }
-                                })()
-                                    .then(function (res) {
-                                    var handler = function (result) {
-                                        var response = new http_response_1.HttpResponse(res.ok, res.status, res.ok ? result : null, res.ok ? null : result);
-                                        subjects.forEach(function (subject) { return subject.next(response); });
-                                    };
-                                    if (res.ok) {
-                                        _this.getResponse(config.responseType, res).then(handler);
-                                    }
-                                    else {
-                                        _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
-                                    }
-                                }).catch(function (err) {
-                                    var handler = function (result) {
-                                        var response = new http_response_1.HttpResponse(false, err && err.status ? err.status : 500, null, result);
-                                        subjects.forEach(function (subject) { return subject.next(response); });
-                                    };
-                                    if (err && typeof err.json === 'function') {
-                                        _this.getResponse(config.responseType, err).then(handler);
-                                    }
-                                    else {
-                                        handler(err);
-                                    }
-                                });
-                            }));
+                            subscription.add(req.subscribe(function (config) { return _this.push(reqKey, config); }));
                         };
                         for (var reqKey in props['http']) {
                             _loop_1(reqKey);
@@ -130,6 +93,67 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                         }
                     }
                     return subscription;
+                };
+                /**
+                 * @inheritDoc
+                 */
+                HttpRequest.prototype.push = function (key, args) {
+                    var _this = this;
+                    if (!args) {
+                        throw new Error('Config required.');
+                    }
+                    var config = args;
+                    var subjects = this.store.get(key);
+                    (function () {
+                        switch (config.method) {
+                            case types_1.HttpMethod.GET:
+                                return _this.get(config);
+                            case types_1.HttpMethod.POST:
+                                return _this.post(config);
+                            case types_1.HttpMethod.PUT:
+                                return _this.put(config);
+                            case types_1.HttpMethod.DELETE:
+                                return _this.delete(config);
+                            default:
+                                return _this.get(config);
+                        }
+                    })()
+                        .then(function (res) {
+                        var handler = function (result) {
+                            var headers = _this.processHeaders(res);
+                            var response = new http_response_1.HttpResponseImpl(res.ok, res.status, headers, res.ok ? result : null, res.ok ? null : result);
+                            subjects.forEach(function (subject) { return subject.next(response); });
+                        };
+                        if (res.ok) {
+                            _this.getResponse(config.responseType, res).then(handler);
+                        }
+                        else {
+                            _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+                        }
+                    }).catch(function (err) {
+                        var handler = function (result) {
+                            var response = new http_response_1.HttpResponseImpl(false, err && err.status ? err.status : 500, {}, null, result);
+                            subjects.forEach(function (subject) { return subject.next(response); });
+                        };
+                        if (err && typeof err.json === 'function') {
+                            _this.getResponse(config.responseType, err).then(handler);
+                        }
+                        else {
+                            handler(err);
+                        }
+                    });
+                };
+                /**
+                 * @inheritDoc
+                 */
+                HttpRequest.prototype.callback = function (key, value) {
+                    var _this = this;
+                    return function (args) { return _this.push(key, core_1.isDefined(value) ? value : args); };
+                };
+                HttpRequest.prototype.processHeaders = function (res) {
+                    var headers = {};
+                    res.headers.forEach(function (v, k) { return headers[k] = v; });
+                    return headers;
                 };
                 Object.defineProperty(HttpRequest.prototype, "fetch", {
                     get: function () {
@@ -190,12 +214,15 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  */
                 HttpRequest.prototype.delete = function (_a) {
                     var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
-                    return this.fetch(url, {
+                    var req = {
                         headers: headers,
                         method: 'DELETE',
-                        mode: mode || 'same-origin',
-                        body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
-                    });
+                        mode: mode || 'same-origin'
+                    };
+                    if (core_1.isDefined(data)) {
+                        req['body'] = json ? JSON.stringify(data) : form ? this.serialize(data) : data;
+                    }
+                    return this.fetch(url, req);
                 };
                 /**
                  * Get proper response from fetch response body.
@@ -205,15 +232,15 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  */
                 HttpRequest.prototype.getResponse = function (responseType, res) {
                     switch (responseType) {
-                        case core_1.ResponseType.ARRAY_BUFFER:
+                        case types_1.ResponseType.ARRAY_BUFFER:
                             return res.arrayBuffer();
-                        case core_1.ResponseType.BLOB:
+                        case types_1.ResponseType.BLOB:
                             return res.blob();
-                        case core_1.ResponseType.FORM_DATA:
+                        case types_1.ResponseType.FORM_DATA:
                             return res.formData();
-                        case core_1.ResponseType.JSON:
+                        case types_1.ResponseType.JSON:
                             return res.json();
-                        case core_1.ResponseType.TEXT:
+                        case types_1.ResponseType.TEXT:
                             return res.text();
                         default:
                             return res.text();
@@ -222,15 +249,15 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                 HttpRequest.prototype.getResponseTypeFromHeader = function (res) {
                     var mime = res.headers.get('content-type');
                     if (mime.indexOf('text/plain') > -1) {
-                        return core_1.ResponseType.TEXT;
+                        return types_1.ResponseType.TEXT;
                     }
                     if (mime.indexOf('text/json') > -1 || mime.indexOf('application/json') > -1) {
-                        return core_1.ResponseType.JSON;
+                        return types_1.ResponseType.JSON;
                     }
                     if (/^(?:image|audio|video|(?:application\/zip)|(?:application\/octet-stream))/.test(mime)) {
-                        return core_1.ResponseType.BLOB;
+                        return types_1.ResponseType.BLOB;
                     }
-                    return core_1.ResponseType.TEXT;
+                    return types_1.ResponseType.TEXT;
                 };
                 HttpRequest.prototype.serialize = function (data) {
                     var ret = [];

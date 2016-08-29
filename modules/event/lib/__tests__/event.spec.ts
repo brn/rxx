@@ -45,7 +45,7 @@ describe('event.tsx', () => {
         const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;
         });
-        instance.fire('test', true);
+        instance.push('test', true);
         expect(fired).to.be.eq(true);
         disp.unsubscribe();
       });
@@ -57,18 +57,8 @@ describe('event.tsx', () => {
         const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;
         });
-        instance.asCallback('test', true)();
+        instance.callback('test', true)();
         disp.unsubscribe();
-      });
-    });
-
-    describe('#throttle', () => {
-      it('指定時間経過後にイベントを発火する', done => {
-        const disp = instance.response.for('test').subscribe(graceful(v => {
-          expect(v).to.be.eq(true);
-          disp.unsubscribe();
-        }, done));
-        instance.throttle(100, 'test', true);
       });
     });
   });

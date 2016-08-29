@@ -29,13 +29,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { io, IOResponse, HttpMethod, ResponseType, Symbol, intercept, Outlet } from '@react-mvi/core';
+import { io, isDefined, Symbol, intercept, Outlet } from '@react-mvi/core';
 import { Subscription, ConnectableObservable } from 'rxjs/Rx';
-import { HttpResponse } from './http-response';
+import { HttpResponseImpl } from './http-response';
 import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
 import { fetch, Response } from './shims/fetch';
-export { IOResponse, HttpMethod, ResponseType };
+import { HttpMethod, ResponseType } from './types';
 export var HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export var HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 var typeMatcher = /\[object ([^\]]+)\]/;
@@ -58,44 +58,7 @@ export var HttpRequest = (function (_super) {
         if (props['http']) {
             var _loop_1 = function(reqKey) {
                 var req = props['http'][reqKey];
-                subscription.add(req.subscribe(function (config) {
-                    var subjects = _this.store.get(reqKey);
-                    (function () {
-                        switch (config.method) {
-                            case HttpMethod.GET:
-                                return _this.get(config);
-                            case HttpMethod.POST:
-                                return _this.post(config);
-                            case HttpMethod.PUT:
-                                return _this.put(config);
-                            default:
-                                return _this.get(config);
-                        }
-                    })()
-                        .then(function (res) {
-                        var handler = function (result) {
-                            var response = new HttpResponse(res.ok, res.status, res.ok ? result : null, res.ok ? null : result);
-                            subjects.forEach(function (subject) { return subject.next(response); });
-                        };
-                        if (res.ok) {
-                            _this.getResponse(config.responseType, res).then(handler);
-                        }
-                        else {
-                            _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
-                        }
-                    }).catch(function (err) {
-                        var handler = function (result) {
-                            var response = new HttpResponse(false, err && err.status ? err.status : 500, null, result);
-                            subjects.forEach(function (subject) { return subject.next(response); });
-                        };
-                        if (err && typeof err.json === 'function') {
-                            _this.getResponse(config.responseType, err).then(handler);
-                        }
-                        else {
-                            handler(err);
-                        }
-                    });
-                }));
+                subscription.add(req.subscribe(function (config) { return _this.push(reqKey, config); }));
             };
             for (var reqKey in props['http']) {
                 _loop_1(reqKey);
@@ -108,6 +71,67 @@ export var HttpRequest = (function (_super) {
             }
         }
         return subscription;
+    };
+    /**
+     * @inheritDoc
+     */
+    HttpRequest.prototype.push = function (key, args) {
+        var _this = this;
+        if (!args) {
+            throw new Error('Config required.');
+        }
+        var config = args;
+        var subjects = this.store.get(key);
+        (function () {
+            switch (config.method) {
+                case HttpMethod.GET:
+                    return _this.get(config);
+                case HttpMethod.POST:
+                    return _this.post(config);
+                case HttpMethod.PUT:
+                    return _this.put(config);
+                case HttpMethod.DELETE:
+                    return _this.delete(config);
+                default:
+                    return _this.get(config);
+            }
+        })()
+            .then(function (res) {
+            var handler = function (result) {
+                var headers = _this.processHeaders(res);
+                var response = new HttpResponseImpl(res.ok, res.status, headers, res.ok ? result : null, res.ok ? null : result);
+                subjects.forEach(function (subject) { return subject.next(response); });
+            };
+            if (res.ok) {
+                _this.getResponse(config.responseType, res).then(handler);
+            }
+            else {
+                _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+            }
+        }).catch(function (err) {
+            var handler = function (result) {
+                var response = new HttpResponseImpl(false, err && err.status ? err.status : 500, {}, null, result);
+                subjects.forEach(function (subject) { return subject.next(response); });
+            };
+            if (err && typeof err.json === 'function') {
+                _this.getResponse(config.responseType, err).then(handler);
+            }
+            else {
+                handler(err);
+            }
+        });
+    };
+    /**
+     * @inheritDoc
+     */
+    HttpRequest.prototype.callback = function (key, value) {
+        var _this = this;
+        return function (args) { return _this.push(key, isDefined(value) ? value : args); };
+    };
+    HttpRequest.prototype.processHeaders = function (res) {
+        var headers = {};
+        res.headers.forEach(function (v, k) { return headers[k] = v; });
+        return headers;
     };
     Object.defineProperty(HttpRequest.prototype, "fetch", {
         get: function () {
@@ -168,12 +192,15 @@ export var HttpRequest = (function (_super) {
      */
     HttpRequest.prototype.delete = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
-        return this.fetch(url, {
+        var req = {
             headers: headers,
             method: 'DELETE',
-            mode: mode || 'same-origin',
-            body: json ? JSON.stringify(data) : form ? this.serialize(data) : data
-        });
+            mode: mode || 'same-origin'
+        };
+        if (isDefined(data)) {
+            req['body'] = json ? JSON.stringify(data) : form ? this.serialize(data) : data;
+        }
+        return this.fetch(url, req);
     };
     /**
      * Get proper response from fetch response body.

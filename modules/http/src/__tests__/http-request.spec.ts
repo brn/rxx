@@ -32,14 +32,17 @@ import {
 }                   from '@react-mvi/core';
 import {
   HttpRequest,
-  HttpMethod,
-  HttpConfig,
-  ResponseType,
-  HTTP_INTERCEPT,
+  HTTP_RESPONSE_INTERCEPT,
   HTTP_REQUEST_INTERCEPT
 }                   from '../http-request';
 import {
+  HttpMethod,
+  HttpConfig,
+  ResponseType,
   HttpResponse
+}                   from '../types';
+import {
+  HttpResponseImpl
 }                   from '../http-response';
 import {
   expect
@@ -80,7 +83,7 @@ describe('HttpRequest', () => {
     initPostResponse = (proceed: boolean) => {
       const injector = new Injector([createModule(config => {
         config.bind('http').to(HttpRequest);
-        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+        config.bindInterceptor(HTTP_RESPONSE_INTERCEPT).to(class implements MethodProxy {
           invoke(methodInvocation: MethodInvocation) {
             if (proceed) {
               return methodInvocation.proceed();
@@ -108,7 +111,7 @@ describe('HttpRequest', () => {
     initPostErrorResponse = (proceed: boolean) => {
       const injector = new Injector([createModule(config => {
         config.bind('http').to(HttpRequest);
-        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+        config.bindInterceptor(HTTP_RESPONSE_INTERCEPT).to(class implements MethodProxy {
           invoke(methodInvocation: MethodInvocation) {
             if (proceed) {
               return methodInvocation.proceed();
@@ -133,7 +136,7 @@ describe('HttpRequest', () => {
     initFormResponse = (proceed: boolean) => {
       const injector = new Injector([createModule(config => {
         config.bind('http').to(HttpRequest);
-        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+        config.bindInterceptor(HTTP_RESPONSE_INTERCEPT).to(class implements MethodProxy {
           invoke(methodInvocation: MethodInvocation) {
             if (proceed) {
               return methodInvocation.proceed();
@@ -158,7 +161,7 @@ describe('HttpRequest', () => {
     initGetResponse = (proceed: boolean, params?: string) => {
       const injector = new Injector([createModule(config => {
         config.bind('http').to(HttpRequest);
-        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+        config.bindInterceptor(HTTP_RESPONSE_INTERCEPT).to(class implements MethodProxy {
           invoke(methodInvocation: MethodInvocation) {
             if (proceed) {
               return methodInvocation.proceed();
@@ -183,7 +186,7 @@ describe('HttpRequest', () => {
     initGetErrorResponse = (proceed: boolean) => {
       const injector = new Injector([createModule(config => {
         config.bind('http').to(HttpRequest);
-        config.bindInterceptor(HTTP_INTERCEPT).to(class implements MethodProxy {
+        config.bindInterceptor(HTTP_RESPONSE_INTERCEPT).to(class implements MethodProxy {
           invoke(methodInvocation: MethodInvocation) {
             if (proceed) {
               return methodInvocation.proceed();

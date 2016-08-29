@@ -58,7 +58,7 @@ var EventDispatcher = (function (_super) {
      * @param args Event args. If a first argument was 'RETRY', specify history index.
      * If empty, last event will be publishing.
      */
-    EventDispatcher.prototype.fire = function (key, args) {
+    EventDispatcher.prototype.push = function (key, args) {
         if (key === 'RETRY') {
             var target = this.history[args || this.history.length - 1];
             if (target) {
@@ -78,36 +78,14 @@ var EventDispatcher = (function (_super) {
         fire();
     };
     /**
-     * Fire event after specific time.
-     * @override
-     * @param time Time to delay.
-     * @param key Event name.
-     * @param args Event args.
-     */
-    EventDispatcher.prototype.throttle = function (time, key, args) {
-        var _this = this;
-        setTimeout(function () {
-            _this.fire(key, args);
-        }, time);
-    };
-    /**
      * Return callback function that will publish event.
      * @override
      * @param key Event name.
      * @param v Event args. Override publish args.
      */
-    EventDispatcher.prototype.asCallback = function (key, v) {
+    EventDispatcher.prototype.callback = function (key, v) {
         var _this = this;
-        return function (args) { return _this.fire(key, core_1.isDefined(v) ? v : args); };
-    };
-    /**
-     * Same as asCallback.
-     * @override
-     * @param key Event name.
-     * @param v Event args.
-     */
-    EventDispatcher.prototype.asc = function (key, v) {
-        return this.asCallback(key, v);
+        return function (args) { return _this.push(key, core_1.isDefined(v) ? v : args); };
     };
     EventDispatcher = __decorate([
         core_1.io, 

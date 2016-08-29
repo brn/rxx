@@ -35,6 +35,10 @@ tsconfig.json
 }
 ```
 
+```
+npm install @react-mvi/http
+```
+
 Typescript version >= 1.9
 
 tsconfig.json
@@ -52,67 +56,131 @@ tsconfig.json
     "baseDir": ".",
     "baseURL": ".",
     "paths": {
-      "@react-mvi/core": [
-        "jspm_packages/npm/@react-mvi/core*"
-      ],
-      "@react-mvi/http": [
-        "jspm_packages/npm/@react-mvi/http*"
-      ],
-      "rxjs": [
-        "jspm_packages/npm/rxjs/*"
-      ]
+      "@react-mvi/http": ["jspm_packages/npm/@react-mvi/http@{version-you-installed}/index.ts"],
+      ...
     }
   }
 }
 ```
 
 
-## Simple Usage
+## Usage
+
+@react-mvi/http use http property of service returned object.
+
+See example below.
 
 ```typescript
-import * as React from 'react';
-import {
-  createModule,
-  component,
-  Tags as T,
-  run
-} from '@react-mvi/core'
-import {
-  EventDispatcher
-} from '@react-mvi/event'
-import {
-  HttpRequest,
-  HttpMethod,
-  ResponseType
-} from '@react-mvi/http'
-
-const Service = ({http, event}) => {
+// Send request.
+const myService = service((io, injector) => {
+  ...
   return {
-    http {
-      testReq: event.for('user::click').map({
-        method: HttpMethod.GET,
-        url: '/profile',
-        json: true,
-        responseType: ResponseType.JSON,
-        key: 'user::profile'
-      })
-    },
-    profile: http.for('user::profile').map(v => v.picture).startWith('').publish()
+    http: {
+      'foo::bar': someHttpReq
+    }
   }
-}
-
-const module = createModule(config => {
-  config.bind('http').to(HttpRequest);
-  config.bind('event').to(EventDispatcher);
-  config.bind('aService').toInstance(Service);
-});
-
-const View = component((props, context) => {
-  return (
-    <T.Button onClick={context.io.event.asc('user::click')}>Get Picture!</T.Button>
-    <div><span><T.Img src={props.profile} /></span></div>
-  );
-});
-
-run({component: View, modules: [module]}, document.querySelector('#app'));
+})
 ```
+
+```typescript
+// Receive response.
+http.response.for('foo::bar').map(res => res.response);
+```
+
+## Request Specification
+
+```typescript
+interface HttpConfig {
+  url: string;
+  method?: HttpMethod;
+  headers?: any;
+  mode?: 'cors'|'same-origin'|'no-cors';
+  json?: boolean;
+  data?: string|Blob|FormData,
+  form?: boolean;
+  responseType?: ResponseType
+}
+```
+
+### url
+
+Request url.
+
+### method
+
+Request method type. It defined in HttpMethods enum.
+
+```typescript
+enum HttpMethod {
+  GET = 1,
+  POST,
+  PUT,
+  DELETE
+}
+```
+
+### headers
+
+Request headers.
+
+### mode
+
+Fetch api mode.
+
+### json
+
+Send json or not.
+
+### data
+
+Request body.
+
+### form
+
+Using www-form-urlencoded.
+
+### responseType
+
+Response body type. It defined in ResponseType enum.
+
+```typescript
+enum ResponseType {
+  JSON = 1,
+  BLOB,
+  ARRAY_BUFFER,
+  FORM_DATA,
+  TEXT
+}
+```
+
+## Response Specification
+
+```typescript
+interface HttpResponse<T, E> {
+  ok: boolean;
+  headers: {[key: string]: string};
+  status: number;
+  response: T;
+  error: E;
+}
+```
+
+### ok
+
+Flag that show response was 30X or 20X.
+
+### headers
+
+Response headers.
+
+### status
+
+Response status number.
+
+### response
+
+Response body.
+
+### error
+
+Error message if error occured.

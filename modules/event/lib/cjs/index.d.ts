@@ -34,27 +34,12 @@ export declare class EventDispatcher extends Outlet {
      * @param args Event args. If a first argument was 'RETRY', specify history index.
      * If empty, last event will be publishing.
      */
-    fire(key: string, args?: any): void;
-    /**
-     * Fire event after specific time.
-     * @override
-     * @param time Time to delay.
-     * @param key Event name.
-     * @param args Event args.
-     */
-    throttle(time: number, key: string, args?: any): void;
+    push(key: string, args?: any): void;
     /**
      * Return callback function that will publish event.
      * @override
      * @param key Event name.
      * @param v Event args. Override publish args.
      */
-    asCallback(key: string, v?: any): (args?: any) => void;
-    /**
-     * Same as asCallback.
-     * @override
-     * @param key Event name.
-     * @param v Event args.
-     */
-    asc(key: string, v?: any): (args?: any) => void;
+    callback(key: string, v?: any): (args?: any) => void;
 }

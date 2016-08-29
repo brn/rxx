@@ -8,9 +8,6 @@ import {
 } from './shims/promise';
 import {
   IO,
-  Event,
-  HttpMethod,
-  HttpConfig,
   IOResponse,
   SubjectStore
 } from '@react-mvi/core';
@@ -31,17 +28,22 @@ export type HttpMockArgs = {
   /**
    * Specify get method return value.
    */
-  get?: (uri: string, req: RequestInit) => Response,
+  get?: (uri: string, req: RequestInit) => Response;
 
-/**
+  /**
    * Specify post method return value.
    */
-  post?: (uri: string, req: RequestInit) => Response,
+  post?: (uri: string, req: RequestInit) => Response;
 
-/**
+  /**
    * Specify put method return value.
    */
-  put?: (uri: string, req: RequestInit) => Response
+  put?: (uri: string, req: RequestInit) => Response;
+
+  /**
+   * Specify delete method return value.
+   */
+  delete?: (uri: string, req: RequestInit) => Response;
 }
 
 

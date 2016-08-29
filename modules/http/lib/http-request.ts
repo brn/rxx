@@ -21,11 +21,9 @@
 
 import {
   io,
+  isDefined,
   IOResponse,
   SubjectStore,
-  HttpConfig,
-  HttpMethod,
-  ResponseType,
   param,
   Symbol,
   intercept,
@@ -37,7 +35,7 @@ import {
   ConnectableObservable
 } from 'rxjs/Rx';
 import {
-  HttpResponse
+  HttpResponseImpl
 } from './http-response';
 import {
   querystring as qs
@@ -50,10 +48,13 @@ import {
   Response,
   Fetch
 } from './shims/fetch';
+import {
+  HttpConfig,
+  HttpMethod,
+  HttpResponse,
+  ResponseType
+} from './types';
 
-
-
-export {IOResponse, HttpConfig, HttpMethod, ResponseType};
 
 export const HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
@@ -75,42 +76,7 @@ export class HttpRequest extends Outlet {
     if (props['http']) {
       for (let reqKey in props['http']) {
         const req = props['http'][reqKey];
-        subscription.add(req.subscribe((config: HttpConfig) => {
-          const subjects = this.store.get(reqKey);
-          (() => {
-            switch (config.method) {
-            case HttpMethod.GET:
-              return this.get(config);
-            case HttpMethod.POST:
-              return this.post(config);
-            case HttpMethod.PUT:
-              return this.put(config);
-            default:
-              return this.get(config);
-            }
-          })()
-            .then(res => {
-              const handler = result => {
-                const response = new HttpResponse(res.ok, res.status, res.ok? result: null, res.ok? null: result);
-                subjects.forEach(subject => subject.next(response));
-              };
-              if (res.ok) {
-                this.getResponse(config.responseType, res).then(handler);
-              } else {
-                this.getResponse(this.getResponseTypeFromHeader(res), res).then(handler);
-              }
-            }).catch(err => {
-              const handler = result => {
-                const response = new HttpResponse(false, err && err.status? err.status: 500, null, result);
-                subjects.forEach(subject => subject.next(response));
-              };
-              if (err && typeof err.json === 'function') {
-                this.getResponse(config.responseType, err).then(handler);
-              } else {
-                handler(err);
-              }
-            });
-        }));
+        subscription.add(req.subscribe((config: HttpConfig) => this.push(reqKey, config)));
       }
       for (let reqKey in props['http']) {
         const req = props['http'][reqKey];
@@ -120,6 +86,69 @@ export class HttpRequest extends Outlet {
       }
     }
     return subscription;
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  public push(key: string, args?: any) {
+    if (!args) {
+      throw new Error('Config required.');
+    }
+
+    const config: HttpConfig = args;
+
+    const subjects = this.store.get(key);
+    (() => {
+      switch (config.method) {
+      case HttpMethod.GET:
+        return this.get(config);
+      case HttpMethod.POST:
+        return this.post(config);
+      case HttpMethod.PUT:
+        return this.put(config);
+      case HttpMethod.DELETE:
+        return this.delete(config);
+      default:
+        return this.get(config);
+      }
+    })()
+      .then(res => {
+        const handler = result => {
+          const headers = this.processHeaders(res);
+          const response = new HttpResponseImpl(res.ok, res.status, headers, res.ok? result: null, res.ok? null: result);
+          subjects.forEach(subject => subject.next(response));
+        };
+        if (res.ok) {
+          this.getResponse(config.responseType, res).then(handler);
+        } else {
+          this.getResponse(this.getResponseTypeFromHeader(res), res).then(handler);
+        }
+      }).catch(err => {
+        const handler = result => {
+          const response = new HttpResponseImpl(false, err && err.status? err.status: 500, {}, null, result);
+          subjects.forEach(subject => subject.next(response));
+        };
+        if (err && typeof err.json === 'function') {
+          this.getResponse(config.responseType, err).then(handler);
+        } else {
+          handler(err);
+        }
+      });
+  }
+
+
+  /**
+   * @inheritDoc
+   */
+  public callback(key: string, value?: any) {return (args?: any) => this.push(key, isDefined(value)? value: args)}
+
+
+  private processHeaders(res: Response): {[key: string]: string} {
+    const headers = {};
+    res.headers.forEach((v, k) => headers[k] = v);
+    return headers;
   }
 
 
@@ -186,12 +215,15 @@ export class HttpRequest extends Outlet {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private delete<T>({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
-    return this.fetch(url, {
+    const req = {
       headers: headers,
       method: 'DELETE',
-      mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): form? this.serialize(data): data
-    });
+      mode: mode || 'same-origin'
+    };
+    if (isDefined(data)) {
+      req['body'] = json? JSON.stringify(data): form? this.serialize(data): data;
+    }
+    return this.fetch(url, req);
   }
 
 

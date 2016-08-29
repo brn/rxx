@@ -20,7 +20,6 @@ import {
   io,
   IOResponse,
   SubjectStore,
-  Event,
   isDefined,
   Outlet
 } from '@react-mvi/core';
@@ -58,7 +57,7 @@ export class EventDispatcher extends Outlet {
    * @param args Event args. If a first argument was 'RETRY', specify history index.
    * If empty, last event will be publishing.
    */
-  public fire(key: string, args?: any): void {
+  public push(key: string, args?: any): void {
     if (key === 'RETRY') {
       const target = this.history[args || this.history.length - 1];
       if (target) {
@@ -80,37 +79,12 @@ export class EventDispatcher extends Outlet {
 
 
   /**
-   * Fire event after specific time.
-   * @override
-   * @param time Time to delay.
-   * @param key Event name.
-   * @param args Event args.
-   */
-  public throttle(time: number, key: string, args?: any): void {
-    setTimeout(() => {
-      this.fire(key, args);
-    }, time);
-  }
-
-
-  /**
    * Return callback function that will publish event.
    * @override
    * @param key Event name.
    * @param v Event args. Override publish args.
    */
-  public asCallback(key: string, v?: any): (args?: any) => void {
-    return (args?: any) => this.fire(key, isDefined(v)? v: args);
-  }
-
-
-  /**
-   * Same as asCallback.
-   * @override
-   * @param key Event name.
-   * @param v Event args.
-   */
-  public asc(key: string, v?: any): (args?: any) => void {
-    return this.asCallback(key, v);
+  public callback(key: string, v?: any): (args?: any) => void {
+    return (args?: any) => this.push(key, isDefined(v)? v: args);
   }
 }

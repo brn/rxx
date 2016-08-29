@@ -15,10 +15,9 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { IOResponse, HttpConfig, HttpMethod, ResponseType, Outlet } from '@react-mvi/core';
+import { Outlet } from '@react-mvi/core';
 import { Subscription } from 'rxjs/Rx';
 import { Fetch } from './shims/fetch';
-export { IOResponse, HttpConfig, HttpMethod, ResponseType };
 export declare const HTTP_RESPONSE_INTERCEPT: symbol;
 export declare const HTTP_REQUEST_INTERCEPT: symbol;
 /**
@@ -33,6 +32,15 @@ export declare class HttpRequest extends Outlet {
     subscribe(props: {
         [key: string]: any;
     }): Subscription;
+    /**
+     * @inheritDoc
+     */
+    push(key: string, args?: any): void;
+    /**
+     * @inheritDoc
+     */
+    callback(key: string, value?: any): (args?: any) => void;
+    private processHeaders(res);
     protected readonly fetch: Fetch;
     /**
      * Send GET request.

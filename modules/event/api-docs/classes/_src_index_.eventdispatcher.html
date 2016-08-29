@@ -122,11 +122,9 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_index_.eventdispatcher.html#ascallback" class="tsd-kind-icon">as<wbr>Callback</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_index_.eventdispatcher.html#asc" class="tsd-kind-icon">asc</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_index_.eventdispatcher.html#fire" class="tsd-kind-icon">fire</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_src_index_.eventdispatcher.html#callback" class="tsd-kind-icon">callback</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_src_index_.eventdispatcher.html#push" class="tsd-kind-icon">push</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_src_index_.eventdispatcher.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_index_.eventdispatcher.html#throttle" class="tsd-kind-icon">throttle</a></li>
 							</ul>
 						</section>
 					</div>
@@ -145,7 +143,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in node_modules/@react-mvi/core/io/io.tsx:148</li>
+									<li>Defined in node_modules/@react-mvi/core/io/io.tsx:164</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_src_index_.eventdispatcher.html" class="tsd-signature-type">EventDispatcher</a></h4>
@@ -161,7 +159,7 @@
 					<div class="tsd-signature tsd-kind-icon">history<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L46">src/index.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/brn/react-mvi/blob/0b149b6/modules/event/src/index.ts#L45">src/index.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -177,7 +175,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#store">store</a></p>
 						<ul>
-							<li>Defined in node_modules/@react-mvi/core/io/io.tsx:147</li>
+							<li>Defined in node_modules/@react-mvi/core/io/io.tsx:163</li>
 						</ul>
 					</aside>
 				</section>
@@ -195,7 +193,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#response">response</a></p>
 								<ul>
-									<li>Defined in node_modules/@react-mvi/core/io/io.tsx:159</li>
+									<li>Defined in node_modules/@react-mvi/core/io/io.tsx:175</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_node_modules__react_mvi_core_io_io_.ioresponse.html" class="tsd-signature-type">IOResponse</a></h4>
@@ -205,17 +203,19 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="ascallback" class="tsd-anchor"></a>
-					<h3>as<wbr>Callback</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">as<wbr>Callback<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, v<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="callback" class="tsd-anchor"></a>
+					<h3>callback</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">callback<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, v<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_node_modules__react_mvi_core_io_io_.io.html">IO</a>.<a href="../interfaces/_node_modules__react_mvi_core_io_io_.io.html#callback">callback</a></p>
+								<p>Overwrites <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#callback">callback</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L102">src/index.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/0b149b6/modules/event/src/index.ts#L87">src/index.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -264,76 +264,19 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="asc" class="tsd-anchor"></a>
-					<h3>asc</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">asc<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, v<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="push" class="tsd-anchor"></a>
+					<h3>push</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">push<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_node_modules__react_mvi_core_io_io_.io.html">IO</a>.<a href="../interfaces/_node_modules__react_mvi_core_io_io_.io.html#push">push</a></p>
+								<p>Overwrites <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#push">push</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L113">src/index.ts:113</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Same as asCallback.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>override</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Event name.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> v: <span class="tsd-signature-type">any</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Event args.</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter-siganture">
-									<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5><span class="tsd-flag ts-flagOptional">Optional</span> args: <span class="tsd-signature-type">any</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="fire" class="tsd-anchor"></a>
-					<h3>fire</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fire<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L61">src/index.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/0b149b6/modules/event/src/index.ts#L60">src/index.ts:60</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -376,7 +319,7 @@
 							<aside class="tsd-sources">
 								<p>Overwrites <a href="_node_modules__react_mvi_core_io_io_.outlet.html">Outlet</a>.<a href="_node_modules__react_mvi_core_io_io_.outlet.html#subscribe">subscribe</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L49">src/index.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/0b149b6/modules/event/src/index.ts#L48">src/index.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -391,53 +334,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Subscription</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="throttle" class="tsd-anchor"></a>
-					<h3>throttle</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">throttle<span class="tsd-signature-symbol">(</span>time<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/brn/react-mvi/blob/fffec9c/modules/event/src/index.ts#L89">src/index.ts:89</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Fire event after specific time.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>override</dt>
-									<dd></dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>time: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Time to delay.</p>
-									</div>
-								</li>
-								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Event name.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> args: <span class="tsd-signature-type">any</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Event args.</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -542,20 +438,14 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="_src_index_.eventdispatcher.html#response" class="tsd-kind-icon">response</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_index_.eventdispatcher.html#ascallback" class="tsd-kind-icon">as<wbr>Callback</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_src_index_.eventdispatcher.html#callback" class="tsd-kind-icon">callback</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_index_.eventdispatcher.html#asc" class="tsd-kind-icon">asc</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_index_.eventdispatcher.html#fire" class="tsd-kind-icon">fire</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_src_index_.eventdispatcher.html#push" class="tsd-kind-icon">push</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_src_index_.eventdispatcher.html#subscribe" class="tsd-kind-icon">subscribe</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_index_.eventdispatcher.html#throttle" class="tsd-kind-icon">throttle</a>
 							</li>
 						</ul>
 					</li>

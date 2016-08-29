@@ -14,6 +14,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+export * from './types';
 export * from './http-request';
 export * from './http-response';
 export * from './http-request-mock';

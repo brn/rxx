@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>StorageType | react-mvi</title>
+	<title>HttpResponse | react-mvi</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -57,70 +57,118 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_node_modules__react_mvi_core_io_io_.html">&quot;node_modules/@react-mvi/core/io/io&quot;</a>
+					<a href="../modules/_src_types_.html">&quot;src/types&quot;</a>
 				</li>
 				<li>
-					<a href="_node_modules__react_mvi_core_io_io_.storagetype.html">StorageType</a>
+					<a href="_src_types_.httpresponse.html">HttpResponse</a>
 				</li>
 			</ul>
-			<h1>Enumeration StorageType</h1>
+			<h1>Interface HttpResponse&lt;T, E&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The type of the Storage.</p>
-					</div>
-				</div>
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T</h4>
+					</li>
+					<li>
+						<h4>E</h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">HttpResponse</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_src_http_response_.httpresponseimpl.html" class="tsd-signature-type">HttpResponseImpl</a></li>
+				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-external">
-							<h3>Enumeration members</h3>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="_node_modules__react_mvi_core_io_io_.storagetype.html#cookie" class="tsd-kind-icon">COOKIE</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="_node_modules__react_mvi_core_io_io_.storagetype.html#local_storage" class="tsd-kind-icon">LOCAL_<wbr>STORAGE</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external"><a href="_node_modules__react_mvi_core_io_io_.storagetype.html#session_storage" class="tsd-kind-icon">SESSION_<wbr>STORAGE</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_types_.httpresponse.html#error" class="tsd-kind-icon">error</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_types_.httpresponse.html#headers" class="tsd-kind-icon">headers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_types_.httpresponse.html#ok" class="tsd-kind-icon">ok</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_types_.httpresponse.html#response" class="tsd-kind-icon">response</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_types_.httpresponse.html#status" class="tsd-kind-icon">status</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-external">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="cookie" class="tsd-anchor"></a>
-					<h3>COOKIE</h3>
-					<div class="tsd-signature tsd-kind-icon">COOKIE<span class="tsd-signature-symbol">:</span> </div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="error" class="tsd-anchor"></a>
+					<h3>error</h3>
+					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">E</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/@react-mvi/core/io/io.tsx:268</li>
+							<li>Defined in src/types.ts:53</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="local_storage" class="tsd-anchor"></a>
-					<h3>LOCAL_<wbr>STORAGE</h3>
-					<div class="tsd-signature tsd-kind-icon">LOCAL_<wbr>STORAGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="headers" class="tsd-anchor"></a>
+					<h3>headers</h3>
+					<div class="tsd-signature tsd-kind-icon">headers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/@react-mvi/core/io/io.tsx:266</li>
+							<li>Defined in src/types.ts:50</li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="ok" class="tsd-anchor"></a>
+					<h3>ok</h3>
+					<div class="tsd-signature tsd-kind-icon">ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/types.ts:49</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-					<a name="session_storage" class="tsd-anchor"></a>
-					<h3>SESSION_<wbr>STORAGE</h3>
-					<div class="tsd-signature tsd-kind-icon">SESSION_<wbr>STORAGE<span class="tsd-signature-symbol">:</span> </div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="response" class="tsd-anchor"></a>
+					<h3>response</h3>
+					<div class="tsd-signature tsd-kind-icon">response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/@react-mvi/core/io/io.tsx:267</li>
+							<li>Defined in src/types.ts:52</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/types.ts:51</li>
 						</ul>
 					</aside>
 				</section>
@@ -132,78 +180,48 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="current tsd-kind-external-module tsd-is-external">
-						<a href="../modules/_node_modules__react_mvi_core_io_io_.html">"node_<wbr>modules/@react-<wbr>mvi/core/io/io"</a>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_src_types_.html">"src/types"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module tsd-is-external">
-						<a href="_node_modules__react_mvi_core_io_io_.httpmethod.html" class="tsd-kind-icon">Http<wbr>Method</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_src_types_.httpmethod.html" class="tsd-kind-icon">Http<wbr>Method</a>
 					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module tsd-is-external">
-						<a href="_node_modules__react_mvi_core_io_io_.responsetype.html" class="tsd-kind-icon">Response<wbr>Type</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_src_types_.responsetype.html" class="tsd-kind-icon">Response<wbr>Type</a>
 					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module tsd-is-external">
-						<a href="_node_modules__react_mvi_core_io_io_.storagemethod.html" class="tsd-kind-icon">Storage<wbr>Method</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_types_.httpconfig.html" class="tsd-kind-icon">Http<wbr>Config</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-external-module tsd-is-external">
-						<a href="_node_modules__react_mvi_core_io_io_.storagetype.html" class="tsd-kind-icon">Storage<wbr>Type</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_src_types_.httpresponse.html" class="tsd-kind-icon">Http<wbr>Response</a>
 						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="_node_modules__react_mvi_core_io_io_.storagetype.html#cookie" class="tsd-kind-icon">COOKIE</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_types_.httpresponse.html#error" class="tsd-kind-icon">error</a>
 							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="_node_modules__react_mvi_core_io_io_.storagetype.html#local_storage" class="tsd-kind-icon">LOCAL_<wbr>STORAGE</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_types_.httpresponse.html#headers" class="tsd-kind-icon">headers</a>
 							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum tsd-is-external">
-								<a href="_node_modules__react_mvi_core_io_io_.storagetype.html#session_storage" class="tsd-kind-icon">SESSION_<wbr>STORAGE</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_types_.httpresponse.html#ok" class="tsd-kind-icon">ok</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_types_.httpresponse.html#response" class="tsd-kind-icon">response</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_types_.httpresponse.html#status" class="tsd-kind-icon">status</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-external">
-						<a href="../classes/_node_modules__react_mvi_core_io_io_.ioresponse.html" class="tsd-kind-icon">IOResponse</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-external">
-						<a href="../classes/_node_modules__react_mvi_core_io_io_.outlet.html" class="tsd-kind-icon">Outlet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-external">
-						<a href="../classes/_node_modules__react_mvi_core_io_io_.subjectstore.html" class="tsd-kind-icon">Subject<wbr>Store</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.basiciotypes.html" class="tsd-kind-icon">BasicIOTypes</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.domstorage.html" class="tsd-kind-icon">DOMStorage</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.event.html" class="tsd-kind-icon">Event</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.httpconfig.html" class="tsd-kind-icon">Http<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.httpresponse.html" class="tsd-kind-icon">Http<wbr>Response</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.io.html" class="tsd-kind-icon">IO</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.storageio.html" class="tsd-kind-icon">StorageIO</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-external">
-						<a href="../interfaces/_node_modules__react_mvi_core_io_io_.storageoptions.html" class="tsd-kind-icon">Storage<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-external">
-						<a href="../modules/_node_modules__react_mvi_core_io_io_.html#io_mark" class="tsd-kind-icon">IO_<wbr>MARK</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-external">
-						<a href="../modules/_node_modules__react_mvi_core_io_io_.html#io-1" class="tsd-kind-icon">io</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_types_.html#_______react_mvi_module_reference_bug_fix__dummy______" class="tsd-kind-icon">_____$_<wbr>react_<wbr>mvi_<wbr>module_<wbr>reference_<wbr>bug_<wbr>fix__dummy_<wbr>$____</a>
 					</li>
 				</ul>
 			</nav>
