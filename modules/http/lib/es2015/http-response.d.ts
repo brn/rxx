@@ -2,7 +2,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { HttpResponse } from './types';
+import { HttpResponse, HttpUploadProgress } from './types';
 export declare class HttpResponseImpl<T, E> implements HttpResponse<T, E> {
     private _ok;
     private _status;
@@ -19,4 +19,13 @@ export declare class HttpResponseImpl<T, E> implements HttpResponse<T, E> {
     readonly status: number;
     readonly response: T;
     readonly error: E;
+}
+export declare class HttpUploadProgressImpl implements HttpUploadProgress {
+    private event;
+    private xhr;
+    constructor(event: ProgressEvent, xhr: XMLHttpRequest);
+    readonly percent: number;
+    readonly total: number;
+    readonly loaded: number;
+    cancel(): void;
 }

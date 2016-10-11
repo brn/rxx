@@ -77,6 +77,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
              */
             isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
             isEnumerable = function (v) {
+                if (!v || typeof v !== 'object') {
+                    return false;
+                }
                 if (Object.getPrototypeOf) {
                     if (Object.getPrototypeOf(v) !== Object.prototype) {
                         return false;

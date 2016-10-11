@@ -24,7 +24,16 @@ export enum ResponseType {
   BLOB,
   ARRAY_BUFFER,
   FORM_DATA,
-  TEXT
+  TEXT,
+  STREAM
+}
+
+
+export enum UploadEventType {
+  PROGRESS = 1,
+  ERROR,
+  ABORT,
+  COMPLETE
 }
 
 
@@ -37,9 +46,10 @@ export interface HttpConfig {
   headers?: any;
   mode?: 'cors'|'same-origin'|'no-cors';
   json?: boolean;
-  data?: string|Blob|FormData,
+  data?: string|Blob|FormData|Object,
   form?: boolean;
-  responseType?: ResponseType
+  responseType?: ResponseType,
+  upload?: boolean;
 };
 
 
@@ -50,6 +60,14 @@ export interface HttpResponse<T, E> {
   status: number;
   response: T;
   error: E;
+}
+
+
+export interface HttpUploadProgress {
+  percent: number;
+  total: number;
+  loaded: number;
+  cancel(): void;
 }
 
 

@@ -22,6 +22,14 @@ export var ResponseType;
     ResponseType[ResponseType["ARRAY_BUFFER"] = 3] = "ARRAY_BUFFER";
     ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
     ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
+    ResponseType[ResponseType["STREAM"] = 6] = "STREAM";
 })(ResponseType || (ResponseType = {}));
+export var UploadEventType;
+(function (UploadEventType) {
+    UploadEventType[UploadEventType["PROGRESS"] = 1] = "PROGRESS";
+    UploadEventType[UploadEventType["ERROR"] = 2] = "ERROR";
+    UploadEventType[UploadEventType["ABORT"] = 3] = "ABORT";
+    UploadEventType[UploadEventType["COMPLETE"] = 4] = "COMPLETE";
+})(UploadEventType || (UploadEventType = {}));
 ;
 export function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }

@@ -22,8 +22,16 @@ var HttpMethod = exports.HttpMethod;
     ResponseType[ResponseType["ARRAY_BUFFER"] = 3] = "ARRAY_BUFFER";
     ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
     ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
+    ResponseType[ResponseType["STREAM"] = 6] = "STREAM";
 })(exports.ResponseType || (exports.ResponseType = {}));
 var ResponseType = exports.ResponseType;
+(function (UploadEventType) {
+    UploadEventType[UploadEventType["PROGRESS"] = 1] = "PROGRESS";
+    UploadEventType[UploadEventType["ERROR"] = 2] = "ERROR";
+    UploadEventType[UploadEventType["ABORT"] = 3] = "ABORT";
+    UploadEventType[UploadEventType["COMPLETE"] = 4] = "COMPLETE";
+})(exports.UploadEventType || (exports.UploadEventType = {}));
+var UploadEventType = exports.UploadEventType;
 ;
 function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }
 exports.____$_react_mvi_module_reference_bug_fix__dummy_$____ = ____$_react_mvi_module_reference_bug_fix__dummy_$____;

@@ -17,6 +17,7 @@
  */
 import { Outlet } from '@react-mvi/core';
 import { Subscription } from 'rxjs/Rx';
+import { Promise } from './shims/promise';
 import { Fetch } from './shims/fetch';
 export declare const HTTP_RESPONSE_INTERCEPT: symbol;
 export declare const HTTP_REQUEST_INTERCEPT: symbol;
@@ -35,11 +36,11 @@ export declare class HttpRequest extends Outlet {
     /**
      * @inheritDoc
      */
-    push(key: string, args?: any): void;
+    push(key: string, args?: any): Promise<void>;
     /**
      * @inheritDoc
      */
-    callback(key: string, value?: any): (args?: any) => void;
+    callback(key: string, value?: any): (args?: any) => Promise<void>;
     private processHeaders(res);
     protected readonly fetch: Fetch;
     /**
@@ -70,6 +71,7 @@ export declare class HttpRequest extends Outlet {
      * @returns Promise that return response.
      */
     private delete<T>({url, headers, data, json, form, mode});
+    private upload({method, url, headers, data, mode});
     /**
      * Get proper response from fetch response body.
      * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...

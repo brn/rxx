@@ -20,6 +20,13 @@ export declare enum ResponseType {
     ARRAY_BUFFER = 3,
     FORM_DATA = 4,
     TEXT = 5,
+    STREAM = 6,
+}
+export declare enum UploadEventType {
+    PROGRESS = 1,
+    ERROR = 2,
+    ABORT = 3,
+    COMPLETE = 4,
 }
 /**
  * Type for Http request options.
@@ -30,10 +37,10 @@ export interface HttpConfig {
     headers?: any;
     mode?: 'cors' | 'same-origin' | 'no-cors';
     json?: boolean;
-    data?: string | Blob | FormData;
+    data?: string | Blob | FormData | Object;
     form?: boolean;
     responseType?: ResponseType;
-    sendToken?: boolean;
+    upload?: boolean;
 }
 export interface HttpResponse<T, E> {
     ok: boolean;
@@ -43,5 +50,11 @@ export interface HttpResponse<T, E> {
     status: number;
     response: T;
     error: E;
+}
+export interface HttpUploadProgress {
+    percent: number;
+    total: number;
+    loaded: number;
+    cancel(): void;
 }
 export declare function ____$_react_mvi_module_reference_bug_fix__dummy_$____(): void;

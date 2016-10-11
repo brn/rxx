@@ -646,6 +646,8 @@ export class Injector {
    * @param Target instance.
    */
   private applyInterceptor<T>(inst: T): void {
+    if (!inst) {return}
+
     this.findOnParent(({methodProxyDefs}) => {
       _.every(methodProxyDefs, (i: any) => {
         if (inst[i.targetSymbol]) {

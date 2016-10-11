@@ -41,6 +41,9 @@ export var ContextReactTypes = {
  */
 var isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
 var isEnumerable = function (v) {
+    if (!v || typeof v !== 'object') {
+        return false;
+    }
     if (Object.getPrototypeOf) {
         if (Object.getPrototypeOf(v) !== Object.prototype) {
             return false;

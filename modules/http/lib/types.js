@@ -5,7 +5,7 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var HttpMethod, ResponseType;
+    var HttpMethod, ResponseType, UploadEventType;
     function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }
     exports_1("____$_react_mvi_module_reference_bug_fix__dummy_$____", ____$_react_mvi_module_reference_bug_fix__dummy_$____);
     return {
@@ -30,8 +30,16 @@ System.register([], function(exports_1, context_1) {
                 ResponseType[ResponseType["ARRAY_BUFFER"] = 3] = "ARRAY_BUFFER";
                 ResponseType[ResponseType["FORM_DATA"] = 4] = "FORM_DATA";
                 ResponseType[ResponseType["TEXT"] = 5] = "TEXT";
+                ResponseType[ResponseType["STREAM"] = 6] = "STREAM";
             })(ResponseType || (ResponseType = {}));
             exports_1("ResponseType", ResponseType);
+            (function (UploadEventType) {
+                UploadEventType[UploadEventType["PROGRESS"] = 1] = "PROGRESS";
+                UploadEventType[UploadEventType["ERROR"] = 2] = "ERROR";
+                UploadEventType[UploadEventType["ABORT"] = 3] = "ABORT";
+                UploadEventType[UploadEventType["COMPLETE"] = 4] = "COMPLETE";
+            })(UploadEventType || (UploadEventType = {}));
+            exports_1("UploadEventType", UploadEventType);
             ;
         }
     }

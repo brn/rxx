@@ -39,3 +39,34 @@ export var HttpResponseImpl = (function () {
     });
     return HttpResponseImpl;
 }());
+export var HttpUploadProgressImpl = (function () {
+    function HttpUploadProgressImpl(event, xhr) {
+        this.event = event;
+        this.xhr = xhr;
+    }
+    Object.defineProperty(HttpUploadProgressImpl.prototype, "percent", {
+        get: function () {
+            return this.event.loaded / this.event.total;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(HttpUploadProgressImpl.prototype, "total", {
+        get: function () {
+            return this.event.total;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(HttpUploadProgressImpl.prototype, "loaded", {
+        get: function () {
+            return this.event.loaded;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    HttpUploadProgressImpl.prototype.cancel = function () {
+        this.xhr.abort();
+    };
+    return HttpUploadProgressImpl;
+}());

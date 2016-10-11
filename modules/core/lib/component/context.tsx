@@ -82,6 +82,10 @@ const isImmutable = v => v['isIterable'] && v['isIterable']()
 
 
 const isEnumerable = (v: any) => {
+  if (!v || typeof v !== 'object') {
+    return false;
+  }
+
   if (Object.getPrototypeOf) {
     if (Object.getPrototypeOf(v) !== Object.prototype) {
       return false;

@@ -30,12 +30,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { io, isDefined, Symbol, intercept, Outlet } from '@react-mvi/core';
-import { Subscription, ConnectableObservable } from 'rxjs/Rx';
-import { HttpResponseImpl } from './http-response';
+import { Subscription, ConnectableObservable, Subject } from 'rxjs/Rx';
+import { HttpResponseImpl, HttpUploadProgressImpl } from './http-response';
 import { querystring as qs } from './shims/query-string';
 import { Promise } from './shims/promise';
 import { fetch, Response } from './shims/fetch';
-import { HttpMethod, ResponseType } from './types';
+import { HttpMethod, ResponseType, UploadEventType } from './types';
 export var HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export var HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 var typeMatcher = /\[object ([^\]]+)\]/;
@@ -82,7 +82,32 @@ export var HttpRequest = (function (_super) {
         }
         var config = args;
         var subjects = this.store.get(key);
-        (function () {
+        if (config.upload) {
+            return this.upload(config).then(function (subject) {
+                var sub = subject.subscribe(function (e) {
+                    if (e.type !== UploadEventType.PROGRESS) {
+                        sub.unsubscribe();
+                        var isComplete_1 = e.type !== UploadEventType.COMPLETE;
+                        var contentType = e.xhr.getResponseHeader('Content-Type') || '';
+                        var response_1 = config.responseType === ResponseType.JSON || contentType.indexOf('application/json') > -1 ? JSON.parse(e.xhr.responseText) : e.xhr.responseText;
+                        var headers = e.xhr.getAllResponseHeaders();
+                        var headerArr = headers.split('\n');
+                        var headerMap_1 = {};
+                        headerArr.forEach(function (e) {
+                            var _a = e.split(':'), key = _a[0], value = _a[1];
+                            if (key && value) {
+                                headerMap_1[key.trim()] = value.trim();
+                            }
+                        });
+                        subjects.forEach(function (subject) { return subject.next(new HttpResponseImpl(e.type === UploadEventType.COMPLETE, e.xhr.status, headerMap_1, isComplete_1 ? response_1 : null, isComplete_1 ? null : response_1)); });
+                    }
+                    else {
+                        subjects.forEach(function (subject) { return subject.next(new HttpUploadProgressImpl(e.event, e.xhr)); });
+                    }
+                });
+            });
+        }
+        return (function () {
             switch (config.method) {
                 case HttpMethod.GET:
                     return _this.get(config);
@@ -202,6 +227,41 @@ export var HttpRequest = (function (_super) {
         }
         return this.fetch(url, req);
     };
+    HttpRequest.prototype.upload = function (_a) {
+        var method = _a.method, url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, mode = _a.mode;
+        var xhr = new XMLHttpRequest();
+        var subject = new Subject();
+        var events = {};
+        var addEvent = function (xhr, type, fn, dispose) {
+            if (dispose === void 0) { dispose = false; }
+            events[type] = function (e) {
+                if (dispose) {
+                    for (var key in events) {
+                        xhr.removeEventListener(key, events[key]);
+                    }
+                }
+                fn(e);
+            };
+            xhr.addEventListener(type, events[type], false);
+        };
+        if (xhr.upload) {
+            addEvent(xhr.upload, 'progress', function (e) { return subject.next({ type: UploadEventType.PROGRESS, event: e, xhr: xhr }); });
+        }
+        addEvent(xhr, 'error', function (e) { return subject.next({ type: UploadEventType.ERROR, event: e, xhr: xhr }); }, true);
+        addEvent(xhr, 'abort', function (e) { return subject.next({ type: UploadEventType.ABORT, event: e, xhr: xhr }); }, true);
+        addEvent(xhr, 'load', function (e) {
+            if (!xhr.upload) {
+                subject.next({ type: UploadEventType.PROGRESS, event: { total: 1, loaded: 1 }, xhr: xhr });
+            }
+            subject.next({ type: UploadEventType.COMPLETE, event: e, xhr: xhr });
+        }, true);
+        xhr.open(HttpMethod[method], url, true);
+        for (var key in headers) {
+            xhr.setRequestHeader(key, headers[key]);
+        }
+        xhr.send(data);
+        return Promise.resolve(subject);
+    };
     /**
      * Get proper response from fetch response body.
      * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...
@@ -220,6 +280,8 @@ export var HttpRequest = (function (_super) {
                 return res.json();
             case ResponseType.TEXT:
                 return res.text();
+            case ResponseType.STREAM:
+                return Promise.resolve(res['body']);
             default:
                 return res.text();
         }
@@ -299,6 +361,12 @@ export var HttpRequest = (function (_super) {
         __metadata('design:paramtypes', [Object]), 
         __metadata('design:returntype', Promise)
     ], HttpRequest.prototype, "delete", null);
+    __decorate([
+        intercept(HTTP_REQUEST_INTERCEPT), 
+        __metadata('design:type', Function), 
+        __metadata('design:paramtypes', [Object]), 
+        __metadata('design:returntype', Promise)
+    ], HttpRequest.prototype, "upload", null);
     __decorate([
         intercept(HTTP_RESPONSE_INTERCEPT), 
         __metadata('design:type', Function), 

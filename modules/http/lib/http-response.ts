@@ -5,7 +5,8 @@
  */
 
 import {
-  HttpResponse
+  HttpResponse,
+  HttpUploadProgress
 } from './types';
 
 
@@ -31,4 +32,30 @@ export class HttpResponseImpl<T, E> implements HttpResponse<T, E> {
 
 
   public get error() {return this._error;}
+}
+
+
+
+export class HttpUploadProgressImpl implements HttpUploadProgress {
+  public constructor(private event: ProgressEvent, private xhr: XMLHttpRequest) {}
+
+
+  public get percent() {
+    return this.event.loaded / this.event.total;
+  }
+
+
+  public get total() {
+    return this.event.total;
+  }
+
+
+  public get loaded() {
+    return this.event.loaded;
+  }
+
+
+  public cancel() {
+    this.xhr.abort();
+  }
 }

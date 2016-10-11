@@ -566,6 +566,9 @@ var Injector = (function () {
      */
     Injector.prototype.applyInterceptor = function (inst) {
         var _this = this;
+        if (!inst) {
+            return;
+        }
         this.findOnParent(function (_a) {
             var methodProxyDefs = _a.methodProxyDefs;
             lodash_1._.every(methodProxyDefs, function (i) {

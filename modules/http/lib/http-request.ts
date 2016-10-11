@@ -32,10 +32,12 @@ import {
 import {
   Observable,
   Subscription,
-  ConnectableObservable
+  ConnectableObservable,
+  Subject
 } from 'rxjs/Rx';
 import {
-  HttpResponseImpl
+  HttpResponseImpl,
+  HttpUploadProgressImpl
 } from './http-response';
 import {
   querystring as qs
@@ -52,7 +54,8 @@ import {
   HttpConfig,
   HttpMethod,
   HttpResponse,
-  ResponseType
+  ResponseType,
+  UploadEventType
 } from './types';
 
 
@@ -100,7 +103,33 @@ export class HttpRequest extends Outlet {
     const config: HttpConfig = args;
 
     const subjects = this.store.get(key);
-    (() => {
+
+    if (config.upload) {
+      return this.upload(config).then(subject => {
+        const sub = subject.subscribe(e => {
+          if (e.type !== UploadEventType.PROGRESS) {
+            sub.unsubscribe();
+            const isComplete = e.type !== UploadEventType.COMPLETE;
+            const contentType = e.xhr.getResponseHeader('Content-Type') || '';
+            const response = config.responseType === ResponseType.JSON || contentType.indexOf('application/json') > -1? JSON.parse(e.xhr.responseText): e.xhr.responseText;
+            const headers = e.xhr.getAllResponseHeaders();
+            const headerArr = headers.split('\n');
+            const headerMap = {};
+            headerArr.forEach(e => {
+              const [key, value] = e.split(':');
+              if (key && value) {
+                headerMap[key.trim()] = value.trim();
+              }
+            })
+            subjects.forEach(subject => subject.next(new HttpResponseImpl(e.type === UploadEventType.COMPLETE, e.xhr.status, headerMap, isComplete? response: null, isComplete? null: response)));
+          } else {
+            subjects.forEach(subject => subject.next(new HttpUploadProgressImpl(e.event as ProgressEvent, e.xhr)));
+          }
+        });
+      });
+    }
+
+    return (() => {
       switch (config.method) {
       case HttpMethod.GET:
         return this.get(config);
@@ -185,7 +214,7 @@ export class HttpRequest extends Outlet {
       headers,
       method: 'POST',
       mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): form? this.serialize(data): data
+      body: json? JSON.stringify(data): form? this.serialize(data): (data as any)
     });
   }
 
@@ -202,7 +231,7 @@ export class HttpRequest extends Outlet {
       headers: headers,
       method: 'PUT',
       mode: mode || 'same-origin',
-      body: json? JSON.stringify(data): form? this.serialize(data): data
+      body: json? JSON.stringify(data): form? this.serialize(data): (data as any)
     });
   }
 
@@ -227,6 +256,42 @@ export class HttpRequest extends Outlet {
   }
 
 
+  @intercept(HTTP_REQUEST_INTERCEPT)
+  private upload({method, url, headers = {}, data = {} as any, mode}: HttpConfig): Promise<Subject<{type: UploadEventType, event: Event, xhr: XMLHttpRequest}>>{
+    const xhr = new XMLHttpRequest();
+    const subject = new Subject<{type: UploadEventType, event: Event, xhr: XMLHttpRequest}>();
+    const events = {};
+    const addEvent = (xhr: EventTarget, type: string, fn: Function, dispose: boolean = false) => {
+      events[type] = e => {
+        if (dispose) {
+          for (let key in events) {
+            xhr.removeEventListener(key, events[key]);
+          }
+        }
+        fn(e);
+      };
+      xhr.addEventListener(type, events[type], false);
+    };
+    if (xhr.upload) {
+      addEvent(xhr.upload, 'progress', e => subject.next({type: UploadEventType.PROGRESS, event: e, xhr}));
+    }
+    addEvent(xhr, 'error', e => subject.next({type: UploadEventType.ERROR, event: e, xhr}), true);
+    addEvent(xhr, 'abort', e => subject.next({type: UploadEventType.ABORT, event: e, xhr}), true);
+    addEvent(xhr, 'load', e => {
+      if (!xhr.upload) {
+        subject.next({type: UploadEventType.PROGRESS, event: {total: 1, loaded: 1} as any, xhr})
+      }
+      subject.next({type: UploadEventType.COMPLETE, event: e, xhr})
+    }, true);
+    xhr.open(HttpMethod[method], url, true);
+    for (let key in headers) {
+      xhr.setRequestHeader(key, headers[key]);
+    }
+    xhr.send(data);
+    return Promise.resolve(subject);
+  }
+
+
   /**
    * Get proper response from fetch response body.
    * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...
@@ -246,6 +311,8 @@ export class HttpRequest extends Outlet {
       return res.json();
     case ResponseType.TEXT:
       return res.text();
+    case ResponseType.STREAM:
+      return Promise.resolve(res['body']);
     default:
       return res.text();
     }

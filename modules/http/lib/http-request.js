@@ -104,7 +104,32 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     }
                     var config = args;
                     var subjects = this.store.get(key);
-                    (function () {
+                    if (config.upload) {
+                        return this.upload(config).then(function (subject) {
+                            var sub = subject.subscribe(function (e) {
+                                if (e.type !== types_1.UploadEventType.PROGRESS) {
+                                    sub.unsubscribe();
+                                    var isComplete_1 = e.type !== types_1.UploadEventType.COMPLETE;
+                                    var contentType = e.xhr.getResponseHeader('Content-Type') || '';
+                                    var response_1 = config.responseType === types_1.ResponseType.JSON || contentType.indexOf('application/json') > -1 ? JSON.parse(e.xhr.responseText) : e.xhr.responseText;
+                                    var headers = e.xhr.getAllResponseHeaders();
+                                    var headerArr = headers.split('\n');
+                                    var headerMap_1 = {};
+                                    headerArr.forEach(function (e) {
+                                        var _a = e.split(':'), key = _a[0], value = _a[1];
+                                        if (key && value) {
+                                            headerMap_1[key.trim()] = value.trim();
+                                        }
+                                    });
+                                    subjects.forEach(function (subject) { return subject.next(new http_response_1.HttpResponseImpl(e.type === types_1.UploadEventType.COMPLETE, e.xhr.status, headerMap_1, isComplete_1 ? response_1 : null, isComplete_1 ? null : response_1)); });
+                                }
+                                else {
+                                    subjects.forEach(function (subject) { return subject.next(new http_response_1.HttpUploadProgressImpl(e.event, e.xhr)); });
+                                }
+                            });
+                        });
+                    }
+                    return (function () {
                         switch (config.method) {
                             case types_1.HttpMethod.GET:
                                 return _this.get(config);
@@ -224,6 +249,41 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     }
                     return this.fetch(url, req);
                 };
+                HttpRequest.prototype.upload = function (_a) {
+                    var method = _a.method, url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, mode = _a.mode;
+                    var xhr = new XMLHttpRequest();
+                    var subject = new Rx_1.Subject();
+                    var events = {};
+                    var addEvent = function (xhr, type, fn, dispose) {
+                        if (dispose === void 0) { dispose = false; }
+                        events[type] = function (e) {
+                            if (dispose) {
+                                for (var key in events) {
+                                    xhr.removeEventListener(key, events[key]);
+                                }
+                            }
+                            fn(e);
+                        };
+                        xhr.addEventListener(type, events[type], false);
+                    };
+                    if (xhr.upload) {
+                        addEvent(xhr.upload, 'progress', function (e) { return subject.next({ type: types_1.UploadEventType.PROGRESS, event: e, xhr: xhr }); });
+                    }
+                    addEvent(xhr, 'error', function (e) { return subject.next({ type: types_1.UploadEventType.ERROR, event: e, xhr: xhr }); }, true);
+                    addEvent(xhr, 'abort', function (e) { return subject.next({ type: types_1.UploadEventType.ABORT, event: e, xhr: xhr }); }, true);
+                    addEvent(xhr, 'load', function (e) {
+                        if (!xhr.upload) {
+                            subject.next({ type: types_1.UploadEventType.PROGRESS, event: { total: 1, loaded: 1 }, xhr: xhr });
+                        }
+                        subject.next({ type: types_1.UploadEventType.COMPLETE, event: e, xhr: xhr });
+                    }, true);
+                    xhr.open(types_1.HttpMethod[method], url, true);
+                    for (var key in headers) {
+                        xhr.setRequestHeader(key, headers[key]);
+                    }
+                    xhr.send(data);
+                    return promise_1.Promise.resolve(subject);
+                };
                 /**
                  * Get proper response from fetch response body.
                  * @param responseType The type of response. ex. ARRAY_BUFFER, BLOB, etc...
@@ -242,6 +302,8 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                             return res.json();
                         case types_1.ResponseType.TEXT:
                             return res.text();
+                        case types_1.ResponseType.STREAM:
+                            return promise_1.Promise.resolve(res['body']);
                         default:
                             return res.text();
                     }
@@ -321,6 +383,12 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     __metadata('design:paramtypes', [Object]), 
                     __metadata('design:returntype', promise_1.Promise)
                 ], HttpRequest.prototype, "delete", null);
+                __decorate([
+                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
+                    __metadata('design:type', Function), 
+                    __metadata('design:paramtypes', [Object]), 
+                    __metadata('design:returntype', promise_1.Promise)
+                ], HttpRequest.prototype, "upload", null);
                 __decorate([
                     core_1.intercept(HTTP_RESPONSE_INTERCEPT), 
                     __metadata('design:type', Function), 
