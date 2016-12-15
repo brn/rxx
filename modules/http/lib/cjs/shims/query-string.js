@@ -17,5 +17,5 @@
  */
 "use strict";
 /// <reference path="../declarations.d.ts"/>
-var qs = require('query-string');
+var qs = require("query-string");
 exports.querystring = qs;

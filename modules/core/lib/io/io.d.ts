@@ -49,7 +49,7 @@ export declare class SubjectStore {
      * @param key Subject name.
      * @return True if Subject was defined.
      */
-    has(key: string): Subject<any> | boolean;
+    has(key: string): false | Subject<any>;
     getWithoutGlobal(key: string): Subject<any>;
     /**
      * Get Subject by specific key.
@@ -81,7 +81,7 @@ export interface IO {
      * @param key Event name.
      * @param args Event args.
      */
-    push(key: string, args?: any): void;
+    push(key: string, args?: any): Promise<any>;
     /**
      * Get callback function that publish specified key event.
      * @param key Event name.

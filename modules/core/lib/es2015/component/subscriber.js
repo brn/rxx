@@ -67,28 +67,29 @@ var EmptyRoot = function (props) { return props.children; };
  * Subscriber component for Rx.Observable.
  * This component provide an ability that subscribe rxjs stream props by auto detection of children components.
  */
-export var Subscriber = (function (_super) {
+var Subscriber = (function (_super) {
     __extends(Subscriber, _super);
     function Subscriber(p, c) {
-        _super.call(this, p, c);
+        var _this = _super.call(this, p, c) || this;
         /**
          * All Embeded Observable informations.
          */
-        this.bindings = [];
+        _this.bindings = [];
         /**
          * Observable list that is pushed observable embeded in virtual dom trees.
          */
-        this.observableList = [];
+        _this.observableList = [];
         /**
          * Cloned mutable children tree.
          */
-        this.mutableTree = null;
-        this.hasObservable = false;
-        this.hasObservable = this.areThereObservableInChildren(React.createElement(EmptyRoot, null, this.props.children));
+        _this.mutableTree = null;
+        _this.hasObservable = false;
+        _this.hasObservable = _this.areThereObservableInChildren(React.createElement(EmptyRoot, null, _this.props.children));
         // State has virtual dom tree that are covered by this component.
-        this.state = {
-            vdom: this.hasObservable ? null : this.props.children
+        _this.state = {
+            vdom: _this.hasObservable ? null : _this.props.children
         };
+        return _this;
     }
     /**
      * Rendering new vdom trees that
@@ -287,3 +288,4 @@ export var Subscriber = (function (_super) {
     };
     return Subscriber;
 }(React.Component));
+export { Subscriber };

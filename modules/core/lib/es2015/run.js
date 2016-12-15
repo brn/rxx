@@ -37,8 +37,9 @@ export function runnable(_a) {
     var Renderer = (function (_super) {
         __extends(Renderer, _super);
         function Renderer(p, c) {
-            _super.call(this, p, c);
-            this.model = c.createProps(p);
+            var _this = _super.call(this, p, c) || this;
+            _this.model = c.createProps(p);
+            return _this;
         }
         Renderer.prototype.render = function () {
             var C = component;
@@ -47,22 +48,23 @@ export function runnable(_a) {
         Renderer.prototype.componentDidMount = function () {
             this.context.connect(this.model);
         };
-        Renderer.contextTypes = ContextReactTypes;
         return Renderer;
     }(React.Component));
-    return (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            _super.apply(this, arguments);
-        }
-        class_1.prototype.render = function () {
-            return (React.createElement(Context, {modules: modules, injector: injector}, 
-                React.createElement(Renderer, __assign({}, this.props))
-            ));
-        };
-        class_1.displayName = 'MVIRoot';
-        return class_1;
-    }(React.Component));
+    Renderer.contextTypes = ContextReactTypes;
+    return _b = (function (_super) {
+            __extends(class_1, _super);
+            function class_1() {
+                return _super.apply(this, arguments) || this;
+            }
+            class_1.prototype.render = function () {
+                return (React.createElement(Context, { modules: modules, injector: injector },
+                    React.createElement(Renderer, __assign({}, this.props))));
+            };
+            return class_1;
+        }(React.Component)),
+        _b.displayName = 'MVIRoot',
+        _b;
+    var _b;
 }
 export function run(opt, el) {
     var Root = runnable(opt);

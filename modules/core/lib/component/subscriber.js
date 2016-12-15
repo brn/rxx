@@ -15,18 +15,17 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', 'rxjs/Rx', '../env', '../utils', '../shims/symbol', '../shims/lodash'], function(exports_1, context_1) {
+System.register(["react", "rxjs/Rx", "../env", "../utils", "../shims/symbol", "../shims/lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var React, Rx_1, env_1, utils_1, symbol_1, lodash_1;
-    var process, REACT_ELEMENT_TYPEOF, SUBSCRIBER_MARK, ObservableBinding, EmptyRoot, Subscriber;
+    var __moduleName = context_1 && context_1.id;
+    var React, Rx_1, env_1, utils_1, symbol_1, lodash_1, process, REACT_ELEMENT_TYPEOF, SUBSCRIBER_MARK, ObservableBinding, EmptyRoot, Subscriber;
     return {
-        setters:[
+        setters: [
             function (React_1) {
                 React = React_1;
             },
@@ -44,8 +43,25 @@ System.register(['react', 'rxjs/Rx', '../env', '../utils', '../shims/symbol', '.
             },
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             process = env_1.getProcess();
             /**
              * Steal $$typeof symbol from dummy element.
@@ -90,25 +106,26 @@ System.register(['react', 'rxjs/Rx', '../env', '../utils', '../shims/symbol', '.
             Subscriber = (function (_super) {
                 __extends(Subscriber, _super);
                 function Subscriber(p, c) {
-                    _super.call(this, p, c);
+                    var _this = _super.call(this, p, c) || this;
                     /**
                      * All Embeded Observable informations.
                      */
-                    this.bindings = [];
+                    _this.bindings = [];
                     /**
                      * Observable list that is pushed observable embeded in virtual dom trees.
                      */
-                    this.observableList = [];
+                    _this.observableList = [];
                     /**
                      * Cloned mutable children tree.
                      */
-                    this.mutableTree = null;
-                    this.hasObservable = false;
-                    this.hasObservable = this.areThereObservableInChildren(React.createElement(EmptyRoot, null, this.props.children));
+                    _this.mutableTree = null;
+                    _this.hasObservable = false;
+                    _this.hasObservable = _this.areThereObservableInChildren(React.createElement(EmptyRoot, null, _this.props.children));
                     // State has virtual dom tree that are covered by this component.
-                    this.state = {
-                        vdom: this.hasObservable ? null : this.props.children
+                    _this.state = {
+                        vdom: _this.hasObservable ? null : _this.props.children
                     };
+                    return _this;
                 }
                 /**
                  * Rendering new vdom trees that
@@ -309,5 +326,5 @@ System.register(['react', 'rxjs/Rx', '../env', '../utils', '../shims/symbol', '.
             }(React.Component));
             exports_1("Subscriber", Subscriber);
         }
-    }
+    };
 });

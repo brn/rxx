@@ -69,6 +69,8 @@ const typeMatcher = /\[object ([^\]]+)\]/
  */
 @io
 export class HttpRequest extends Outlet {
+  private history: {key: string, args: HttpConfig}[] = [];
+
   /**
    * Wait for request from observables.
    * @override
@@ -95,9 +97,23 @@ export class HttpRequest extends Outlet {
   /**
    * @inheritDoc
    */
-  public push(key: string, args?: any) {
+  public push(key: string, args?: any): Promise<any> {
+    if (key === 'RETRY') {
+      const history = this.history[this.history.length - (typeof args === 'number'? (args + 1): 1)];
+      if (!history) {
+        return new Promise((_, r) => r(new Error('Invlaid retry number specified.')));
+      }
+      key = history.key;
+      args = history.args;
+    } else {
+      if (this.history.length > 10) {
+        this.history.shift();
+      }
+      this.history.push({key, args});
+    }
+
     if (!args) {
-      throw new Error('Config required.');
+      return new Promise((_, r) => r(new Error('Config required.')));
     }
 
     const config: HttpConfig = args;
@@ -144,6 +160,10 @@ export class HttpRequest extends Outlet {
       }
     })()
       .then(res => {
+        // For IE|Edge
+        if (!res.url) {
+          res.url = config.url;
+        }
         const handler = result => {
           const headers = this.processHeaders(res);
           const response = new HttpResponseImpl(res.ok, res.status, headers, res.ok? result: null, res.ok? null: result);
@@ -152,7 +172,12 @@ export class HttpRequest extends Outlet {
         if (res.ok) {
           this.getResponse(config.responseType, res).then(handler);
         } else {
-          this.getResponse(this.getResponseTypeFromHeader(res), res).then(handler);
+          const result = this.getResponse(this.getResponseTypeFromHeader(res), res);
+          if (result && result.then) {
+            result.then(handler);
+          } else {
+            handler(result);
+          }
         }
       }).catch(err => {
         const handler = result => {

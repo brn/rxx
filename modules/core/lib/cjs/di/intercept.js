@@ -16,7 +16,7 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var lodash_1 = require('../shims/lodash');
+var lodash_1 = require("../shims/lodash");
 /**
  * Initialize array by specified key.
  * @param target Target object.

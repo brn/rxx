@@ -15,9 +15,8 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core', 'rxjs/Rx'], function(exports_1, context_1) {
+System.register(["@react-mvi/core", "rxjs/Rx"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -32,32 +31,50 @@ System.register(['@react-mvi/core', 'rxjs/Rx'], function(exports_1, context_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, Rx_1;
-    var MAX_HISTORY_LENGTH, EventDispatcher;
+    var __moduleName = context_1 && context_1.id;
+    var core_1, Rx_1, MAX_HISTORY_LENGTH, EventDispatcher;
     return {
-        setters:[
+        setters: [
             function (core_1_1) {
                 core_1 = core_1_1;
             },
             function (Rx_1_1) {
                 Rx_1 = Rx_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             /**
              * History size.
              */
             MAX_HISTORY_LENGTH = 10;
-            /**
-             * Event publisher.
-             */
             EventDispatcher = (function (_super) {
                 __extends(EventDispatcher, _super);
+                /**
+                 * Event publisher.
+                 */
                 function EventDispatcher() {
-                    _super.apply(this, arguments);
+                    var _this = _super.apply(this, arguments) || this;
                     /**
                      * Event history.
                      */
-                    this.history = [];
+                    _this.history = [];
+                    return _this;
                 }
                 EventDispatcher.prototype.subscribe = function (props) {
                     return new Rx_1.Subscription();
@@ -87,6 +104,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx'], function(exports_1, context_1) {
                         this.history.shift();
                     }
                     fire();
+                    return Promise.resolve();
                 };
                 /**
                  * Return callback function that will publish event.
@@ -98,13 +116,13 @@ System.register(['@react-mvi/core', 'rxjs/Rx'], function(exports_1, context_1) {
                     var _this = this;
                     return function (args) { return _this.push(key, core_1.isDefined(v) ? v : args); };
                 };
-                EventDispatcher = __decorate([
-                    core_1.io, 
-                    __metadata('design:paramtypes', [])
-                ], EventDispatcher);
                 return EventDispatcher;
             }(core_1.Outlet));
+            EventDispatcher = __decorate([
+                core_1.io,
+                __metadata("design:paramtypes", [])
+            ], EventDispatcher);
             exports_1("EventDispatcher", EventDispatcher);
         }
-    }
+    };
 });

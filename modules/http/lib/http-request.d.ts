@@ -25,6 +25,7 @@ export declare const HTTP_REQUEST_INTERCEPT: symbol;
  * Http request sender.
  */
 export declare class HttpRequest extends Outlet {
+    private history;
     /**
      * Wait for request from observables.
      * @override
@@ -36,11 +37,11 @@ export declare class HttpRequest extends Outlet {
     /**
      * @inheritDoc
      */
-    push(key: string, args?: any): Promise<void>;
+    push(key: string, args?: any): Promise<any>;
     /**
      * @inheritDoc
      */
-    callback(key: string, value?: any): (args?: any) => Promise<void>;
+    callback(key: string, value?: any): (args?: any) => Promise<any>;
     private processHeaders(res);
     protected readonly fetch: Fetch;
     /**

@@ -8,9 +8,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var promise_1 = require('./shims/promise');
-var http_request_1 = require('./http-request');
-var fetch_1 = require('./shims/fetch');
+var promise_1 = require("./shims/promise");
+var http_request_1 = require("./http-request");
+var fetch_1 = require("./shims/fetch");
 /**
  * Mock class for HttpRequest.
  */
@@ -20,10 +20,9 @@ var HttpRequestMock = (function (_super) {
      * @param methods Definitions of each method return value.
      */
     function HttpRequestMock(methods) {
-        var _this = this;
-        _super.call(this);
-        this.methods = methods;
-        this.fetchFunction = function (url, request) {
+        var _this = _super.call(this) || this;
+        _this.methods = methods;
+        _this.fetchFunction = function (url, request) {
             return new promise_1.Promise(function (resolve, reject) {
                 setTimeout(function () {
                     var method = _this.methods[(request.method || 'get').toLowerCase()];
@@ -40,6 +39,7 @@ var HttpRequestMock = (function (_super) {
                 }, 100);
             });
         };
+        return _this;
     }
     Object.defineProperty(HttpRequestMock.prototype, "fetch", {
         /**

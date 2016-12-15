@@ -19,8 +19,8 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-__export(require('./injector'));
-__export(require('./abstract-module'));
-__export(require('./method-proxy'));
-__export(require('./inject'));
-__export(require('./intercept'));
+__export(require("./injector"));
+__export(require("./abstract-module"));
+__export(require("./method-proxy"));
+__export(require("./inject"));
+__export(require("./intercept"));

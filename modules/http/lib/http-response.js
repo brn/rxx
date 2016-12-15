@@ -3,13 +3,17 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
+System.register([], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var HttpResponseImpl, HttpUploadProgressImpl;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             HttpResponseImpl = (function () {
                 function HttpResponseImpl(_ok, _status, _headers, _response, _error) {
                     if (_error === void 0) { _error = null; }
@@ -80,5 +84,5 @@ System.register([], function(exports_1, context_1) {
             }());
             exports_1("HttpUploadProgressImpl", HttpUploadProgressImpl);
         }
-    }
+    };
 });

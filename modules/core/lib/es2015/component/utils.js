@@ -44,14 +44,15 @@ export function component(component, componentName, additionalContext) {
     var ret;
     if (isComponent(component)) {
         var Renderer = component;
-        ret = (function (_super) {
-            __extends(class_1, _super);
-            function class_1() {
-                _super.apply(this, arguments);
-            }
-            class_1.contextTypes = _.assign(ContextReactTypes, additionalContext);
-            return class_1;
-        }(Renderer));
+        ret = (_a = (function (_super) {
+                __extends(class_1, _super);
+                function class_1() {
+                    return _super.apply(this, arguments) || this;
+                }
+                return class_1;
+            }(Renderer)),
+            _a.contextTypes = _.assign(ContextReactTypes, additionalContext),
+            _a);
         if (Renderer['name']) {
             ret['displayName'] = Renderer['name'];
         }
@@ -61,46 +62,48 @@ export function component(component, componentName, additionalContext) {
         /**
          * React.Component that is created from passed function or object.
          */
-        ret = (function (_super) {
-            __extends(class_2, _super);
-            function class_2() {
-                _super.apply(this, arguments);
-            }
-            class_2.prototype.render = function () {
-                return isRender(renderer_1) ? renderer_1.call(this, this.props, this.context) : renderer_1.render.call(this, this.props, this.context);
-            };
-            class_2.prototype.componentWillMount = function () {
-                if (!isRender(renderer_1) && renderer_1.componentWillMount) {
-                    renderer_1.componentWillMount.call(this);
+        ret = (_b = (function (_super) {
+                __extends(class_2, _super);
+                function class_2() {
+                    return _super.apply(this, arguments) || this;
                 }
-            };
-            class_2.prototype.componentDidMount = function () {
-                if (!isRender(renderer_1) && renderer_1.componentDidMount) {
-                    renderer_1.componentDidMount.call(this);
-                }
-            };
-            class_2.prototype.componentDidUpdate = function () {
-                if (!isRender(renderer_1) && renderer_1.componentDidUpdate) {
-                    renderer_1.componentDidUpdate.call(this);
-                }
-            };
-            class_2.prototype.componentWillUnmount = function () {
-                if (!isRender(renderer_1) && renderer_1.componentWillUnmount) {
-                    renderer_1.componentWillUnmount.call(this);
-                }
-            };
-            class_2.prototype.shouldComponentUpdate = function (nextProps) {
-                if (!isRender(renderer_1) && renderer_1.shouldComponentUpdate) {
-                    return renderer_1.shouldComponentUpdate.call(this, nextProps);
-                }
-                return true;
-            };
-            class_2.contextTypes = _.assign(ContextReactTypes, additionalContext);
-            return class_2;
-        }(React.Component));
+                class_2.prototype.render = function () {
+                    return isRender(renderer_1) ? renderer_1.call(this, this.props, this.context) : renderer_1.render.call(this, this.props, this.context);
+                };
+                class_2.prototype.componentWillMount = function () {
+                    if (!isRender(renderer_1) && renderer_1.componentWillMount) {
+                        renderer_1.componentWillMount.call(this);
+                    }
+                };
+                class_2.prototype.componentDidMount = function () {
+                    if (!isRender(renderer_1) && renderer_1.componentDidMount) {
+                        renderer_1.componentDidMount.call(this);
+                    }
+                };
+                class_2.prototype.componentDidUpdate = function () {
+                    if (!isRender(renderer_1) && renderer_1.componentDidUpdate) {
+                        renderer_1.componentDidUpdate.call(this);
+                    }
+                };
+                class_2.prototype.componentWillUnmount = function () {
+                    if (!isRender(renderer_1) && renderer_1.componentWillUnmount) {
+                        renderer_1.componentWillUnmount.call(this);
+                    }
+                };
+                class_2.prototype.shouldComponentUpdate = function (nextProps) {
+                    if (!isRender(renderer_1) && renderer_1.shouldComponentUpdate) {
+                        return renderer_1.shouldComponentUpdate.call(this, nextProps);
+                    }
+                    return true;
+                };
+                return class_2;
+            }(React.Component)),
+            _b.contextTypes = _.assign(ContextReactTypes, additionalContext),
+            _b);
     }
     if (componentName) {
         ret['displayName'] = componentName;
     }
     return ret;
+    var _a, _b;
 }

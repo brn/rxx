@@ -2,15 +2,18 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
+System.register([], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var HttpMethod, ResponseType, UploadEventType;
     function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }
     exports_1("____$_react_mvi_module_reference_bug_fix__dummy_$____", ____$_react_mvi_module_reference_bug_fix__dummy_$____);
+    var HttpMethod, ResponseType, UploadEventType;
     return {
-        setters:[],
-        execute: function() {
+        setters: [],
+        execute: function () {/**
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             /**
              * The methods of the Http request.
              */
@@ -42,5 +45,5 @@ System.register([], function(exports_1, context_1) {
             exports_1("UploadEventType", UploadEventType);
             ;
         }
-    }
+    };
 });

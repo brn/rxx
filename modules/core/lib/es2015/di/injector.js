@@ -99,7 +99,7 @@ var Injections = (function () {
 /**
  * The main class.
  */
-export var Injector = (function () {
+var Injector = (function () {
     /**
      * @param modules The module array that is defined dependencies.
      */
@@ -451,7 +451,7 @@ export var Injector = (function () {
                     args.push(inner);
                 }
                 else {
-                    keyArgs[resources[i][1]] = this.getInstance(bindingName, null, item, false);
+                    keyArgs[resources[i][1]] = this.getInstance(resources[i][1], null, item, false);
                 }
             }
             else {
@@ -635,7 +635,7 @@ export var Injector = (function () {
         return function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             return interceptor.invoke(new MethodInvocation(base, context, args, context[INJECTION_NAME_SYMBOL], propertyKey));
         };
@@ -662,3 +662,4 @@ export var Injector = (function () {
     };
     return Injector;
 }());
+export { Injector };

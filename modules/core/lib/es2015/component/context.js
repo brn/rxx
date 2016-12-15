@@ -97,11 +97,11 @@ var connect = function (v) {
 /**
  * React context provider.
  */
-export var Context = (function (_super) {
+var Context = (function (_super) {
     __extends(Context, _super);
     function Context(props, c) {
-        _super.call(this, props, c);
-        var self = this;
+        var _this = _super.call(this, props, c) || this;
+        var self = _this;
         var injector = props.injector ? props.injector : new Injector(props.modules);
         var subscription = new Subscription();
         var ioModules = _.mapValues(injector.find(function (binding) {
@@ -118,11 +118,11 @@ export var Context = (function (_super) {
             }
             return;
         }), function (v, k) { return injector.get(k); });
-        this.contextObject = {
+        _this.contextObject = {
             createProps: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
+                    args[_i] = arguments[_i];
                 }
                 var ioResposens = _.mapValues(ioModules, function (v) { return v ? v.response : null; });
                 return services.reduce(function (props, service) {
@@ -144,6 +144,7 @@ export var Context = (function (_super) {
             injector: injector,
             io: ioModules
         };
+        return _this;
     }
     Context.prototype.render = function () {
         return this.props.children;
@@ -163,6 +164,7 @@ export var Context = (function (_super) {
     });
     return Context;
 }(React.Component));
+export { Context };
 /**
  * Decorator to set specified type as context type.
  * @param target A class constructor.

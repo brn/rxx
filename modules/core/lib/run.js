@@ -15,9 +15,8 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', './shims/lodash', 'react-dom', './component/context'], function(exports_1, context_1) {
+System.register(["react", "./shims/lodash", "react-dom", "./component/context"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -31,14 +30,15 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
         }
         return t;
     };
-    var React, lodash_1, react_dom_1, context_2;
+    var __moduleName = context_1 && context_1.id;
     function runnable(_a) {
         var component = _a.component, modules = _a.modules, injector = _a.injector;
         var Renderer = (function (_super) {
             __extends(Renderer, _super);
             function Renderer(p, c) {
-                _super.call(this, p, c);
-                this.model = c.createProps(p);
+                var _this = _super.call(this, p, c) || this;
+                _this.model = c.createProps(p);
+                return _this;
             }
             Renderer.prototype.render = function () {
                 var C = component;
@@ -47,22 +47,23 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
             Renderer.prototype.componentDidMount = function () {
                 this.context.connect(this.model);
             };
-            Renderer.contextTypes = context_2.ContextReactTypes;
             return Renderer;
         }(React.Component));
-        return (function (_super) {
-            __extends(class_1, _super);
-            function class_1() {
-                _super.apply(this, arguments);
-            }
-            class_1.prototype.render = function () {
-                return (React.createElement(context_2.Context, {modules: modules, injector: injector}, 
-                    React.createElement(Renderer, __assign({}, this.props))
-                ));
-            };
-            class_1.displayName = 'MVIRoot';
-            return class_1;
-        }(React.Component));
+        Renderer.contextTypes = context_2.ContextReactTypes;
+        return _b = (function (_super) {
+                __extends(class_1, _super);
+                function class_1() {
+                    return _super.apply(this, arguments) || this;
+                }
+                class_1.prototype.render = function () {
+                    return (React.createElement(context_2.Context, { modules: modules, injector: injector },
+                        React.createElement(Renderer, __assign({}, this.props))));
+                };
+                return class_1;
+            }(React.Component)),
+            _b.displayName = 'MVIRoot',
+            _b;
+        var _b;
     }
     exports_1("runnable", runnable);
     function run(opt, el) {
@@ -70,8 +71,9 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
         react_dom_1.render(React.createElement(Root, null), el);
     }
     exports_1("run", run);
+    var React, lodash_1, react_dom_1, context_2;
     return {
-        setters:[
+        setters: [
             function (React_1) {
                 React = React_1;
             },
@@ -83,8 +85,25 @@ System.register(['react', './shims/lodash', 'react-dom', './component/context'],
             },
             function (context_2_1) {
                 context_2 = context_2_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
         }
-    }
+    };
 });

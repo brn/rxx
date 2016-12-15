@@ -526,7 +526,7 @@ export class Injector {
         if (!useKeys) {
           args.push(inner);
         } else {
-          keyArgs[resources[i][1]] = this.getInstance<T>(bindingName, null, item, false);
+          keyArgs[resources[i][1]] = this.getInstance<T>(resources[i][1], null, item, false);
         }
       } else {
         var item;

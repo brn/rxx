@@ -38,14 +38,15 @@ var MAX_HISTORY_LENGTH = 10;
 /**
  * Event publisher.
  */
-export var EventDispatcher = (function (_super) {
+var EventDispatcher = (function (_super) {
     __extends(EventDispatcher, _super);
     function EventDispatcher() {
-        _super.apply(this, arguments);
+        var _this = _super.apply(this, arguments) || this;
         /**
          * Event history.
          */
-        this.history = [];
+        _this.history = [];
+        return _this;
     }
     EventDispatcher.prototype.subscribe = function (props) {
         return new Subscription();
@@ -75,6 +76,7 @@ export var EventDispatcher = (function (_super) {
             this.history.shift();
         }
         fire();
+        return Promise.resolve();
     };
     /**
      * Return callback function that will publish event.
@@ -86,9 +88,10 @@ export var EventDispatcher = (function (_super) {
         var _this = this;
         return function (args) { return _this.push(key, isDefined(v) ? v : args); };
     };
-    EventDispatcher = __decorate([
-        io, 
-        __metadata('design:paramtypes', [])
-    ], EventDispatcher);
     return EventDispatcher;
 }(Outlet));
+EventDispatcher = __decorate([
+    io,
+    __metadata("design:paramtypes", [])
+], EventDispatcher);
+export { EventDispatcher };

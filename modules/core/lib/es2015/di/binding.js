@@ -18,7 +18,7 @@
 /**
  * Options for class type.
  */
-export var ClassTypeOption = (function () {
+var ClassTypeOption = (function () {
     function ClassTypeOption(binding) {
         this.binding = binding;
     }
@@ -37,11 +37,12 @@ export var ClassTypeOption = (function () {
     };
     return ClassTypeOption;
 }());
+export { ClassTypeOption };
 var bindingId = 0;
 /**
  * Link binding to value.
  */
-export var BindingPlaceholder = (function () {
+var BindingPlaceholder = (function () {
     /**
      * @param id Binding id.
      * @param holder Bindings map.
@@ -70,10 +71,11 @@ export var BindingPlaceholder = (function () {
     };
     return BindingPlaceholder;
 }());
+export { BindingPlaceholder };
 /**
  * Hold interceptor and value.
  */
-export var InterceptPlaceholder = (function () {
+var InterceptPlaceholder = (function () {
     /**
      * @param targetSymbol The symbol that set to intercepted.
      */
@@ -99,10 +101,11 @@ export var InterceptPlaceholder = (function () {
     };
     return InterceptPlaceholder;
 }());
+export { InterceptPlaceholder };
 /**
  * Hold template definitions and values.
  */
-export var TemplatePlaceholder = (function () {
+var TemplatePlaceholder = (function () {
     /**
      * @param id Template id.
      * @param holder Object that hold bindings.
@@ -120,3 +123,4 @@ export var TemplatePlaceholder = (function () {
     };
     return TemplatePlaceholder;
 }());
+export { TemplatePlaceholder };

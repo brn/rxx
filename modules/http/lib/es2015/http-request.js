@@ -29,6 +29,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+/// <reference path="./declarations.d.ts"/>
 import { io, isDefined, Symbol, intercept, Outlet } from '@react-mvi/core';
 import { Subscription, ConnectableObservable, Subject } from 'rxjs/Rx';
 import { HttpResponseImpl, HttpUploadProgressImpl } from './http-response';
@@ -42,10 +43,12 @@ var typeMatcher = /\[object ([^\]]+)\]/;
 /**
  * Http request sender.
  */
-export var HttpRequest = (function (_super) {
+var HttpRequest = (function (_super) {
     __extends(HttpRequest, _super);
     function HttpRequest() {
-        _super.apply(this, arguments);
+        var _this = _super.apply(this, arguments) || this;
+        _this.history = [];
+        return _this;
     }
     /**
      * Wait for request from observables.
@@ -56,7 +59,7 @@ export var HttpRequest = (function (_super) {
         var _this = this;
         var subscription = new Subscription();
         if (props['http']) {
-            var _loop_1 = function(reqKey) {
+            var _loop_1 = function (reqKey) {
                 var req = props['http'][reqKey];
                 subscription.add(req.subscribe(function (config) { return _this.push(reqKey, config); }));
             };
@@ -77,8 +80,22 @@ export var HttpRequest = (function (_super) {
      */
     HttpRequest.prototype.push = function (key, args) {
         var _this = this;
+        if (key === 'RETRY') {
+            var history_1 = this.history[this.history.length - (typeof args === 'number' ? (args + 1) : 1)];
+            if (!history_1) {
+                return new Promise(function (_, r) { return r(new Error('Invlaid retry number specified.')); });
+            }
+            key = history_1.key;
+            args = history_1.args;
+        }
+        else {
+            if (this.history.length > 10) {
+                this.history.shift();
+            }
+            this.history.push({ key: key, args: args });
+        }
         if (!args) {
-            throw new Error('Config required.');
+            return new Promise(function (_, r) { return r(new Error('Config required.')); });
         }
         var config = args;
         var subjects = this.store.get(key);
@@ -122,6 +139,10 @@ export var HttpRequest = (function (_super) {
             }
         })()
             .then(function (res) {
+            // For IE|Edge
+            if (!res.url) {
+                res.url = config.url;
+            }
             var handler = function (result) {
                 var headers = _this.processHeaders(res);
                 var response = new HttpResponseImpl(res.ok, res.status, headers, res.ok ? result : null, res.ok ? null : result);
@@ -131,7 +152,13 @@ export var HttpRequest = (function (_super) {
                 _this.getResponse(config.responseType, res).then(handler);
             }
             else {
-                _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+                var result = _this.getResponse(_this.getResponseTypeFromHeader(res), res);
+                if (result && result.then) {
+                    result.then(handler);
+                }
+                else {
+                    handler(result);
+                }
             }
         }).catch(function (err) {
             var handler = function (result) {
@@ -337,45 +364,46 @@ export var HttpRequest = (function (_super) {
     HttpRequest.prototype.getType = function (value) {
         return Object.prototype.toString.call(value).match(typeMatcher)[1];
     };
-    __decorate([
-        intercept(HTTP_REQUEST_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "get", null);
-    __decorate([
-        intercept(HTTP_REQUEST_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "post", null);
-    __decorate([
-        intercept(HTTP_REQUEST_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "put", null);
-    __decorate([
-        intercept(HTTP_REQUEST_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "delete", null);
-    __decorate([
-        intercept(HTTP_REQUEST_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "upload", null);
-    __decorate([
-        intercept(HTTP_RESPONSE_INTERCEPT), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Number, Response]), 
-        __metadata('design:returntype', Promise)
-    ], HttpRequest.prototype, "getResponse", null);
-    HttpRequest = __decorate([
-        io, 
-        __metadata('design:paramtypes', [])
-    ], HttpRequest);
     return HttpRequest;
 }(Outlet));
+__decorate([
+    intercept(HTTP_REQUEST_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "get", null);
+__decorate([
+    intercept(HTTP_REQUEST_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "post", null);
+__decorate([
+    intercept(HTTP_REQUEST_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "put", null);
+__decorate([
+    intercept(HTTP_REQUEST_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "delete", null);
+__decorate([
+    intercept(HTTP_REQUEST_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "upload", null);
+__decorate([
+    intercept(HTTP_RESPONSE_INTERCEPT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Response]),
+    __metadata("design:returntype", Promise)
+], HttpRequest.prototype, "getResponse", null);
+HttpRequest = __decorate([
+    io,
+    __metadata("design:paramtypes", [])
+], HttpRequest);
+export { HttpRequest };

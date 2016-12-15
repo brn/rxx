@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono

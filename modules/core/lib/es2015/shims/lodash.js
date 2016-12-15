@@ -15,5 +15,6 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+/// <reference path="../declarations.d.ts"/>
 import * as lodash from 'lodash';
 export var _ = lodash;

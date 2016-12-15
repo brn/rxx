@@ -16,7 +16,7 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var symbol_1 = require('../shims/symbol');
+var symbol_1 = require("../shims/symbol");
 exports.SERVICE_MARK = symbol_1.Symbol('__react_mvi_service__');
 function service(target) {
     target[exports.SERVICE_MARK] = true;

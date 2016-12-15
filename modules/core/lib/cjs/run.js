@@ -29,17 +29,18 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-var React = require('react');
-var lodash_1 = require('./shims/lodash');
-var react_dom_1 = require('react-dom');
-var context_1 = require('./component/context');
+var React = require("react");
+var lodash_1 = require("./shims/lodash");
+var react_dom_1 = require("react-dom");
+var context_1 = require("./component/context");
 function runnable(_a) {
     var component = _a.component, modules = _a.modules, injector = _a.injector;
     var Renderer = (function (_super) {
         __extends(Renderer, _super);
         function Renderer(p, c) {
-            _super.call(this, p, c);
-            this.model = c.createProps(p);
+            var _this = _super.call(this, p, c) || this;
+            _this.model = c.createProps(p);
+            return _this;
         }
         Renderer.prototype.render = function () {
             var C = component;
@@ -48,22 +49,23 @@ function runnable(_a) {
         Renderer.prototype.componentDidMount = function () {
             this.context.connect(this.model);
         };
-        Renderer.contextTypes = context_1.ContextReactTypes;
         return Renderer;
     }(React.Component));
-    return (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            _super.apply(this, arguments);
-        }
-        class_1.prototype.render = function () {
-            return (React.createElement(context_1.Context, {modules: modules, injector: injector}, 
-                React.createElement(Renderer, __assign({}, this.props))
-            ));
-        };
-        class_1.displayName = 'MVIRoot';
-        return class_1;
-    }(React.Component));
+    Renderer.contextTypes = context_1.ContextReactTypes;
+    return _b = (function (_super) {
+            __extends(class_1, _super);
+            function class_1() {
+                return _super.apply(this, arguments) || this;
+            }
+            class_1.prototype.render = function () {
+                return (React.createElement(context_1.Context, { modules: modules, injector: injector },
+                    React.createElement(Renderer, __assign({}, this.props))));
+            };
+            return class_1;
+        }(React.Component)),
+        _b.displayName = 'MVIRoot',
+        _b;
+    var _b;
 }
 exports.runnable = runnable;
 function run(opt, el) {

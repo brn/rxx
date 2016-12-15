@@ -34,7 +34,7 @@ export declare class EventDispatcher extends Outlet {
      * @param args Event args. If a first argument was 'RETRY', specify history index.
      * If empty, last event will be publishing.
      */
-    push(key: string, args?: any): void;
+    push(key: string, args?: any): Promise<any>;
     /**
      * Return callback function that will publish event.
      * @override

@@ -17,11 +17,11 @@
  */
 "use strict";
 /// <reference path="../declarations.d.ts"/>
-require('whatwg-fetch');
+require("whatwg-fetch");
 exports.fetch = function () {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
+        args[_i] = arguments[_i];
     }
     return (_a = window['fetch']).call.apply(_a, [window].concat(args));
     var _a;

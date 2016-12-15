@@ -15,16 +15,14 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/service', '../shims/lodash'], function(exports_1, context_1) {
+System.register(["react", "rxjs/Rx", "../di/injector", "../io/io", "../service/service", "../shims/lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var React, Rx_1, injector_1, io_1, service_1, lodash_1;
-    var ContextReactTypes, isImmutable, isEnumerable, connect, Context;
+    var __moduleName = context_1 && context_1.id;
     /**
      * Decorator to set specified type as context type.
      * @param target A class constructor.
@@ -41,8 +39,9 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
         component['contextTypes'] = ContextReactTypes;
     }
     exports_1("setContext", setContext);
+    var React, Rx_1, injector_1, io_1, service_1, lodash_1, ContextReactTypes, isImmutable, isEnumerable, connect, Context;
     return {
-        setters:[
+        setters: [
             function (React_1) {
                 React = React_1;
             },
@@ -60,8 +59,25 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
             },
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             /**
              * React contextTypes.
              */
@@ -136,8 +152,8 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
             Context = (function (_super) {
                 __extends(Context, _super);
                 function Context(props, c) {
-                    _super.call(this, props, c);
-                    var self = this;
+                    var _this = _super.call(this, props, c) || this;
+                    var self = _this;
                     var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
                     var subscription = new Rx_1.Subscription();
                     var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
@@ -154,11 +170,11 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                         }
                         return;
                     }), function (v, k) { return injector.get(k); });
-                    this.contextObject = {
+                    _this.contextObject = {
                         createProps: function () {
                             var args = [];
                             for (var _i = 0; _i < arguments.length; _i++) {
-                                args[_i - 0] = arguments[_i];
+                                args[_i] = arguments[_i];
                             }
                             var ioResposens = lodash_1._.mapValues(ioModules, function (v) { return v ? v.response : null; });
                             return services.reduce(function (props, service) {
@@ -180,6 +196,7 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
                         injector: injector,
                         io: ioModules
                     };
+                    return _this;
                 }
                 Context.prototype.render = function () {
                     return this.props.children;
@@ -201,5 +218,5 @@ System.register(['react', 'rxjs/Rx', '../di/injector', '../io/io', '../service/s
             }(React.Component));
             exports_1("Context", Context);
         }
-    }
+    };
 });

@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.3.22",
+  "version": "0.3.36",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,8 @@
   "jspm": {
     "dependencies": {
       "core-js": "npm:core-js@^2.4.0",
-      "ts": "github:frankwallis/plugin-typescript@^5.0.8"
+      "source-map-support": "npm:source-map-support@^0.4.6",
+      "ts": "github:frankwallis/plugin-typescript@^5.3.1"
     },
     "devDependencies": {
       "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
@@ -50,6 +51,8 @@
       "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
       "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
       "lodash": "npm:lodash@^4.13.1",
+      "module": "github:jspm/nodelibs-module@^0.2.0-alpha",
+      "net": "github:jspm/nodelibs-net@^0.2.0-alpha",
       "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
@@ -85,6 +88,11 @@
           "test.js"
         ]
       },
+      "npm:inherits@2.0.3": {
+        "ignore": [
+          "test.js"
+        ]
+      },
       "npm:mocha@2.5.1": {
         "browser": "mocha",
         "main": "mocha",
@@ -101,7 +109,7 @@
         },
         "registry": "jspm"
       },
-      "npm:typescript@2.0.0": {
+      "npm:typescript@2.1.4": {
         "browser": {},
         "map": {
           "buffer": "@empty",
@@ -117,11 +125,15 @@
     "main": "index.js"
   },
   "dependencies": {
-    "rxjs": "^5.0.0-beta.8"
+    "rxjs": "^5.0.0-beta.8",
+    "typescript": "^2.1.4"
   },
   "devDependencies": {
     "@react-mvi/testing": "0.0.12",
-    "ink-docstrap": "^1.2.0",
-    "typescript": "^1.9.0-dev.20160612-1.0"
+    "@types/mocha": "^2.2.33",
+    "@types/react": "^0.14.55",
+    "@types/react-addons-test-utils": "^0.14.15",
+    "@types/react-dom": "^0.14.19",
+    "ink-docstrap": "^1.2.0"
   }
 }

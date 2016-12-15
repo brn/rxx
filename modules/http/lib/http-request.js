@@ -15,9 +15,8 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query-string', './shims/promise', './shims/fetch', './types'], function(exports_1, context_1) {
+System.register(["@react-mvi/core", "rxjs/Rx", "./http-response", "./shims/query-string", "./shims/promise", "./shims/fetch", "./types"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
@@ -32,10 +31,10 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1, types_1;
-    var HTTP_RESPONSE_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
+    var __moduleName = context_1 && context_1.id;
+    var core_1, Rx_1, http_response_1, query_string_1, promise_1, fetch_1, types_1, HTTP_RESPONSE_INTERCEPT, HTTP_REQUEST_INTERCEPT, typeMatcher, HttpRequest;
     return {
-        setters:[
+        setters: [
             function (core_1_1) {
                 core_1 = core_1_1;
             },
@@ -56,18 +55,37 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
             },
             function (types_1_1) {
                 types_1 = types_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             exports_1("HTTP_RESPONSE_INTERCEPT", HTTP_RESPONSE_INTERCEPT = core_1.Symbol('__http_request_intercept__'));
             exports_1("HTTP_REQUEST_INTERCEPT", HTTP_REQUEST_INTERCEPT = core_1.Symbol('__http_request_request_intercept__'));
             typeMatcher = /\[object ([^\]]+)\]/;
-            /**
-             * Http request sender.
-             */
             HttpRequest = (function (_super) {
                 __extends(HttpRequest, _super);
+                /**
+                 * Http request sender.
+                 */
                 function HttpRequest() {
-                    _super.apply(this, arguments);
+                    var _this = _super.apply(this, arguments) || this;
+                    _this.history = [];
+                    return _this;
                 }
                 /**
                  * Wait for request from observables.
@@ -78,7 +96,7 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                     var _this = this;
                     var subscription = new Rx_1.Subscription();
                     if (props['http']) {
-                        var _loop_1 = function(reqKey) {
+                        var _loop_1 = function (reqKey) {
                             var req = props['http'][reqKey];
                             subscription.add(req.subscribe(function (config) { return _this.push(reqKey, config); }));
                         };
@@ -99,8 +117,22 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                  */
                 HttpRequest.prototype.push = function (key, args) {
                     var _this = this;
+                    if (key === 'RETRY') {
+                        var history_1 = this.history[this.history.length - (typeof args === 'number' ? (args + 1) : 1)];
+                        if (!history_1) {
+                            return new promise_1.Promise(function (_, r) { return r(new Error('Invlaid retry number specified.')); });
+                        }
+                        key = history_1.key;
+                        args = history_1.args;
+                    }
+                    else {
+                        if (this.history.length > 10) {
+                            this.history.shift();
+                        }
+                        this.history.push({ key: key, args: args });
+                    }
                     if (!args) {
-                        throw new Error('Config required.');
+                        return new promise_1.Promise(function (_, r) { return r(new Error('Config required.')); });
                     }
                     var config = args;
                     var subjects = this.store.get(key);
@@ -144,6 +176,10 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                         }
                     })()
                         .then(function (res) {
+                        // For IE|Edge
+                        if (!res.url) {
+                            res.url = config.url;
+                        }
                         var handler = function (result) {
                             var headers = _this.processHeaders(res);
                             var response = new http_response_1.HttpResponseImpl(res.ok, res.status, headers, res.ok ? result : null, res.ok ? null : result);
@@ -153,7 +189,13 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                             _this.getResponse(config.responseType, res).then(handler);
                         }
                         else {
-                            _this.getResponse(_this.getResponseTypeFromHeader(res), res).then(handler);
+                            var result = _this.getResponse(_this.getResponseTypeFromHeader(res), res);
+                            if (result && result.then) {
+                                result.then(handler);
+                            }
+                            else {
+                                handler(result);
+                            }
                         }
                     }).catch(function (err) {
                         var handler = function (result) {
@@ -359,49 +401,49 @@ System.register(['@react-mvi/core', 'rxjs/Rx', './http-response', './shims/query
                 HttpRequest.prototype.getType = function (value) {
                     return Object.prototype.toString.call(value).match(typeMatcher)[1];
                 };
-                __decorate([
-                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Object]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "get", null);
-                __decorate([
-                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Object]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "post", null);
-                __decorate([
-                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Object]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "put", null);
-                __decorate([
-                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Object]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "delete", null);
-                __decorate([
-                    core_1.intercept(HTTP_REQUEST_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Object]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "upload", null);
-                __decorate([
-                    core_1.intercept(HTTP_RESPONSE_INTERCEPT), 
-                    __metadata('design:type', Function), 
-                    __metadata('design:paramtypes', [Number, fetch_1.Response]), 
-                    __metadata('design:returntype', promise_1.Promise)
-                ], HttpRequest.prototype, "getResponse", null);
-                HttpRequest = __decorate([
-                    core_1.io, 
-                    __metadata('design:paramtypes', [])
-                ], HttpRequest);
                 return HttpRequest;
             }(core_1.Outlet));
+            __decorate([
+                core_1.intercept(HTTP_REQUEST_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Object]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "get", null);
+            __decorate([
+                core_1.intercept(HTTP_REQUEST_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Object]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "post", null);
+            __decorate([
+                core_1.intercept(HTTP_REQUEST_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Object]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "put", null);
+            __decorate([
+                core_1.intercept(HTTP_REQUEST_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Object]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "delete", null);
+            __decorate([
+                core_1.intercept(HTTP_REQUEST_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Object]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "upload", null);
+            __decorate([
+                core_1.intercept(HTTP_RESPONSE_INTERCEPT),
+                __metadata("design:type", Function),
+                __metadata("design:paramtypes", [Number, fetch_1.Response]),
+                __metadata("design:returntype", promise_1.Promise)
+            ], HttpRequest.prototype, "getResponse", null);
+            HttpRequest = __decorate([
+                core_1.io,
+                __metadata("design:paramtypes", [])
+            ], HttpRequest);
             exports_1("HttpRequest", HttpRequest);
         }
-    }
+    };
 });

@@ -146,7 +146,7 @@ export interface IO {
    * @param key Event name.
    * @param args Event args.
    */
-  push(key: string, args?: any): void;
+  push(key: string, args?: any): Promise<any>;
 
 
   /**

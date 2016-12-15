@@ -21,26 +21,28 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require('react');
-var subscriber_1 = require('./subscriber');
-var lodash_1 = require('../shims/lodash');
+var React = require("react");
+var subscriber_1 = require("./subscriber");
+var lodash_1 = require("../shims/lodash");
 /**
  * Convert string html tag to Subscriber.
  */
 var toSubscribable = function (name) {
-    var ret = (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            _super.apply(this, arguments);
-        }
-        class_1.prototype.render = function () {
-            return (React.createElement(subscriber_1.Subscriber, {ignoreSubtree: this.props.ignoreSubtree}, React.createElement(name, lodash_1._.assign(lodash_1._.omit(this.props, ['ref', 'ignoreSubtree']), { ref: 'element' }))));
-        };
-        class_1.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1);
-        return class_1;
-    }(React.Component));
+    var ret = (_a = (function (_super) {
+            __extends(class_1, _super);
+            function class_1() {
+                return _super.apply(this, arguments) || this;
+            }
+            class_1.prototype.render = function () {
+                return (React.createElement(subscriber_1.Subscriber, { ignoreSubtree: this.props.ignoreSubtree }, React.createElement(name, lodash_1._.assign(lodash_1._.omit(this.props, ['ref', 'ignoreSubtree']), { ref: 'element' }))));
+            };
+            return class_1;
+        }(React.Component)),
+        _a.displayName = "" + name.charAt(0).toUpperCase() + name.slice(1),
+        _a);
     ret[subscriber_1.SUBSCRIBER_MARK] = true;
     return ret;
+    var _a;
 };
 exports.Tags = {};
 "a abbr address area article aside audio b base bdi bdo big blockquote body br\nbutton canvas caption cite code col colgroup data datalist dd del details dfn\ndialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5\nh6 head header hgroup hr html i iframe img input ins kbd keygen label legend li\nlink main map mark menu menuitem meta meter nav noscript object ol optgroup\noption output p param picture pre progress q rp rt ruby s samp script section\nselect small source span strong style sub summary sup table tbody td textarea\ntfoot th thead time title tr track u ul var video wbr".replace(/\n/g, ' ').split(' ').forEach(function (tag) {

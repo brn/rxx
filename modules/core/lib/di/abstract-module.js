@@ -15,16 +15,14 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['./binding', '../shims/lodash'], function(exports_1, context_1) {
+System.register(["./binding", "../shims/lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var binding_1, lodash_1;
-    var AbstractModule;
+    var __moduleName = context_1 && context_1.id;
     /**
      * Simple utility function that create module.
      * @param fn The configure method body.
@@ -34,7 +32,7 @@ System.register(['./binding', '../shims/lodash'], function(exports_1, context_1)
         return new ((function (_super) {
             __extends(class_1, _super);
             function class_1() {
-                _super.apply(this, arguments);
+                return _super.apply(this, arguments) || this;
             }
             class_1.prototype.configure = function () {
                 fn(this);
@@ -43,15 +41,33 @@ System.register(['./binding', '../shims/lodash'], function(exports_1, context_1)
         }(AbstractModule)));
     }
     exports_1("createModule", createModule);
+    var binding_1, lodash_1, AbstractModule;
     return {
-        setters:[
+        setters: [
             function (binding_1_1) {
                 binding_1 = binding_1_1;
             },
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
             /**
              * Base implementation of `Module`.
              */
@@ -127,5 +143,5 @@ System.register(['./binding', '../shims/lodash'], function(exports_1, context_1)
             }());
             exports_1("AbstractModule", AbstractModule);
         }
-    }
+    };
 });

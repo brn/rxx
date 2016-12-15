@@ -16,8 +16,8 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var Subject_1 = require('rxjs/Subject');
-var symbol_1 = require('../shims/symbol');
+var Subject_1 = require("rxjs/Subject");
+var symbol_1 = require("../shims/symbol");
 exports.IO_MARK = symbol_1.Symbol('io');
 /**
  * Decorator for io module.

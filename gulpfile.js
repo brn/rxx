@@ -19,7 +19,6 @@ const _            = require('lodash');
 const fs           = require('fs-extra');
 const gulp         = require('gulp');
 const path         = require('path');
-const childProcess = require('child_process');
 const tsc          = require('gulp-typescript');
 const build        = require('./plugins/build');
 const del          = require('del');
@@ -33,6 +32,7 @@ const semver       = require('semver');
 const npm          = require('npm');
 const esdoc        = require('gulp-esdoc');
 const typedoc      = require('gulp-typedoc');
+const exec         = require('child_process').execSync;
 
 
 const DIST = 'dist/';
@@ -40,18 +40,9 @@ const TYPESCRIPT_DIST = `${process.cwd()}/lib`;
 const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
 
 
-const exec = (cmd, cb) => {
-  var proc = childProcess.exec(cmd);
-  proc.stdout.on('data', d => process.stdout.write(d));
-  proc.stderr.on('data', d => process.stdout.write(d));
-  proc.on('error', d => process.stdout.write(d));
-  cb && proc.on('exit', cb);
-};
-
-
 gulp.task('publish-all', () => {
-  async.forEachSeries(glob.sync('./modules/*'), (dir, done) => {
-    exec(`cd ${dir} && npm publish`, done);
+  glob.sync('./modules/*').forEach((dir, done) => {
+    exec(`cd ${dir} && npm publish`);
   });
 });
 
@@ -60,10 +51,7 @@ gulp.task('publish-all', () => {
  * Install dependencies.
  */
 gulp.task('install', done => {
-  exec(`${BIN_DIR}jspm install`, () => {
-    process.chdir('ts');
-    exec(`${BIN_DIR}typings install`, done);
-  });
+  exec(`${BIN_DIR}jspm install`);
 });
 
 
@@ -96,11 +84,13 @@ gulp.task('docs', () => {
  * Compile typescript.
  */
 gulp.task('typescript', ['clean'], () => {
-  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
-      typescript: require('typescript'),
-      declaration: true
-    })));
+  const tsp = tsc.createProject('tsconfig.json', {
+    typescript: require('typescript'),
+    declaration: true
+  });
+  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+          .pipe(tsp());
+
   return merge([
     tsResult.js.pipe(gulp.dest(TYPESCRIPT_DIST)),
     tsResult.dts.pipe(gulp.dest(TYPESCRIPT_DIST)),
@@ -109,12 +99,13 @@ gulp.task('typescript', ['clean'], () => {
 
 
 gulp.task('typescript-cjs', () => {
-  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
-      module: 'commonjs',
-      typescript: require('typescript'),
-      declaration: true
-    })));
+  const tsp = tsc.createProject('tsconfig.json', {
+    module: 'commonjs',
+    typescript: require('typescript'),
+    declaration: true
+  });
+  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+          .pipe(tsp());
   return merge([
     tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
     tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
@@ -123,13 +114,14 @@ gulp.task('typescript-cjs', () => {
 
 
 gulp.task('typescript-es2015', () => {
-  const tsResult = gulp.src(['src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-    .pipe(tsc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
-      module: 'es2015',
-      target: 'ES5',
-      typescript: require('typescript'),
-      declaration: true
-    })));
+  const tsp = tsc.createProject('tsconfig.json', {
+    module: 'es2015',
+    target: 'ES5',
+    typescript: require('typescript'),
+    declaration: true
+  });
+  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+          .pipe(tsp());
   return merge([
     tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
     tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
@@ -137,26 +129,24 @@ gulp.task('typescript-es2015', () => {
 });
 
 
-gulp.task('publish', ['pre-publish'], done => {
-  exec('cd lib && npm publish --access public', done);
+gulp.task('publish', ['pre-publish'], () => {
+  exec('cd lib && npm publish --access public');
 });
 
 
-gulp.task('update-core', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, done);
-  });
+gulp.task('update-core', ()=> {
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`);
+  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`);
 });
 
 
-gulp.task('update-core-and-publish', done => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, () => {
-    exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, done);
-  });
+gulp.task('update-core-and-publish', () => {
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`);
+  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`);
 });
 
 
-gulp.task('check-releasable', ['docs', 'typescript', 'typescript-cjs', 'typescript-es2015'], runKarma.bind(null, true, 'PhantomJS'));
+gulp.task('check-releasable', ['typescript', 'typescript-cjs', 'typescript-es2015'], runKarma.bind(null, true, 'PhantomJS'));
 
 
 gulp.task('pre-publish', ['check-releasable'], () => {
@@ -171,13 +161,13 @@ gulp.task('pre-publish', ['check-releasable'], () => {
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
   fs.copySync('./package.json', './lib/package.json');
   fs.copySync('./node_modules', './lib/node_modules');
+  try {
+    fs.copySync('../../README.md', './lib/README.md');
+    fs.copySync('../../docs', './lib/docs');
+  } catch(e) {
+    console.log(e);
+  }
   fs.remove('lib/_references.d.ts');
-  try {
-    fs.remove('lib/typings');
-  } catch(e) {}
-  try {
-    fs.remove('lib/typings.json');
-  } catch(e) {}
 });
 
 

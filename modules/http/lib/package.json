@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/http",
-  "version": "0.3.38",
+  "version": "0.3.59",
   "description": "Http IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "jspmNodeConversion": false,
     "main": "index.js",
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.22",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.3.36",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
       "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
@@ -56,6 +56,8 @@
       "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
       "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
       "lodash": "npm:lodash@^4.13.1",
+      "module": "github:jspm/nodelibs-module@^0.2.0-alpha",
+      "net": "github:jspm/nodelibs-net@^0.2.0-alpha",
       "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
@@ -130,7 +132,7 @@
           "readline": "@empty"
         }
       },
-      "npm:typescript@2.0.2": {
+      "npm:typescript@2.1.4": {
         "browser": {},
         "map": {
           "buffer": "@empty",
@@ -151,6 +153,9 @@
     "typescript": "^1.9.0-dev.20160526-1.0"
   },
   "dependencies": {
-    "@react-mvi/core": "^0.3.22"
+    "@react-mvi/core": "^0.3.36",
+    "@types/es6-promise": "0.0.32",
+    "@types/react": "^0.14.55",
+    "@types/react-dom": "^0.14.19"
   }
 }

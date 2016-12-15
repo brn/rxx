@@ -57,7 +57,7 @@ export class EventDispatcher extends Outlet {
    * @param args Event args. If a first argument was 'RETRY', specify history index.
    * If empty, last event will be publishing.
    */
-  public push(key: string, args?: any): void {
+  public push(key: string, args?: any): Promise<any> {
     if (key === 'RETRY') {
       const target = this.history[args || this.history.length - 1];
       if (target) {
@@ -75,6 +75,7 @@ export class EventDispatcher extends Outlet {
       this.history.shift();
     }
     fire();
+    return Promise.resolve();
   }
 
 

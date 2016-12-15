@@ -17,5 +17,5 @@
  */
 "use strict";
 /// <reference path="../declarations.d.ts"/>
-var ESPromise = require('es6-promise');
+var ESPromise = require("es6-promise");
 exports.Promise = ESPromise['default'].Promise;

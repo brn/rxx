@@ -17,7 +17,6 @@
  */
 export * from './injector';
 export * from './abstract-module';
-export * from './module';
 export * from './method-proxy';
 export * from './inject';
 export * from './intercept';

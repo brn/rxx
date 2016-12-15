@@ -17,5 +17,5 @@
  */
 "use strict";
 /// <reference path="../declarations.d.ts"/>
-var es6_symbol_1 = require('es6-symbol');
+var es6_symbol_1 = require("es6-symbol");
 exports.Symbol = es6_symbol_1.default;

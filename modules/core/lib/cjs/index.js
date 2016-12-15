@@ -19,13 +19,13 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-__export(require('./component/context'));
-__export(require('./component/subscriber'));
-__export(require('./component/tags'));
-__export(require('./component/utils'));
-__export(require('./run'));
-__export(require('./service/service'));
-__export(require('./io/io'));
-__export(require('./utils'));
-__export(require('./di/index'));
-__export(require('./shims/symbol'));
+__export(require("./component/context"));
+__export(require("./component/subscriber"));
+__export(require("./component/tags"));
+__export(require("./component/utils"));
+__export(require("./run"));
+__export(require("./service/service"));
+__export(require("./io/io"));
+__export(require("./utils"));
+__export(require("./di/index"));
+__export(require("./shims/symbol"));

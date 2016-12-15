@@ -3,7 +3,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-export var HttpResponseImpl = (function () {
+var HttpResponseImpl = (function () {
     function HttpResponseImpl(_ok, _status, _headers, _response, _error) {
         if (_error === void 0) { _error = null; }
         this._ok = _ok;
@@ -39,7 +39,8 @@ export var HttpResponseImpl = (function () {
     });
     return HttpResponseImpl;
 }());
-export var HttpUploadProgressImpl = (function () {
+export { HttpResponseImpl };
+var HttpUploadProgressImpl = (function () {
     function HttpUploadProgressImpl(event, xhr) {
         this.event = event;
         this.xhr = xhr;
@@ -70,3 +71,4 @@ export var HttpUploadProgressImpl = (function () {
     };
     return HttpUploadProgressImpl;
 }());
+export { HttpUploadProgressImpl };

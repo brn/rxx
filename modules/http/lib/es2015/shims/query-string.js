@@ -15,5 +15,6 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+/// <reference path="../declarations.d.ts"/>
 import * as qs from 'query-string';
 export var querystring = qs;

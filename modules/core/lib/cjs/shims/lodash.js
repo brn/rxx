@@ -17,5 +17,5 @@
  */
 "use strict";
 /// <reference path="../declarations.d.ts"/>
-var lodash = require('lodash');
+var lodash = require("lodash");
 exports._ = lodash;

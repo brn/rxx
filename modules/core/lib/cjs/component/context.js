@@ -21,12 +21,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var React = require('react');
-var Rx_1 = require('rxjs/Rx');
-var injector_1 = require('../di/injector');
-var io_1 = require('../io/io');
-var service_1 = require('../service/service');
-var lodash_1 = require('../shims/lodash');
+var React = require("react");
+var Rx_1 = require("rxjs/Rx");
+var injector_1 = require("../di/injector");
+var io_1 = require("../io/io");
+var service_1 = require("../service/service");
+var lodash_1 = require("../shims/lodash");
 /**
  * React contextTypes.
  */
@@ -101,8 +101,8 @@ var connect = function (v) {
 var Context = (function (_super) {
     __extends(Context, _super);
     function Context(props, c) {
-        _super.call(this, props, c);
-        var self = this;
+        var _this = _super.call(this, props, c) || this;
+        var self = _this;
         var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
         var subscription = new Rx_1.Subscription();
         var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
@@ -119,11 +119,11 @@ var Context = (function (_super) {
             }
             return;
         }), function (v, k) { return injector.get(k); });
-        this.contextObject = {
+        _this.contextObject = {
             createProps: function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
+                    args[_i] = arguments[_i];
                 }
                 var ioResposens = lodash_1._.mapValues(ioModules, function (v) { return v ? v.response : null; });
                 return services.reduce(function (props, service) {
@@ -145,6 +145,7 @@ var Context = (function (_super) {
             injector: injector,
             io: ioModules
         };
+        return _this;
     }
     Context.prototype.render = function () {
         return this.props.children;

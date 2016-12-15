@@ -13,16 +13,15 @@ import { Response } from './shims/fetch';
 /**
  * Mock class for HttpRequest.
  */
-export var HttpRequestMock = (function (_super) {
+var HttpRequestMock = (function (_super) {
     __extends(HttpRequestMock, _super);
     /**
      * @param methods Definitions of each method return value.
      */
     function HttpRequestMock(methods) {
-        var _this = this;
-        _super.call(this);
-        this.methods = methods;
-        this.fetchFunction = function (url, request) {
+        var _this = _super.call(this) || this;
+        _this.methods = methods;
+        _this.fetchFunction = function (url, request) {
             return new Promise(function (resolve, reject) {
                 setTimeout(function () {
                     var method = _this.methods[(request.method || 'get').toLowerCase()];
@@ -39,6 +38,7 @@ export var HttpRequestMock = (function (_super) {
                 }, 100);
             });
         };
+        return _this;
     }
     Object.defineProperty(HttpRequestMock.prototype, "fetch", {
         /**
@@ -52,3 +52,4 @@ export var HttpRequestMock = (function (_super) {
     });
     return HttpRequestMock;
 }(HttpRequest));
+export { HttpRequestMock };

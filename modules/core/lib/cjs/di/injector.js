@@ -16,10 +16,10 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var method_proxy_1 = require('./method-proxy');
-var inject_1 = require('./inject');
-var symbol_1 = require('../shims/symbol');
-var lodash_1 = require('../shims/lodash');
+var method_proxy_1 = require("./method-proxy");
+var inject_1 = require("./inject");
+var symbol_1 = require("../shims/symbol");
+var lodash_1 = require("../shims/lodash");
 /**
  * The key to hold dependency name.
  */
@@ -452,7 +452,7 @@ var Injector = (function () {
                     args.push(inner);
                 }
                 else {
-                    keyArgs[resources[i][1]] = this.getInstance(bindingName, null, item, false);
+                    keyArgs[resources[i][1]] = this.getInstance(resources[i][1], null, item, false);
                 }
             }
             else {
@@ -636,7 +636,7 @@ var Injector = (function () {
         return function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             return interceptor.invoke(new method_proxy_1.MethodInvocation(base, context, args, context[exports.INJECTION_NAME_SYMBOL], propertyKey));
         };

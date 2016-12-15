@@ -16,7 +16,7 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var symbol_1 = require('../shims/symbol');
+var symbol_1 = require("../shims/symbol");
 /**
  * DI config key.
  */

@@ -15,5 +15,6 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+/// <reference path="../declarations.d.ts"/>
 import ES6Symbol from 'es6-symbol';
 export var Symbol = ES6Symbol;

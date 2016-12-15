@@ -18,7 +18,7 @@
 /**
  * Abstract expression for method invocation.
  */
-export var MethodInvocation = (function () {
+var MethodInvocation = (function () {
     /**
      * @param method Function body.
      * @param context Calling context.
@@ -76,3 +76,4 @@ export var MethodInvocation = (function () {
     };
     return MethodInvocation;
 }());
+export { MethodInvocation };

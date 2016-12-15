@@ -30,8 +30,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@react-mvi/core');
-var Rx_1 = require('rxjs/Rx');
+var core_1 = require("@react-mvi/core");
+var Rx_1 = require("rxjs/Rx");
 /**
  * History size.
  */
@@ -42,11 +42,12 @@ var MAX_HISTORY_LENGTH = 10;
 var EventDispatcher = (function (_super) {
     __extends(EventDispatcher, _super);
     function EventDispatcher() {
-        _super.apply(this, arguments);
+        var _this = _super.apply(this, arguments) || this;
         /**
          * Event history.
          */
-        this.history = [];
+        _this.history = [];
+        return _this;
     }
     EventDispatcher.prototype.subscribe = function (props) {
         return new Rx_1.Subscription();
@@ -76,6 +77,7 @@ var EventDispatcher = (function (_super) {
             this.history.shift();
         }
         fire();
+        return Promise.resolve();
     };
     /**
      * Return callback function that will publish event.
@@ -87,10 +89,10 @@ var EventDispatcher = (function (_super) {
         var _this = this;
         return function (args) { return _this.push(key, core_1.isDefined(v) ? v : args); };
     };
-    EventDispatcher = __decorate([
-        core_1.io, 
-        __metadata('design:paramtypes', [])
-    ], EventDispatcher);
     return EventDispatcher;
 }(core_1.Outlet));
+EventDispatcher = __decorate([
+    core_1.io,
+    __metadata("design:paramtypes", [])
+], EventDispatcher);
 exports.EventDispatcher = EventDispatcher;

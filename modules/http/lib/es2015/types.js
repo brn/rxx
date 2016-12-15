@@ -5,7 +5,10 @@
 /**
  * The methods of the Http request.
  */
-export var HttpMethod;
+/**
+ * @fileoverview
+ * @author Taketoshi Aono
+ */ export var HttpMethod;
 (function (HttpMethod) {
     HttpMethod[HttpMethod["GET"] = 1] = "GET";
     HttpMethod[HttpMethod["POST"] = 2] = "POST";

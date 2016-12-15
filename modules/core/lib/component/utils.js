@@ -15,15 +15,14 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(['react', './context', './../shims/lodash'], function(exports_1, context_1) {
+System.register(["react", "./context", "./../shims/lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var React, context_2, lodash_1;
+    var __moduleName = context_1 && context_1.id;
     /**
      * Create stateless CompositeComponent with context that type is `ContextReactType`.
      * @param render Render function or object that implements each lifecycle methods.
@@ -45,14 +44,15 @@ System.register(['react', './context', './../shims/lodash'], function(exports_1,
         var ret;
         if (isComponent(component)) {
             var Renderer = component;
-            ret = (function (_super) {
-                __extends(class_1, _super);
-                function class_1() {
-                    _super.apply(this, arguments);
-                }
-                class_1.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext);
-                return class_1;
-            }(Renderer));
+            ret = (_a = (function (_super) {
+                    __extends(class_1, _super);
+                    function class_1() {
+                        return _super.apply(this, arguments) || this;
+                    }
+                    return class_1;
+                }(Renderer)),
+                _a.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext),
+                _a);
             if (Renderer['name']) {
                 ret['displayName'] = Renderer['name'];
             }
@@ -62,52 +62,55 @@ System.register(['react', './context', './../shims/lodash'], function(exports_1,
             /**
              * React.Component that is created from passed function or object.
              */
-            ret = (function (_super) {
-                __extends(class_2, _super);
-                function class_2() {
-                    _super.apply(this, arguments);
-                }
-                class_2.prototype.render = function () {
-                    return isRender(renderer_1) ? renderer_1.call(this, this.props, this.context) : renderer_1.render.call(this, this.props, this.context);
-                };
-                class_2.prototype.componentWillMount = function () {
-                    if (!isRender(renderer_1) && renderer_1.componentWillMount) {
-                        renderer_1.componentWillMount.call(this);
+            ret = (_b = (function (_super) {
+                    __extends(class_2, _super);
+                    function class_2() {
+                        return _super.apply(this, arguments) || this;
                     }
-                };
-                class_2.prototype.componentDidMount = function () {
-                    if (!isRender(renderer_1) && renderer_1.componentDidMount) {
-                        renderer_1.componentDidMount.call(this);
-                    }
-                };
-                class_2.prototype.componentDidUpdate = function () {
-                    if (!isRender(renderer_1) && renderer_1.componentDidUpdate) {
-                        renderer_1.componentDidUpdate.call(this);
-                    }
-                };
-                class_2.prototype.componentWillUnmount = function () {
-                    if (!isRender(renderer_1) && renderer_1.componentWillUnmount) {
-                        renderer_1.componentWillUnmount.call(this);
-                    }
-                };
-                class_2.prototype.shouldComponentUpdate = function (nextProps) {
-                    if (!isRender(renderer_1) && renderer_1.shouldComponentUpdate) {
-                        return renderer_1.shouldComponentUpdate.call(this, nextProps);
-                    }
-                    return true;
-                };
-                class_2.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext);
-                return class_2;
-            }(React.Component));
+                    class_2.prototype.render = function () {
+                        return isRender(renderer_1) ? renderer_1.call(this, this.props, this.context) : renderer_1.render.call(this, this.props, this.context);
+                    };
+                    class_2.prototype.componentWillMount = function () {
+                        if (!isRender(renderer_1) && renderer_1.componentWillMount) {
+                            renderer_1.componentWillMount.call(this);
+                        }
+                    };
+                    class_2.prototype.componentDidMount = function () {
+                        if (!isRender(renderer_1) && renderer_1.componentDidMount) {
+                            renderer_1.componentDidMount.call(this);
+                        }
+                    };
+                    class_2.prototype.componentDidUpdate = function () {
+                        if (!isRender(renderer_1) && renderer_1.componentDidUpdate) {
+                            renderer_1.componentDidUpdate.call(this);
+                        }
+                    };
+                    class_2.prototype.componentWillUnmount = function () {
+                        if (!isRender(renderer_1) && renderer_1.componentWillUnmount) {
+                            renderer_1.componentWillUnmount.call(this);
+                        }
+                    };
+                    class_2.prototype.shouldComponentUpdate = function (nextProps) {
+                        if (!isRender(renderer_1) && renderer_1.shouldComponentUpdate) {
+                            return renderer_1.shouldComponentUpdate.call(this, nextProps);
+                        }
+                        return true;
+                    };
+                    return class_2;
+                }(React.Component)),
+                _b.contextTypes = lodash_1._.assign(context_2.ContextReactTypes, additionalContext),
+                _b);
         }
         if (componentName) {
             ret['displayName'] = componentName;
         }
         return ret;
+        var _a, _b;
     }
     exports_1("component", component);
+    var React, context_2, lodash_1;
     return {
-        setters:[
+        setters: [
             function (React_1) {
                 React = React_1;
             },
@@ -116,8 +119,25 @@ System.register(['react', './context', './../shims/lodash'], function(exports_1,
             },
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {// -*- mode: typescript -*-
+            /**
+             * The MIT License (MIT)
+             * Copyright (c) Taketoshi Aono
+             *
+             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+             *
+             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+             *
+             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * @fileoverview
+             * @author Taketoshi Aono
+             */
         }
-    }
+    };
 });

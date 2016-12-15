@@ -21,8 +21,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var binding_1 = require('./binding');
-var lodash_1 = require('../shims/lodash');
+var binding_1 = require("./binding");
+var lodash_1 = require("../shims/lodash");
 /**
  * Base implementation of `Module`.
  */
@@ -106,7 +106,7 @@ function createModule(fn) {
     return new ((function (_super) {
         __extends(class_1, _super);
         function class_1() {
-            _super.apply(this, arguments);
+            return _super.apply(this, arguments) || this;
         }
         class_1.prototype.configure = function () {
             fn(this);

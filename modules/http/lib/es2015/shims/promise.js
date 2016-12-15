@@ -15,5 +15,6 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
+/// <reference path="../declarations.d.ts"/>
 import * as ESPromise from 'es6-promise';
 export var Promise = ESPromise['default'].Promise;

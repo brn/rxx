@@ -2,18 +2,17 @@
  * @fileoverview IOのモッククラス定義
  * @author Taketoshi Aono
  */
-System.register(['./shims/promise', './http-request', './shims/fetch'], function(exports_1, context_1) {
+System.register(["./shims/promise", "./http-request", "./shims/fetch"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var promise_1, http_request_1, fetch_1;
-    var HttpRequestMock;
+    var __moduleName = context_1 && context_1.id;
+    var promise_1, http_request_1, fetch_1, HttpRequestMock;
     return {
-        setters:[
+        setters: [
             function (promise_1_1) {
                 promise_1 = promise_1_1;
             },
@@ -22,8 +21,12 @@ System.register(['./shims/promise', './http-request', './shims/fetch'], function
             },
             function (fetch_1_1) {
                 fetch_1 = fetch_1_1;
-            }],
-        execute: function() {
+            }
+        ],
+        execute: function () {/**
+             * @fileoverview IOのモッククラス定義
+             * @author Taketoshi Aono
+             */
             /**
              * Mock class for HttpRequest.
              */
@@ -33,10 +36,9 @@ System.register(['./shims/promise', './http-request', './shims/fetch'], function
                  * @param methods Definitions of each method return value.
                  */
                 function HttpRequestMock(methods) {
-                    var _this = this;
-                    _super.call(this);
-                    this.methods = methods;
-                    this.fetchFunction = function (url, request) {
+                    var _this = _super.call(this) || this;
+                    _this.methods = methods;
+                    _this.fetchFunction = function (url, request) {
                         return new promise_1.Promise(function (resolve, reject) {
                             setTimeout(function () {
                                 var method = _this.methods[(request.method || 'get').toLowerCase()];
@@ -53,6 +55,7 @@ System.register(['./shims/promise', './http-request', './shims/fetch'], function
                             }, 100);
                         });
                     };
+                    return _this;
                 }
                 Object.defineProperty(HttpRequestMock.prototype, "fetch", {
                     /**
@@ -68,5 +71,5 @@ System.register(['./shims/promise', './http-request', './shims/fetch'], function
             }(http_request_1.HttpRequest));
             exports_1("HttpRequestMock", HttpRequestMock);
         }
-    }
+    };
 });
