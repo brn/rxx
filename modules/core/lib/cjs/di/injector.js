@@ -542,7 +542,17 @@ var Injector = (function () {
             ret = item.val;
         }
         else if (item.provider) {
-            var provider = this.inject(item.val);
+            var provider = void 0;
+            if (item.singleton) {
+                provider = this.getSingletonInstance(item.id);
+                if (!provider) {
+                    provider = this.singletons[item.id] = this.inject(item.val);
+                    this.singletons[item.id][exports.INJECTION_NAME_SYMBOL] = bindingName;
+                }
+            }
+            else {
+                provider = this.inject(item.val);
+            }
             var provided = provider.provide();
             if (!lodash_1._.isNil(provided)) {
                 provided[exports.INJECTION_NAME_SYMBOL] = bindingName;

@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/http",
-  "version": "0.3.59",
+  "version": "0.3.61",
   "description": "Http IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "jspmNodeConversion": false,
     "main": "index.js",
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.36",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.3.38",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
       "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
@@ -153,7 +153,7 @@
     "typescript": "^1.9.0-dev.20160526-1.0"
   },
   "dependencies": {
-    "@react-mvi/core": "^0.3.36",
+    "@react-mvi/core": "^0.3.38",
     "@types/es6-promise": "0.0.32",
     "@types/react": "^0.14.55",
     "@types/react-dom": "^0.14.19"

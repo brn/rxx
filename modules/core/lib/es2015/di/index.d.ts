@@ -20,3 +20,4 @@ export * from './module';
 export * from './method-proxy';
 export * from './inject';
 export * from './intercept';
+export * from './binding';

@@ -130,7 +130,7 @@ export class BindingPlaceholder {
    * @param ctor Constructor function.
    * @returns Option.
    */
-  public to<T>(ctor: any);
+  public to<T>(ctor: any): ClassTypeOption;
   public to<T>(ctor: ClassType<T>): ClassTypeOption {
     this.holder[this.id] = {val: ctor, singleton: false, eagerSingleton: false, instance: false, provider: false, template: false, id: bindingId++};
     return new ClassTypeOption(this.holder[this.id]);
@@ -150,8 +150,9 @@ export class BindingPlaceholder {
    * Link Provider to binding id.
    * @param value Provider constructor function.
    */
-  public toProvider<T>(value: ClassType<Provider<T>>) {
+  public toProvider<T>(value: ClassType<Provider<T>>): ClassTypeOption {
     this.holder[this.id] = {val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false, id: bindingId++}
+    return new ClassTypeOption(this.holder[this.id]);
   }
 }
 

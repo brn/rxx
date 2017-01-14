@@ -68,6 +68,7 @@ var BindingPlaceholder = (function () {
      */
     BindingPlaceholder.prototype.toProvider = function (value) {
         this.holder[this.id] = { val: value, singleton: false, eagerSingleton: false, instance: false, provider: true, template: false, id: bindingId++ };
+        return new ClassTypeOption(this.holder[this.id]);
     };
     return BindingPlaceholder;
 }());

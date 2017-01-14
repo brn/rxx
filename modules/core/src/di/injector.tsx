@@ -619,8 +619,18 @@ export class Injector {
     } else if (item.instance){
       ret = item.val;
     } else if (item.provider) {
-      var provider = this.inject<Provider<T>>(item.val);
-      var provided = provider.provide();
+      let provider;
+      if (item.singleton) {
+        provider = this.getSingletonInstance(item.id);
+        if (!provider) {
+          provider = this.singletons[item.id] = this.inject(item.val);
+          this.singletons[item.id][INJECTION_NAME_SYMBOL] = bindingName;
+        }
+      } else {
+        provider = this.inject<Provider<T>>(item.val);
+      }
+
+      const provided = provider.provide();
       if (!_.isNil(provided)) {
         provided[INJECTION_NAME_SYMBOL] = bindingName; 
       }

@@ -24,3 +24,4 @@ __export(require("./abstract-module"));
 __export(require("./method-proxy"));
 __export(require("./inject"));
 __export(require("./intercept"));
+__export(require("./binding"));

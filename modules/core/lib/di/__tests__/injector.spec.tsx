@@ -35,6 +35,9 @@ import {
   intercept
 }               from '../intercept';
 import {
+  Provider
+}               from '../binding';
+import {
   Symbol
 }               from '../../shims/symbol';
 
@@ -384,6 +387,38 @@ describe('Injector', () => {
       const injector = new Injector([new TestModule()]);
       const inst     = injector.inject(ParentClass);
       expect(inst.test()).eq(2);
+    });
+
+
+    it('Create instance from provider', () => {
+      class Target1 {}
+      class Target2 {constructor(public id: number){}}
+
+      class Target1Provider implements Provider<Target1> {
+        provide() {return new Target1()}
+      }
+
+      class Target2Provider implements Provider<Target1> {
+        public id = 0;
+        provide() {return new Target2(this.id++)}
+      }
+
+      class TestModule extends AbstractModule {
+        public configure(): void {
+          this.bind('targetA1').toProvider(Target1Provider);
+          this.bind('targetA2').toProvider(Target2Provider).asSingleton();
+        }
+      }
+
+      const injector = new Injector([new TestModule]);
+      const result1   = injector.inject(Test1);
+      const result2   = injector.inject(Test1);
+
+      expect(result1.targetA1).instanceof(Target1);
+      expect(result1.targetA2).instanceof(Target2);
+      expect(result2.targetA2).instanceof(Target2);
+      expect(result1.targetA2.id).eq(0);
+      expect(result2.targetA2.id).eq(1);
     });
   });
 });

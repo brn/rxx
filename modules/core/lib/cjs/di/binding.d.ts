@@ -96,7 +96,7 @@ export declare class BindingPlaceholder {
      * @param ctor Constructor function.
      * @returns Option.
      */
-    to<T>(ctor: any): any;
+    to<T>(ctor: any): ClassTypeOption;
     /**
      * Link instance to binding id.
      * @param value Immediate value.
@@ -106,7 +106,7 @@ export declare class BindingPlaceholder {
      * Link Provider to binding id.
      * @param value Provider constructor function.
      */
-    toProvider<T>(value: ClassType<Provider<T>>): void;
+    toProvider<T>(value: ClassType<Provider<T>>): ClassTypeOption;
 }
 /**
  * Hold interceptor and value.
