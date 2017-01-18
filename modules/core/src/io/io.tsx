@@ -18,14 +18,10 @@
 
 
 import {
-  Observable
-}             from 'rxjs/Observable';
-import {
-  Subject
-}             from 'rxjs/Subject';
-import {
+  Observable,
+  Subject,
   Subscription
-}             from 'rxjs/Subscription';
+}             from 'rxjs/Rx';
 import {
   Symbol
 }             from '../shims/symbol';
@@ -160,8 +156,15 @@ export interface IO {
 
 
 export abstract class Outlet implements IO {
-  protected store = new SubjectStore();
-  private ioResponse: IOResponse;
+  /**
+   * Subject for exported stream.
+   */
+  protected readonly store = new SubjectStore();
+
+  /**
+   * Response of streams.
+   */
+  private readonly ioResponse: IOResponse;
 
 
   public constructor() {
@@ -169,17 +172,30 @@ export abstract class Outlet implements IO {
   }
 
 
+  /**
+   * @inheritDocs
+   */
   public abstract subscribe(props: {[key: string]: any}): Subscription;
 
 
+  /**
+   * Return response representation of stream.
+   * @return Representation of stream response.
+   */
   public get response() {
     return this.ioResponse;
   }
 
 
+  /**
+   * @inheritDocs
+   */
   public abstract push(key: string, args?: any);
 
 
+  /**
+   * @inheritDocs
+   */
   public abstract callback(key: string, value?: any);
 }
 

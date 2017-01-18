@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs/Rx';
 import { Symbol } from '../shims/symbol';
 export var IO_MARK = Symbol('io');
 /**
@@ -104,10 +104,17 @@ var SubjectStore = (function () {
 export { SubjectStore };
 var Outlet = (function () {
     function Outlet() {
+        /**
+         * Subject for exported stream.
+         */
         this.store = new SubjectStore();
         this.ioResponse = new IOResponse(this.store);
     }
     Object.defineProperty(Outlet.prototype, "response", {
+        /**
+         * Return response representation of stream.
+         * @return Representation of stream response.
+         */
         get: function () {
             return this.ioResponse;
         },

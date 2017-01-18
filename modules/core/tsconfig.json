@@ -9,6 +9,10 @@
     "module": "system",
     "noImplicitAny": false,
     "lib": ["dom", "es5", "es6", "es2016", "es2017"],
-    "noLib": false
+    "noLib": false,
+    "baseUrl": "./",
+    "paths": {
+      "rxjs/*": ["jspm_packages/npm/rxjs@5.0.3/*"]
+    }
   }
 }

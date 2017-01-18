@@ -14,9 +14,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subject, Subscription } from 'rxjs/Rx';
 export declare const IO_MARK: symbol;
 /**
  * Decorator for io module.
@@ -91,14 +89,33 @@ export interface IO {
     callback(key: string, value?: any): (args?: any) => void;
 }
 export declare abstract class Outlet implements IO {
-    protected store: SubjectStore;
-    private ioResponse;
+    /**
+     * Subject for exported stream.
+     */
+    protected readonly store: SubjectStore;
+    /**
+     * Response of streams.
+     */
+    private readonly ioResponse;
     constructor();
+    /**
+     * @inheritDocs
+     */
     abstract subscribe(props: {
         [key: string]: any;
     }): Subscription;
+    /**
+     * Return response representation of stream.
+     * @return Representation of stream response.
+     */
     readonly response: IOResponse;
+    /**
+     * @inheritDocs
+     */
     abstract push(key: string, args?: any): any;
+    /**
+     * @inheritDocs
+     */
     abstract callback(key: string, value?: any): any;
 }
 export interface BasicIOTypes {

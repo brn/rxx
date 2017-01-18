@@ -15,7 +15,7 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(["rxjs/Subject", "../shims/symbol"], function (exports_1, context_1) {
+System.register(["rxjs/Rx", "../shims/symbol"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     /**
@@ -25,11 +25,11 @@ System.register(["rxjs/Subject", "../shims/symbol"], function (exports_1, contex
         target[IO_MARK] = true;
     }
     exports_1("io", io);
-    var Subject_1, symbol_1, IO_MARK, IOResponse, SubjectStore, Outlet;
+    var Rx_1, symbol_1, IO_MARK, IOResponse, SubjectStore, Outlet;
     return {
         setters: [
-            function (Subject_1_1) {
-                Subject_1 = Subject_1_1;
+            function (Rx_1_1) {
+                Rx_1 = Rx_1_1;
             },
             function (symbol_1_1) {
                 symbol_1 = symbol_1_1;
@@ -126,17 +126,24 @@ System.register(["rxjs/Subject", "../shims/symbol"], function (exports_1, contex
                  * @returns Registered Subject.
                  */
                 SubjectStore.prototype.add = function (key) {
-                    return this.subjectMap[key] = new Subject_1.Subject();
+                    return this.subjectMap[key] = new Rx_1.Subject();
                 };
                 return SubjectStore;
             }());
             exports_1("SubjectStore", SubjectStore);
             Outlet = (function () {
                 function Outlet() {
+                    /**
+                     * Subject for exported stream.
+                     */
                     this.store = new SubjectStore();
                     this.ioResponse = new IOResponse(this.store);
                 }
                 Object.defineProperty(Outlet.prototype, "response", {
+                    /**
+                     * Return response representation of stream.
+                     * @return Representation of stream response.
+                     */
                     get: function () {
                         return this.ioResponse;
                     },

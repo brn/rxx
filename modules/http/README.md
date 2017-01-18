@@ -66,6 +66,24 @@ tsconfig.json
 
 ## Usage
 
+First, register HttpRequest class to @react-mvi/core di container module.
+
+```typescript
+import {
+  AbstractModule
+} from '@react-mvi/core';
+import {
+  HttpRequest
+} from '@react-mvi/http';
+
+
+export class Module extends AbstractModule {
+  configure() {
+    this.bind('http').to(HttpRequest).asSingleton();
+  }
+}
+```
+
 @react-mvi/http use http property of service returned object.
 
 See example below.

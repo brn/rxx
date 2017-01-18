@@ -52,51 +52,76 @@ tsconfig.json
     "baseDir": ".",
     "baseURL": ".",
     "paths": {
-      "@react-mvi/core": [
-        "jspm_packages/npm/@react-mvi/core*"
-      ],
-      "@react-mvi/event": [
-        "jspm_packages/npm/@react-mvi/event*"
-      ],
-      "rxjs": [
-        "jspm_packages/npm/rxjs/*"
-      ]
+      "@react-mvi/event": ["jspm_packages/npm/@react-mvi/event@{version-you-installed}/index.ts"],
+      ...
     }
   }
 }
 ```
 
 
-## Simple Usage
+## Usage
+
+First, register EventDispatcher class to @react-mvi/core di container module.
 
 ```typescript
-import * as React from 'react';
 import {
-  createModule,
-  component,
-  Tags as T,
-  run
-} from '@react-mvi/core'
+  AbstractModule
+} from '@react-mvi/core';
 import {
   EventDispatcher
-} from '@react-mvi/event'
+} from '@react-mvi/event';
 
-const Service = ({event}) => {
-  return {
-    counter: event.for('user::click').scan((_, acc) => acc + 1, 0).startWith(0).publish();
+
+export class Module extends AbstractModule {
+  configure() {
+    this.bind('event').to(EventDispatcher).asSingleton();
   }
 }
-
-const module = createModule(config => {
-  config.bind('event').to(EventDispatcher);
-  config.bind('aService').toInstance(Service);
-});
-
-const View = component((props, context) => {
-  return (
-    <T.Div onClick={context.io.event.asc('user::click')}>conter value is {props.counter}</T.Div>
-  )
-});
-
-run({component: View, modules: [module]}, document.querySelector('#app'));
 ```
+
+@react-mvi/event exists in context.io.
+
+See example below.
+
+```typescript
+import React from 'react';
+import {
+  ContextType
+} from '@react-mvi/core';
+
+@context
+class FooComponent extends React.Component<any, any> {
+  public context: ContextType;
+
+  public render() {
+    return (
+      <button onClick={this.context.io.event.callback('test::click')}>TEST</button>
+      <button onClick={e => this.context.io.event.push('test::click', e)}>TEST</button>  // same as above.
+    )
+  }
+}
+```
+
+## EventDispatcher Specification
+
+### push(key: string, args: any): void
+
+Trigger observable that connected to specified key.
+
+```typescript
+event.response.for('foo::click').subscribe(v => {
+  assert.equal(v, 'ok');
+})
+
+this.context.io.event.push('foo::click', 'ok');
+```
+
+### callback(key: string, args: any): (args: any) => void
+
+Wrap `push` function by anonymous function.
+
+
+### response: IOResponse
+
+Return IOResponse instance.

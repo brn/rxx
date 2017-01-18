@@ -16,7 +16,7 @@
  * @author Taketoshi Aono
  */
 "use strict";
-var Subject_1 = require("rxjs/Subject");
+var Rx_1 = require("rxjs/Rx");
 var symbol_1 = require("../shims/symbol");
 exports.IO_MARK = symbol_1.Symbol('io');
 /**
@@ -99,17 +99,24 @@ var SubjectStore = (function () {
      * @returns Registered Subject.
      */
     SubjectStore.prototype.add = function (key) {
-        return this.subjectMap[key] = new Subject_1.Subject();
+        return this.subjectMap[key] = new Rx_1.Subject();
     };
     return SubjectStore;
 }());
 exports.SubjectStore = SubjectStore;
 var Outlet = (function () {
     function Outlet() {
+        /**
+         * Subject for exported stream.
+         */
         this.store = new SubjectStore();
         this.ioResponse = new IOResponse(this.store);
     }
     Object.defineProperty(Outlet.prototype, "response", {
+        /**
+         * Return response representation of stream.
+         * @return Representation of stream response.
+         */
         get: function () {
             return this.ioResponse;
         },
