@@ -23,7 +23,7 @@ inspired by
 
 ## Architecture
 
-![architecture](./images/mvi_clean_arc.png)
+![architecture](../../images/mvi_clean_arc.png)
 
 ## Requirements
 
@@ -31,6 +31,6 @@ inspired by
 
 ## Modules
 
-- [@react-mvi/core](modules/core)
-- [@react-mvi/http](modules/http)
-- [@react-mvi/event](modules/event)
+- [@react-mvi/core](./)
+- [@react-mvi/http](../http)
+- [@react-mvi/event](../event)
