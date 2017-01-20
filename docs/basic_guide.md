@@ -101,8 +101,8 @@ return Observable that flow to changed counter value.
 
 Next, now create React props generator which is generate props from composition of repository and usecase.
 
-```
-const Service = service(({http, event}, injector) => {
+```typescript
+const Service = service(({http, event}: {[key: string]: IOResponse}, injector) => {
   const repository = injector.get('repository');
   const usecase = injector.get('usecase');
   const counterRequest = repository.getCounterRequest(usecase.getCounterValue(event));
@@ -111,7 +111,7 @@ const Service = service(({http, event}, injector) => {
       'counter::mutate': counterRequest.publish()
     },
     view: {
-      counter: http.for('counter::mutate').map(e => e.response).publish()
+      counter: http.for<HttpResponse<{count: number}, void>>('counter::mutate').map(e => e.response.count).share().startWith(0)
     }
   }
 });
@@ -139,10 +139,14 @@ This Module combine all dependecies.
 
 Just a little bit more! Create React component.
 
-```
+```typescript
 const View = component((props: {counter: Observable<number>}, context) => {
   return (
-    <T.Div onClick={context.io.event.asc('counter::clicked')}>conter value is {props.counter}</T.Div>
+    <div>
+      <button onClick={context.io.event.callback('counter::plus')}>Plus</button>
+      <button onClick={context.io.event.callback('counter::minus')}>Minus</button>
+      <T.Div>conter value is {props.counter}</T.Div>
+    </div>
   )
 });
 ```
