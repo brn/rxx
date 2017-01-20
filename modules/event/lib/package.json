@@ -1,11 +1,14 @@
 {
   "name": "@react-mvi/event",
-  "version": "0.3.30",
+  "version": "0.4.1",
   "description": "Event IO module for React MVI.",
   "main": "index.js",
   "scripts": {
     "gulp": "gulp --cwd",
-    "patch-and-publish": "gulp publish --cwd",
+    "patch-and-publish": "gulp publish-patch --cwd",
+    "major-and-publish": "gulp publish-major --cwd",
+    "minor-and-publish": "gulp publish-minor --cwd",
+    "publish-only": "gulp publish --cwd",
     "test": "gulp test --cwd"
   },
   "repository": {
@@ -40,33 +43,33 @@
     "jspmNodeConversion": false,
     "main": "index.js",
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.38",
-      "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
-      "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
-      "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
-      "constants": "github:jspm/nodelibs-constants@^0.2.0-alpha",
-      "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
-      "domain": "github:jspm/nodelibs-domain@^0.2.0-alpha",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.4.0",
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "domain": "npm:jspm-nodelibs-domain@^0.2.0",
       "es6-symbol": "npm:es6-symbol@^3.1.0",
-      "events": "github:jspm/nodelibs-events@^0.2.0-alpha",
-      "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
-      "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
-      "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "http": "npm:jspm-nodelibs-http@^0.2.0",
+      "https": "npm:jspm-nodelibs-https@^0.2.0",
       "lodash": "npm:lodash@^4.13.1",
-      "module": "github:jspm/nodelibs-module@^0.2.0-alpha",
-      "net": "github:jspm/nodelibs-net@^0.2.0-alpha",
-      "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
-      "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
+      "module": "npm:jspm-nodelibs-module@^0.2.0",
+      "net": "npm:jspm-nodelibs-net@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
       "react": "npm:react@^15.1.0",
       "react-dom": "npm:react-dom@^15.1.0",
-      "rxjs": "npm:rxjs@^5.0.0-beta.8",
-      "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
-      "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
-      "url": "github:jspm/nodelibs-url@^0.2.0-alpha",
-      "util": "github:jspm/nodelibs-util@^0.2.0-alpha",
-      "vm": "github:jspm/nodelibs-vm@^0.2.0-alpha",
-      "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
+      "rxjs": "npm:rxjs@^5.0.3",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "url": "npm:jspm-nodelibs-url@^0.2.0",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
+      "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
       "npm:babel-runtime@5.8.38": {
@@ -131,14 +134,13 @@
     }
   },
   "peerDependencies": {
-    "@react-mvi/core": "^0.3.3-beta.1"
+    "@react-mvi/core": "^0.4.0"
   },
   "devDependencies": {
     "@react-mvi/testing": "0.0.16",
     "typescript": "^1.9.0-dev.20160526-1.0"
   },
   "dependencies": {
-    "@react-mvi/core": "^0.3.38",
     "@types/react": "^0.14.55",
     "@types/react-dom": "^0.14.19"
   }

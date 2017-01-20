@@ -18,10 +18,27 @@
 import * as React from 'react';
 import { Module } from './di/module';
 import { Injector } from './di/injector';
+/**
+ * Arguments type of run and runnable.
+ * Either of one of 'injector' or 'modules' are able to specified.
+ */
 export interface RunnerArgs {
+    /**
+     * React Component.
+     */
     component: new (props: any, context: any) => React.Component<any, any>;
+    /**
+     * Configured injector instance.
+     */
     injector?: Injector;
+    /**
+     * Modules which passed to injector.
+     */
     modules?: Module[];
 }
 export declare function runnable({component, modules, injector}: RunnerArgs): new (props: any, context: any) => React.Component<any, {}>;
+/**
+ * Start react-mvi components
+ * @param opt Components and Modules.
+ */
 export declare function run(opt: RunnerArgs, el: Node): void;

@@ -42,7 +42,7 @@ const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
 
 gulp.task('publish-all', () => {
   glob.sync('./modules/*').forEach((dir, done) => {
-    exec(`cd ${dir} && npm publish`);
+    exec(`cd ${dir} && npm publish`, {stdio: [0,1,2]});
   });
 });
 
@@ -51,7 +51,7 @@ gulp.task('publish-all', () => {
  * Install dependencies.
  */
 gulp.task('install', done => {
-  exec(`${BIN_DIR}jspm install`);
+  exec(`${BIN_DIR}jspm install`, {stdio: [0,1,2]});
 });
 
 
@@ -130,31 +130,67 @@ gulp.task('typescript-es2015', () => {
 
 
 gulp.task('publish', ['pre-publish'], () => {
-  exec('cd lib && npm publish --access public');
+  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+});
+
+
+gulp.task('publish-patch', ['pre-publish-with-patch'], () => {
+  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+});
+
+gulp.task('publish-major', ['pre-publish-with-major'], () => {
+  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+});
+
+gulp.task('publish-minor', ['pre-publish-with-minor'], () => {
+  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
 });
 
 
 gulp.task('update-core', ()=> {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`);
-  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, {stdio: [0,1,2]});
 });
 
 
 gulp.task('update-core-and-publish', () => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`);
-  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`);
+  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, {stdio: [0,1,2]});
 });
 
 
 gulp.task('check-releasable', ['typescript', 'typescript-cjs', 'typescript-es2015'], runKarma.bind(null, true, 'PhantomJS'));
 
 
+gulp.task('pre-publish-with-patch', ['check-releasable'], () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+  pkg.version = semver.inc(pkg.version, 'patch');
+  doPrepublish(pkg);
+});
+
+
+gulp.task('pre-publish-with-major', ['check-releasable'], () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+  pkg.version = semver.inc(pkg.version, 'major');
+  doPrepublish(pkg);
+});
+
+
+gulp.task('pre-publish-with-minor', ['check-releasable'], () => {
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+  pkg.version = semver.inc(pkg.version, 'minor');
+  doPrepublish(pkg);
+});
+
+
 gulp.task('pre-publish', ['check-releasable'], () => {
   const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
-  const version = semver.inc(pkg.version, 'patch');
+  doPrepublish(pkg);
+});
 
+
+function doPrepublish(pkg) {
   glob.sync('./src/*').forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
-  pkg.version = version;
   pkg.main = 'index.js';
   pkg.jspm.jspmNodeConversion = false;
   pkg.jspm.main = 'index.js';
@@ -168,7 +204,7 @@ gulp.task('pre-publish', ['check-releasable'], () => {
     console.log(e);
   }
   fs.remove('lib/_references.d.ts');
-});
+}
 
 
 /**

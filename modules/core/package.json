@@ -1,11 +1,14 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.3.41",
+  "version": "0.4.0",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "scripts": {
     "gulp": "gulp --cwd",
-    "patch-and-publish": "gulp publish --cwd",
+    "patch-and-publish": "gulp publish-patch --cwd",
+    "major-and-publish": "gulp publish-major --cwd",
+    "minor-and-publish": "gulp publish-minor --cwd",
+    "publish-only": "gulp publish --cwd",
     "test": "gulp test --cwd",
     "pre-publish": "gulp pre-publish --cwd"
   },

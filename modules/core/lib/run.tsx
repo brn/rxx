@@ -37,9 +37,24 @@ import {
 } from './component/context';
 
 
+/**
+ * Arguments type of run and runnable.
+ * Either of one of 'injector' or 'modules' are able to specified.
+ */
 export interface RunnerArgs {
+  /**
+   * React Component.
+   */
   component: new(props: any, context: any) => React.Component<any, any>;
+
+  /**
+   * Configured injector instance.
+   */
   injector?: Injector;
+
+  /**
+   * Modules which passed to injector.
+   */
   modules?: Module[];
 }
 
@@ -53,6 +68,9 @@ export function runnable({component, modules, injector}: RunnerArgs): new(props:
 
     public constructor(p, c: ContextType) {
       super(p, c);
+      if (p.injector && p.modules) {
+        throw new Error(`runnable or run only allow either of one of 'injector' or 'modules'.`);
+      }
       this.model = c.createProps(p);
     }
 
@@ -85,6 +103,10 @@ export function runnable({component, modules, injector}: RunnerArgs): new(props:
 }
 
 
+/**
+ * Start react-mvi components
+ * @param opt Components and Modules.
+ */
 export function run(opt: RunnerArgs, el: Node): void {
   const Root = runnable(opt);
   render(<Root/>, el as Element);

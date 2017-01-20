@@ -98,35 +98,35 @@ SystemJS.config({
     "github:*/*.json"
   ],
   map: {
-    "@react-mvi/core": "npm:@react-mvi/core@0.3.38",
-    "assert": "github:jspm/nodelibs-assert@0.2.0-alpha",
-    "buffer": "github:jspm/nodelibs-buffer@0.2.0-alpha",
-    "child_process": "github:jspm/nodelibs-child_process@0.2.0-alpha",
-    "constants": "github:jspm/nodelibs-constants@0.2.0-alpha",
-    "crypto": "github:jspm/nodelibs-crypto@0.2.0-alpha",
-    "domain": "github:jspm/nodelibs-domain@0.2.0-alpha",
+    "@react-mvi/core": "npm:@react-mvi/core@0.4.0",
+    "assert": "npm:jspm-nodelibs-assert@0.2.0",
+    "buffer": "npm:jspm-nodelibs-buffer@0.2.0",
+    "child_process": "npm:jspm-nodelibs-child_process@0.2.0",
+    "constants": "npm:jspm-nodelibs-constants@0.2.0",
+    "crypto": "npm:jspm-nodelibs-crypto@0.2.0",
+    "domain": "npm:jspm-nodelibs-domain@0.2.0",
     "es6-symbol": "npm:es6-symbol@3.1.0",
-    "events": "github:jspm/nodelibs-events@0.2.0-alpha",
-    "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
-    "http": "github:jspm/nodelibs-http@0.2.0-alpha",
-    "https": "github:jspm/nodelibs-https@0.2.0-alpha",
+    "events": "npm:jspm-nodelibs-events@0.2.0",
+    "fs": "npm:jspm-nodelibs-fs@0.2.0",
+    "http": "npm:jspm-nodelibs-http@0.2.0",
+    "https": "npm:jspm-nodelibs-https@0.2.0",
     "lodash": "npm:lodash@4.13.1",
-    "module": "github:jspm/nodelibs-module@0.2.0-alpha",
-    "net": "github:jspm/nodelibs-net@0.2.0-alpha",
-    "os": "github:jspm/nodelibs-os@0.2.0-alpha",
-    "path": "github:jspm/nodelibs-path@0.2.0-alpha",
+    "module": "npm:jspm-nodelibs-module@0.2.0",
+    "net": "npm:jspm-nodelibs-net@0.2.0",
+    "os": "npm:jspm-nodelibs-os@0.2.0",
+    "path": "npm:jspm-nodelibs-path@0.2.0",
     "process": "github:jspm/nodelibs-process@0.2.0-alpha",
     "react": "npm:react@15.1.0",
     "react-dom": "npm:react-dom@15.1.0",
-    "rxjs": "npm:rxjs@5.0.0-beta.8",
+    "rxjs": "npm:rxjs@5.0.3",
     "source-map-support": "npm:source-map-support@0.4.6",
-    "stream": "github:jspm/nodelibs-stream@0.2.0-alpha",
-    "string_decoder": "github:jspm/nodelibs-string_decoder@0.2.0-alpha",
+    "stream": "npm:jspm-nodelibs-stream@0.2.0",
+    "string_decoder": "npm:jspm-nodelibs-string_decoder@0.2.0",
     "ts": "github:frankwallis/plugin-typescript@5.3.1",
-    "url": "github:jspm/nodelibs-url@0.2.0-alpha",
-    "util": "github:jspm/nodelibs-util@0.2.0-alpha",
-    "vm": "github:jspm/nodelibs-vm@0.2.0-alpha",
-    "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
+    "url": "npm:jspm-nodelibs-url@0.2.0",
+    "util": "npm:jspm-nodelibs-util@0.2.0",
+    "vm": "npm:jspm-nodelibs-vm@0.2.0",
+    "zlib": "npm:jspm-nodelibs-zlib@0.2.0"
   },
   packages: {
     "npm:browserify-aes@1.0.6": {
@@ -314,11 +314,6 @@ SystemJS.config({
         "object-assign": "npm:object-assign@4.1.0"
       }
     },
-    "npm:rxjs@5.0.0-beta.8": {
-      "map": {
-        "symbol-observable": "npm:symbol-observable@0.2.4"
-      }
-    },
     "npm:stream-browserify@2.0.1": {
       "map": {
         "inherits": "npm:inherits@2.0.3",
@@ -437,56 +432,61 @@ SystemJS.config({
         "source-map": "npm:source-map@0.5.6"
       }
     },
-    "npm:@react-mvi/core@0.3.38": {
-      "map": {
-        "core-js": "npm:core-js@2.4.1",
-        "source-map-support": "npm:source-map-support@0.4.6",
-        "ts": "github:frankwallis/plugin-typescript@5.3.1"
-      }
-    },
-    "github:jspm/nodelibs-domain@0.2.0-alpha": {
-      "map": {
-        "domain-browserify": "npm:domain-browser@1.1.7"
-      }
-    },
-    "github:jspm/nodelibs-buffer@0.2.0-alpha": {
+    "npm:jspm-nodelibs-buffer@0.2.0": {
       "map": {
         "buffer-browserify": "npm:buffer@4.9.1"
       }
     },
-    "github:jspm/nodelibs-crypto@0.2.0-alpha": {
-      "map": {
-        "crypto-browserify": "npm:crypto-browserify@3.11.0"
-      }
-    },
-    "github:jspm/nodelibs-http@0.2.0-alpha": {
+    "npm:jspm-nodelibs-http@0.2.0": {
       "map": {
         "http-browserify": "npm:stream-http@2.5.0"
       }
     },
-    "github:jspm/nodelibs-stream@0.2.0-alpha": {
-      "map": {
-        "stream-browserify": "npm:stream-browserify@2.0.1"
-      }
-    },
-    "github:jspm/nodelibs-zlib@0.2.0-alpha": {
-      "map": {
-        "zlib-browserify": "npm:browserify-zlib@0.1.4"
-      }
-    },
-    "github:jspm/nodelibs-os@0.2.0-alpha": {
+    "npm:jspm-nodelibs-os@0.2.0": {
       "map": {
         "os-browserify": "npm:os-browserify@0.2.1"
       }
     },
-    "github:jspm/nodelibs-string_decoder@0.2.0-alpha": {
+    "npm:jspm-nodelibs-string_decoder@0.2.0": {
       "map": {
         "string_decoder-browserify": "npm:string_decoder@0.10.31"
       }
     },
-    "github:jspm/nodelibs-url@0.2.0-alpha": {
+    "npm:jspm-nodelibs-crypto@0.2.0": {
+      "map": {
+        "crypto-browserify": "npm:crypto-browserify@3.11.0"
+      }
+    },
+    "npm:jspm-nodelibs-stream@0.2.0": {
+      "map": {
+        "stream-browserify": "npm:stream-browserify@2.0.1"
+      }
+    },
+    "npm:jspm-nodelibs-domain@0.2.0": {
+      "map": {
+        "domain-browserify": "npm:domain-browser@1.1.7"
+      }
+    },
+    "npm:jspm-nodelibs-url@0.2.0": {
       "map": {
         "url-browserify": "npm:url@0.11.0"
+      }
+    },
+    "npm:jspm-nodelibs-zlib@0.2.0": {
+      "map": {
+        "zlib-browserify": "npm:browserify-zlib@0.1.4"
+      }
+    },
+    "npm:rxjs@5.0.3": {
+      "map": {
+        "symbol-observable": "npm:symbol-observable@1.0.4"
+      }
+    },
+    "npm:@react-mvi/core@0.4.0": {
+      "map": {
+        "core-js": "npm:core-js@2.4.1",
+        "source-map-support": "npm:source-map-support@0.4.6",
+        "ts": "github:frankwallis/plugin-typescript@5.3.1"
       }
     }
   }

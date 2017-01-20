@@ -38,6 +38,9 @@ export function runnable(_a) {
         __extends(Renderer, _super);
         function Renderer(p, c) {
             var _this = _super.call(this, p, c) || this;
+            if (p.injector && p.modules) {
+                throw new Error("runnable or run only allow either of one of 'injector' or 'modules'.");
+            }
             _this.model = c.createProps(p);
             return _this;
         }
@@ -66,6 +69,10 @@ export function runnable(_a) {
         _b;
     var _b;
 }
+/**
+ * Start react-mvi components
+ * @param opt Components and Modules.
+ */
 export function run(opt, el) {
     var Root = runnable(opt);
     render(React.createElement(Root, null), el);

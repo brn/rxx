@@ -8,16 +8,16 @@ import {
   IOResponse,
   Tags as T,
   run,
-  service,
-  HttpMethod,
-  ResponseType
+  service
 } from '@react-mvi/core'
 import {
   EventDispatcher
 } from '@react-mvi/event'
 import {
   HttpRequest,
-  HttpResponse
+  HttpResponse,
+  HttpMethod,
+  ResponseType
 } from '@react-mvi/http'
 
 
@@ -59,7 +59,7 @@ const Service = service(({http, event}: {[key: string]: IOResponse}, injector) =
       'counter::mutate': counterRequest.publish()
     },
     view: {
-      counter: http.for<HttpResponse<{count: number}, void>>('counter::mutate').map(e => e.response.count).startWith(0).publish()
+      counter: http.for<HttpResponse<{count: number}, void>>('counter::mutate').map(e => e.response.count).share().startWith(0)
     }
   }
 });
@@ -77,8 +77,8 @@ const module = createModule(config => {
 const View = component((props: {counter: Observable<number>}, context) => {
   return (
     <div>
-      <button onClick={context.io.event.asc('counter::plus')}>Plus</button>
-      <button onClick={context.io.event.asc('counter::minus')}>Plus</button>
+      <button onClick={context.io.event.callback('counter::plus')}>Plus</button>
+      <button onClick={context.io.event.callback('counter::minus')}>Minus</button>
       <T.Div>conter value is {props.counter}</T.Div>
     </div>
   )

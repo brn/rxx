@@ -17,39 +17,42 @@
     "name": "counter",
     "main": "counter.js",
     "dependencies": {
-      "@react-mvi/event": "npm:@react-mvi/event@^0.3.3-beta.20",
-      "@react-mvi/http": "npm:@react-mvi/http@^0.3.3-beta.38",
+      "@react-mvi/event": "npm:@react-mvi/event@^0.4.1",
+      "@react-mvi/http": "npm:@react-mvi/http@^0.4.4",
       "ts": "github:frankwallis/plugin-typescript@^4.0.16"
     },
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
     },
     "peerDependencies": {
-      "@react-mvi/core": "npm:@react-mvi/core@^0.3.3-beta.42",
+      "/Users/a12360/react-mvi/core": "npm:@react-mvi/core@^0.4.0",
+      "@react-mvi/core": "npm:@react-mvi/core@^0.4.0",
       "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
       "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
       "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
-      "constants": "github:jspm/nodelibs-constants@^0.2.0-alpha",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
       "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
       "domain": "github:jspm/nodelibs-domain@^0.2.0-alpha",
       "es6-promise": "npm:es6-promise@^3.2.1",
-      "es6-symbol": "npm:es6-symbol@^3.0.2",
-      "events": "github:jspm/nodelibs-events@^0.2.0-alpha",
+      "es6-symbol": "npm:es6-symbol@^3.1.0",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
       "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
       "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
       "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
       "lodash": "npm:lodash@^4.13.1",
+      "module": "github:jspm/nodelibs-module@^0.2.0-alpha",
+      "net": "github:jspm/nodelibs-net@^0.2.0-alpha",
       "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
       "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
       "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
-      "react": "npm:react@^15.2.1",
-      "react-dom": "npm:react-dom@^15.2.1",
-      "rxjs": "npm:rxjs@^5.0.0-beta.10",
+      "react": "npm:react@^15.4.2",
+      "react-dom": "npm:react-dom@^15.1.0",
+      "rxjs": "npm:rxjs@^5.0.3",
       "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
       "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
       "url": "github:jspm/nodelibs-url@^0.2.0-alpha",
       "util": "github:jspm/nodelibs-util@^0.2.0-alpha",
-      "vm": "github:jspm/nodelibs-vm@^0.2.0-alpha",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
       "whatwg-fetch": "npm:whatwg-fetch@^1.0.0",
       "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
     },
@@ -68,7 +71,12 @@
           "test.js"
         ]
       },
-      "npm:lodash@4.13.1": {
+      "npm:inherits@2.0.3": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:lodash@4.17.4": {
         "map": {
           "buffer": "@empty",
           "process": "@empty"
@@ -99,6 +107,20 @@
           "path": "@empty",
           "process": "@empty",
           "readline": "@empty"
+        }
+      },
+      "npm:typescript@2.1.5": {
+        "browser": {},
+        "map": {
+          "buffer": "@empty",
+          "child_process": "@empty",
+          "fs": "@empty",
+          "path": "@empty",
+          "process": "@empty",
+          "readline": "@empty"
+        },
+        "dependencies": {
+          "source-map-support": "*"
         }
       }
     }

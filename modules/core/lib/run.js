@@ -37,6 +37,9 @@ System.register(["react", "./shims/lodash", "react-dom", "./component/context"],
             __extends(Renderer, _super);
             function Renderer(p, c) {
                 var _this = _super.call(this, p, c) || this;
+                if (p.injector && p.modules) {
+                    throw new Error("runnable or run only allow either of one of 'injector' or 'modules'.");
+                }
                 _this.model = c.createProps(p);
                 return _this;
             }
@@ -66,6 +69,10 @@ System.register(["react", "./shims/lodash", "react-dom", "./component/context"],
         var _b;
     }
     exports_1("runnable", runnable);
+    /**
+     * Start react-mvi components
+     * @param opt Components and Modules.
+     */
     function run(opt, el) {
         var Root = runnable(opt);
         react_dom_1.render(React.createElement(Root, null), el);
