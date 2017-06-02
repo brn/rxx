@@ -17,11 +17,6 @@
  */
 
 
-import {
-  Symbol
-} from '../shims/symbol';
-
-
 /**
  * DI config key.
  */

@@ -1,4 +1,3 @@
-/// <reference path="typings/index.d.ts" />
 /**
  * Exit async function gracefully.
  * @param {Function} cb Async function.
@@ -30,5 +29,3 @@ export declare class Joiner {
     constructor(time: any, cb: any);
     notify(): void;
 }
-export declare const describeIf: (cond: any, name: any, cb: any) => void;
-export declare const itIf: (cond: any, name: any, cb: any) => void;

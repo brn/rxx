@@ -3,30 +3,38 @@
  * @author Taketoshi Aono
  */
 
-var through = require('through2');
-var fs = require('fs');
-var Builder = require('systemjs-builder');
-var async = require('async');
-var path = require('path');
-var gutil = require('gulp-util');
-var _ = require('lodash');
+'use strict';
+
+
+const through = require('through2');
+const fs = require('fs');
+const Builder = require('systemjs-builder');
+const async = require('async');
+const path = require('path');
+const gutil = require('gulp-util');
+const _ = require('lodash');
+const Vinyl = require('vinyl');
 
 
 module.exports = function(options) {
-  const configStr = fs.readFileSync(options.configFile, 'utf8');
   const builder = new Builder('./');
   const files = [];
+  let mergedConfig = {};
 
-  Function('System', configStr)({config: function(config) {
-    config.baseURL = options.baseURL;
-    if (options.replace && config.map) {
-      _.forIn(options.replace, function(v, k) {
-        config.map[k] = v;
-      });
-    }
-    builder.config(config);
-  }});
-
+  const configFiles = Array.isArray(options.configFile)? options.configFile: [options.configFile];
+  configFiles.forEach(configFile => {
+    const configStr = fs.readFileSync(configFile, 'utf8');
+    Function('SystemJS', configStr)({config: function(config) {
+      config.baseURL = options.baseURL;
+      if (options.replace && config.map) {
+        _.forIn(options.replace, function(v, k) {
+          config.map[k] = v;
+        });
+      }
+      mergedConfig = _.merge(mergedConfig, config);
+    }});
+  });
+  builder.config(mergedConfig);
 
   function transform(file, encoding, callback) {
     files.push(file);
@@ -43,6 +51,14 @@ module.exports = function(options) {
       builder.buildStatic(src, options.build || {})
         .then(function(output) {
           file.contents = new Buffer(output.source);
+          if(options.build.sourceMaps === true) {
+            self.push(new Vinyl({
+              cwd: file.cwd,
+              base: file.base,
+              path: file.path + '.map',
+              contents: new Buffer(output.sourceMap.toString())
+            }));
+          }
           self.push(file);
           next();
         })

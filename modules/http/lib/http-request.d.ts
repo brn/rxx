@@ -1,4 +1,3 @@
-/// <reference path="declarations.d.ts" />
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -17,10 +16,11 @@
  */
 import { Outlet } from '@react-mvi/core';
 import { Subscription } from 'rxjs/Rx';
-import { Promise } from './shims/promise';
-import { Fetch } from './shims/fetch';
 export declare const HTTP_RESPONSE_INTERCEPT: symbol;
 export declare const HTTP_REQUEST_INTERCEPT: symbol;
+export interface Fetch {
+    (input: RequestInfo, init?: RequestInit): Promise<Response>;
+}
 /**
  * Http request sender.
  */

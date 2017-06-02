@@ -23,8 +23,13 @@ import {
   SUBSCRIBER_MARK
 } from './subscriber';
 import {
-  _
-} from '../shims/lodash';
+  Observable,
+  Subject
+} from 'rxjs/Rx';
+import {
+  assign,
+  omit
+} from '../utils';
 
 
 /**
@@ -35,7 +40,7 @@ const toSubscribable = (name: string) => {
     public render() {
       return (
         <Subscriber ignoreSubtree={this.props.ignoreSubtree}>
-          {React.createElement(name, _.assign(_.omit(this.props, ['ref', 'ignoreSubtree']), {ref: 'element'}))}
+          {React.createElement(name, assign(omit(this.props, ['ref', 'ignoreSubtree']), {ref: 'element'}))}
         </Subscriber>
       )
     }
@@ -48,6 +53,9 @@ const toSubscribable = (name: string) => {
 }
 
 
+export type Observablify<T> = {[P in keyof T]: Observable<T[P]>|Subject<T[P]>|T[P]};
+
+
 /**
  * Attributes of the Subscriber that passed through html tag.
  */
@@ -56,7 +64,7 @@ export interface Attr<T> extends React.HTMLAttributes<T>, React.DOMAttributes<T>
 }
 
 
-export type ElementConstructor<T> = new(p: Attr<T>, c: any) => React.Component<Attr<T>, {}>;
+export type ElementConstructor<T> = new(p: Observablify<Attr<T>>, c: any) => React.Component<Observablify<Attr<T>>, {}>;
 
 
 /**

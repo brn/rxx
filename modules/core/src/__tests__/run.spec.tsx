@@ -34,8 +34,8 @@ import {
   runnable
 } from '../run';
 import {
-  Chai
-} from '@react-mvi/testing';
+  expect
+} from 'chai';
 
 
 describe('run.tsx', () => {
@@ -79,8 +79,8 @@ describe('run.tsx', () => {
         config.bind('testService').toInstance(service1);
         config.bind('test2Service').toInstance(service2);
       })]}, disposable.el);
-      Chai.expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
-      Chai.expect(!!disposable.el.querySelector('#test2')).to.be.eq(true);
+      expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
+      expect(!!disposable.el.querySelector('#test2')).to.be.eq(true);
       disposable.dispose();
     });
   });
@@ -104,8 +104,8 @@ describe('run.tsx', () => {
 
       const Component = runnable({component: App, modules: [createModule(config => config.bind('testService').toInstance(service1))]});
       render(<Component><div id="test2"></div></Component>, disposable.el);
-      Chai.expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
-      Chai.expect(!!disposable.el.querySelector('#test2')).to.be.eq(true);
+      expect(!!disposable.el.querySelector('#test1')).to.be.eq(true);
+      expect(!!disposable.el.querySelector('#test2')).to.be.eq(true);
     })
   })
 });

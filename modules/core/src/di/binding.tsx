@@ -25,7 +25,6 @@ import {
 } from './method-proxy';
 
 
-
 /**
  * Binding definition.
  */

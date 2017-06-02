@@ -16,11 +16,10 @@
  * @author Taketoshi Aono
  */
 
-/// <reference path="../_references.d.ts" />
-/// <reference path="../declarations.d.ts" />
 
+import 'core-js';
+import 'whatwg-fetch';
 import {
-  Sinon,
   graceful
 }                   from '@react-mvi/testing';
 import {
@@ -50,12 +49,6 @@ import {
 import {
   Subject
 }                   from 'rxjs/Rx';
-import {
-  Promise
-}                   from '../shims/promise';
-import {
-  Response
-}                   from '../shims/fetch';
 
 
 describe('HttpRequest', () => {

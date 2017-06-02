@@ -1,3 +1,4 @@
+"use strict";
 // -*- mode: typescript -*-
 /**
  * The MIT License (MIT)
@@ -15,208 +16,165 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register(["react", "rxjs/Rx", "../di/injector", "../io/io", "../service/service", "../shims/lodash"], function (exports_1, context_1) {
-    "use strict";
-    var __extends = (this && this.__extends) || function (d, b) {
-        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var __moduleName = context_1 && context_1.id;
-    /**
-     * Decorator to set specified type as context type.
-     * @param target A class constructor.
-     */
-    function context(target) {
-        target['contextTypes'] = ContextReactTypes;
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var PropTypes = require("prop-types");
+var Rx_1 = require("rxjs/Rx");
+var injector_1 = require("../di/injector");
+var io_1 = require("../io/io");
+var service_1 = require("../service/service");
+var utils_1 = require("../utils");
+/**
+ * React contextTypes.
+ */
+exports.ContextReactTypes = {
+    createProps: PropTypes.func,
+    clean: PropTypes.func,
+    connect: PropTypes.func,
+    injector: PropTypes.object,
+    io: PropTypes.object
+};
+var isEnumerable = function (v) {
+    if (!v || typeof v !== 'object') {
+        return false;
     }
-    exports_1("context", context);
-    /**
-     * Set context type to stateless component.
-     * @param component A stateless component.
-     */
-    function setContext(component) {
-        component['contextTypes'] = ContextReactTypes;
-    }
-    exports_1("setContext", setContext);
-    var React, Rx_1, injector_1, io_1, service_1, lodash_1, ContextReactTypes, isImmutable, isEnumerable, connect, Context;
-    return {
-        setters: [
-            function (React_1) {
-                React = React_1;
-            },
-            function (Rx_1_1) {
-                Rx_1 = Rx_1_1;
-            },
-            function (injector_1_1) {
-                injector_1 = injector_1_1;
-            },
-            function (io_1_1) {
-                io_1 = io_1_1;
-            },
-            function (service_1_1) {
-                service_1 = service_1_1;
-            },
-            function (lodash_1_1) {
-                lodash_1 = lodash_1_1;
-            }
-        ],
-        execute: function () {// -*- mode: typescript -*-
-            /**
-             * The MIT License (MIT)
-             * Copyright (c) Taketoshi Aono
-             *
-             * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-             * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-             * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-             *
-             * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-             *
-             * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-             * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-             * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-             * @fileoverview
-             * @author Taketoshi Aono
-             */
-            /**
-             * React contextTypes.
-             */
-            exports_1("ContextReactTypes", ContextReactTypes = {
-                createProps: React.PropTypes.func,
-                clean: React.PropTypes.func,
-                connect: React.PropTypes.func,
-                injector: React.PropTypes.object,
-                io: React.PropTypes.object
-            });
-            /**
-             * Check param is immutablejs object or not.
-             */
-            isImmutable = function (v) { return v['isIterable'] && v['isIterable'](); };
-            isEnumerable = function (v) {
-                if (!v || typeof v !== 'object') {
-                    return false;
-                }
-                if (Object.getPrototypeOf) {
-                    if (Object.getPrototypeOf(v) !== Object.prototype) {
-                        return false;
-                    }
-                }
-                else {
-                    if (v.constructor && v.constructor !== Object) {
-                        return false;
-                    }
-                }
-                return true;
-            };
-            /**
-             * Call connect method of the ConnectableObservable for all properties of props.
-             * @param v The value to search
-             */
-            connect = function (v) {
-                if (!v) {
-                    return;
-                }
-                if (v instanceof Rx_1.ConnectableObservable) {
-                    return v.connect && v.connect();
-                }
-                if (isImmutable(v)) {
-                    return v;
-                }
-                if (!isEnumerable(v)) {
-                    return;
-                }
-                lodash_1._.forIn(v, function (v, k) {
-                    if (!v) {
-                        return;
-                    }
-                    if (v instanceof Rx_1.ConnectableObservable && v.connect) {
-                        v.connect();
-                    }
-                    else if (isImmutable(v)) {
-                        return v;
-                    }
-                    else if (lodash_1._.isArray(v)) {
-                        v.forEach(connect);
-                    }
-                    else if (lodash_1._.isObject(v)) {
-                        if (!isEnumerable(v)) {
-                            return;
-                        }
-                        lodash_1._.forIn(v, connect);
-                    }
-                });
-            };
-            /**
-             * React context provider.
-             */
-            Context = (function (_super) {
-                __extends(Context, _super);
-                function Context(props, c) {
-                    var _this = _super.call(this, props, c) || this;
-                    var self = _this;
-                    var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
-                    var subscription = new Rx_1.Subscription();
-                    var ioModules = lodash_1._.mapValues(injector.find(function (binding) {
-                        if (!binding.instance && binding.val) {
-                            return binding.val[io_1.IO_MARK];
-                        }
-                        else if (binding.instance) {
-                            return binding.instance[io_1.IO_MARK];
-                        }
-                    }), function (v, k) { return injector.get(k); });
-                    var services = lodash_1._.map(injector.find(function (binding) {
-                        if (binding.val) {
-                            return !!binding.val[service_1.SERVICE_MARK];
-                        }
-                        return;
-                    }), function (v, k) { return injector.get(k); });
-                    _this.contextObject = {
-                        createProps: function () {
-                            var args = [];
-                            for (var _i = 0; _i < arguments.length; _i++) {
-                                args[_i] = arguments[_i];
-                            }
-                            var ioResposens = lodash_1._.mapValues(ioModules, function (v) { return v ? v.response : null; });
-                            return services.reduce(function (props, service) {
-                                var result;
-                                if (typeof service.initialize !== 'function') {
-                                    result = service.apply(void 0, [ioResposens, injector].concat(args));
-                                }
-                                else {
-                                    result = service.initialize.apply(service, [ioResposens, injector].concat(args));
-                                }
-                                lodash_1._.forEach(ioModules, function (io) { return subscription.add(io.subscribe(result)); });
-                                return lodash_1._.assign(props, result['view'] || {});
-                            }, {});
-                        },
-                        clean: function () {
-                            subscription.unsubscribe();
-                        },
-                        connect: connect,
-                        injector: injector,
-                        io: ioModules
-                    };
-                    return _this;
-                }
-                Context.prototype.render = function () {
-                    return this.props.children;
-                };
-                Context.prototype.componentWillUnmount = function () {
-                    this.contextObject.clean();
-                };
-                Context.prototype.getChildContext = function () {
-                    return this.contextObject;
-                };
-                Object.defineProperty(Context, "childContextTypes", {
-                    get: function () {
-                        return ContextReactTypes;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Context;
-            }(React.Component));
-            exports_1("Context", Context);
+    if (Object.getPrototypeOf) {
+        if (Object.getPrototypeOf(v) !== Object.prototype) {
+            return false;
         }
+    }
+    else {
+        if (v.constructor && v.constructor !== Object) {
+            return false;
+        }
+    }
+    return true;
+};
+/**
+ * Call connect method of the ConnectableObservable for all properties of props.
+ * @param v The value to search
+ */
+var connect = function (v) {
+    if (!v) {
+        return;
+    }
+    if (v instanceof Rx_1.ConnectableObservable) {
+        return v.connect && v.connect();
+    }
+    if (!isEnumerable(v)) {
+        return;
+    }
+    utils_1.forIn(v, function (v, k) {
+        if (!v) {
+            return;
+        }
+        if (v instanceof Rx_1.ConnectableObservable && v.connect) {
+            v.connect();
+        }
+        else if (utils_1.isArray(v)) {
+            v.forEach(connect);
+        }
+        else if (utils_1.isObject(v)) {
+            if (!isEnumerable(v)) {
+                return;
+            }
+            utils_1.forIn(v, connect);
+        }
+    });
+};
+/**
+ * React context provider.
+ */
+var Context = (function (_super) {
+    __extends(Context, _super);
+    function Context(props, c) {
+        var _this = _super.call(this, props, c) || this;
+        var self = _this;
+        var injector = props.injector ? props.injector : new injector_1.Injector(props.modules);
+        var subscription = new Rx_1.Subscription();
+        var ioModules = utils_1.mapValues(injector.find(function (binding) {
+            if (!binding.instance && binding.val) {
+                return binding.val[io_1.IO_MARK];
+            }
+            else if (binding.instance) {
+                return binding.instance[io_1.IO_MARK];
+            }
+        }), function (v, k) { return injector.get(k); });
+        var services = utils_1.map(injector.find(function (binding) {
+            if (binding.val) {
+                return !!binding.val[service_1.SERVICE_MARK];
+            }
+        }), function (v, k) { return injector.get(k); });
+        _this.contextObject = {
+            createProps: function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                var ioResposens = utils_1.mapValues(ioModules, function (v) { return v ? v.response : null; });
+                return services.reduce(function (props, service) {
+                    var result;
+                    if (typeof service.initialize !== 'function') {
+                        result = service.apply(void 0, [ioResposens, injector].concat(args));
+                    }
+                    else {
+                        result = service.initialize.apply(service, [ioResposens, injector].concat(args));
+                    }
+                    utils_1.forIn(ioModules, function (io) { return subscription.add(io.subscribe(result)); });
+                    return utils_1.assign(props, result['view'] || {});
+                }, {});
+            },
+            clean: function () {
+                subscription.unsubscribe();
+            },
+            connect: connect,
+            injector: injector,
+            io: ioModules
+        };
+        return _this;
+    }
+    Context.prototype.render = function () {
+        return this.props.children;
     };
-});
+    Context.prototype.componentWillUnmount = function () {
+        this.contextObject.clean();
+    };
+    Context.prototype.getChildContext = function () {
+        return this.contextObject;
+    };
+    Object.defineProperty(Context, "childContextTypes", {
+        get: function () {
+            return exports.ContextReactTypes;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Context;
+}(React.Component));
+exports.Context = Context;
+/**
+ * Decorator to set specified type as context type.
+ * @param target A class constructor.
+ */
+function context(target) {
+    target['contextTypes'] = exports.ContextReactTypes;
+}
+exports.context = context;
+/**
+ * Set context type to stateless component.
+ * @param component A stateless component.
+ */
+function setContext(component) {
+    component['contextTypes'] = exports.ContextReactTypes;
+}
+exports.setContext = setContext;

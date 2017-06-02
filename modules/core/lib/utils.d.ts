@@ -1,17 +1,17 @@
-/**
- * The MIT License (MIT)
- * Copyright (c) Taketoshi Aono
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview
- * @author Taketoshi Aono
- */
 export declare function isDefined(obj: any): boolean;
+export declare function assign<T extends {}, U extends {}>(base: T, append: U): T & U;
+export declare function extend<T extends {}, U extends {}>(base: T, append: U): T & U;
+export declare function omit(obj: any, name: string | string[]): {};
+export declare function forIn<T>(obj: T, cb: (value: T[keyof T], key: string, values: T) => void): void;
+export declare function isObject(obj: any): obj is Object;
+export declare function isArray(obj: any): obj is any[];
+export declare function isRegExp(obj: any): obj is RegExp;
+export declare function filter<T>(obj: T[], cb: (e: T, key: number, all: T[]) => boolean): T[];
+export declare function filter<T>(obj: T, cb: (e: T[keyof T], key: string, all: T) => boolean): T[keyof T][];
+export declare function map<T, U>(obj: T[], cb: (e: T, key: number, all: T[]) => U): U[];
+export declare function map<T, U>(obj: T, cb: (e: T[keyof T], key: string, all: T) => U): U[];
+export declare function some<T>(obj: T, cb: (value: T[keyof T], index: number | string, all: T) => boolean): boolean;
+export declare function mapValues<T, U>(obj: T, cb: (value: T[keyof T], key: string, all: T) => U): {
+    [key: string]: U;
+};
+export declare function clone<T>(target: T): T;

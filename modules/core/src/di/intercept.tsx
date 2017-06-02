@@ -16,13 +16,9 @@
  * @author Taketoshi Aono
  */
 
-
 import {
-  Symbol
-} from '../shims/symbol';
-import {
-  _
-} from '../shims/lodash';
+  isRegExp
+} from '../utils';
 
 
 /**
@@ -58,7 +54,7 @@ export function interceptAll(key: symbol, regexp: RegExp) {
  */
 export function intercept(key: symbol) {
   return (target: Object, propertyKey: string | symbol): void => {
-    if (target[key] && _.isRegExp(target[key][0])) {
+    if (target[key] && isRegExp(target[key][0])) {
       throw new Error('Cannot intercept already annotated with @interceptAll');
     }
     initList(target, key);

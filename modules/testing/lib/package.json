@@ -1,12 +1,18 @@
 {
   "name": "@react-mvi/testing",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "Test module for React MVI.",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp --cwd",
-    "patch-and-publish": "gulp publish --cwd",
-    "test": "gulp test --cwd"
+    "gulp": "node ../../node_modules/.bin/gulp --cwd",
+    "patch-and-publish": "node ../../node_modules/.bin/gulp publish-patch --cwd",
+    "major-and-publish": "node ../../node_modules/.bin/gulp publish-major --cwd",
+    "minor-and-publish": "node ../../node_modules/.bin/gulp publish-minor --cwd",
+    "publish-only": "node ../../node_modules/.bin/gulp publish --cwd",
+    "test": "node ../../node_modules/.bin/gulp test --cwd",
+    "tdd": "node ../../node_modules/.bin/gulp tdd --cwd",
+    "test-chrome": "node ../../node_modules/.bin/gulp test-chrome --cwd",
+    "pre-publish": "node node_modules/.bin/gulp pre-publish --cwd"
   },
   "repository": {
     "type": "git",
@@ -26,19 +32,10 @@
     "url": "https://github.com/brn/react-mvi/issues"
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
-  "jspm": {
-    "jspmNodeConversion": false,
-    "main": "index.js",
-    "dependencies": {
-      "chai": "npm:chai@3.5.0",
-      "mocha": "npm:mocha@2.5.1",
-      "sinon": "npm:sinon@1.17.4"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.8.24",
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "core-js": "npm:core-js@^1.1.4"
-    }
-  },
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.40",
+    "@types/sinon": "^2.1.1"
+  }
 }

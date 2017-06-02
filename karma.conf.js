@@ -6,49 +6,50 @@
 
 'use strict';
 
-const findup = require('findup');
+const glob = require('glob');
+const path = require('path');
+const _ = require('lodash');
 
 
 module.exports = () => {
+  const config = _.clone(require('./webpack.dev.config'));
+  config.entry = _.clone(config.entry);
+  glob.sync('./src/**/__tests__/**/*.spec.ts*').forEach(spec => {
+    config.entry[path.basename(spec)] = spec;
+  });
+  delete config.entry;
+  delete config.output;
+
   return {
     "plugins": [
-      "karma-jspm",
       "karma-mocha",
       "karma-chrome-launcher",
       "karma-phantomjs-launcher",
       "karma-source-map-support",
-      "karma-jsdom-launcher",
-      "karma-mocha-reporter"
+      'karma-sourcemap-loader',
+      "karma-mocha-reporter",
+      "karma-webpack"
     ],
-    "frameworks": ["jspm", "mocha", "source-map-support"],
-    "files": [],
+    "frameworks": ["mocha", "source-map-support"],
+    "files": [
+      {pattern: './src/**/__tests__/**/*.spec.ts*', watched: false}
+    ],
+    mime: {
+      'text/x-typescript': ['ts','tsx']
+    },
     "reporters": ["mocha"],
     "mochaReporter": {
       "showDiff": true
     },
     "usePolling": false,
-    "customLaunchers": {
-      "PhantomJS_debug": {
-        "base": "PhantomJS",
-        "options": {
-          "windowName": "debug-window"
-        },
-        "debug": true
-      }
+    preprocessors: {
+      './src/**/__tests__/**/*.spec.ts*': ['webpack', 'sourcemap']
     },
-    "jspm": {
-      config: "./jspm.config.js",
-      browser: "./jspm.karma.js",
-      packages: 'jspm_packages',
-      loadFiles: ["src/**/__tests__/*.spec.ts*", "src/__tests__/*.spec.ts*"],
-      serveFiles: [
-        "node_modules/**/**.d.ts",
-        "jspm_packages/**/*.js",
-        "jspm_packages/**/*.ts*",
-        "jspm_packages/**/*.json",
-        "src/**/!(*.spec).ts*",
-        "*.json"
-      ]
+    browserNoActivityTimeout: 15000,
+    webpack: config,
+    webpackMiddleware: {
+      hot: false,
+      stats: {colors: true}
     }
   };
 };

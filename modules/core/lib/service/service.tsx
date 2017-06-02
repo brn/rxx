@@ -16,10 +16,6 @@
  * @author Taketoshi Aono
  */
 
-
-import {
-  Symbol
-} from '../shims/symbol';
 import {
   Injector
 } from '../di/injector';

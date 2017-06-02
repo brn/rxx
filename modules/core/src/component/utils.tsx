@@ -24,8 +24,8 @@ import {
   setContext
 } from './context';
 import {
-  _
-} from './../shims/lodash';
+  assign
+} from '../utils';
 
 
 /**
@@ -73,7 +73,7 @@ export function component<Props, C>(component: (StatelessComponentConfig<Props>|
   if (isComponent(component)) {
     const Renderer: React.ComponentClass<Props> = component as React.ComponentClass<Props>;
     ret = class extends Renderer {
-      static contextTypes = _.assign(ContextReactTypes, additionalContext) as any;
+      static contextTypes = assign(ContextReactTypes, additionalContext) as any;
     }
     if (Renderer['name']) {
       ret['displayName'] = Renderer['name'];
@@ -119,7 +119,7 @@ export function component<Props, C>(component: (StatelessComponentConfig<Props>|
         return true;
       }
 
-      static contextTypes = _.assign(ContextReactTypes, additionalContext)
+      static contextTypes = assign(ContextReactTypes, additionalContext)
     } as any;
   }
 

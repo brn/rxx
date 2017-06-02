@@ -19,9 +19,6 @@
 
 import * as React from 'react';
 import {
-  _
-} from './shims/lodash';
-import {
   render
 } from 'react-dom';
 import {
@@ -35,6 +32,9 @@ import {
   ContextType,
   ContextReactTypes
 } from './component/context';
+import {
+  assign
+} from './utils';
 
 
 /**
@@ -77,7 +77,7 @@ export function runnable({component, modules, injector}: RunnerArgs): new(props:
 
     public render() {
       const C = component;
-      return <C {..._.assign(this.model, this.props)}/>
+      return <C {...assign(this.model, this.props)}/>
     }
 
 

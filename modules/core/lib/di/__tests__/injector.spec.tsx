@@ -18,8 +18,8 @@
 
 
 import {
-  Chai
-}               from '@react-mvi/testing';
+  expect
+}                 from 'chai';
 import {Injector} from '../injector';
 import {
   MethodProxy,
@@ -37,12 +37,6 @@ import {
 import {
   Provider
 }               from '../binding';
-import {
-  Symbol
-}               from '../../shims/symbol';
-
-
-const {expect} = Chai;
 
 
 

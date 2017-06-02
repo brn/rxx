@@ -41,8 +41,8 @@ import {
   createModule
 } from '../../di/abstract-module';
 import {
-  Chai
-} from '@react-mvi/testing';
+  expect
+} from 'chai';
 
 
 describe('combinator.tsx', () => {
@@ -54,9 +54,9 @@ describe('combinator.tsx', () => {
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
       const el = render(
         <Subscriber>
-          <div className={className1}>
+          <div className={className1 as any}>
             <div className="hoge">
-              <span className={className2}>{text}</span>
+              <span className={className2 as any}>{text}</span>
             </div>
           </div>
         </Subscriber>,
@@ -65,9 +65,9 @@ describe('combinator.tsx', () => {
       className2.next('className2');
       text.next('test-text');
       setTimeout(() => {
-        Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
-        Chai.expect(!!div.querySelector('.className2')).to.be.eq(true);
-        Chai.expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
+        expect(!!div.querySelector('.className1')).to.be.eq(true);
+        expect(!!div.querySelector('.className2')).to.be.eq(true);
+        expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
       }, 100);
@@ -80,9 +80,9 @@ describe('combinator.tsx', () => {
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
       const el = render(
         <Subscriber ignoreSubtree={true}>
-          <div className={className1}>
+          <div className={className1 as any}>
             <div className="hoge">
-              <span id="test-el" className={className2}></span>
+              <span id="test-el" className={className2 as any}></span>
             </div>
           </div>
         </Subscriber>,
@@ -92,9 +92,9 @@ describe('combinator.tsx', () => {
       className2.next('className2');
 
       setTimeout(() => {
-        Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
-        Chai.expect(!div.querySelector('.className2')).to.be.eq(true);
-        Chai.expect(div.querySelector('#test-el').className).to.be.eq('[object Object]');
+        expect(!!div.querySelector('.className1')).to.be.eq(true);
+        expect(!div.querySelector('.className2')).to.be.eq(true);
+        expect(div.querySelector('#test-el').className).to.be.eq('[object Object]');
         div.parentNode.removeChild(div);
         done();
       }, 100);
@@ -103,7 +103,7 @@ describe('combinator.tsx', () => {
 
   describe('Tags', () => {
     it('Subscribe all observable', done => {
-      const className1 = new Subject();
+      const className1 = new Subject<string>();
       const className2 = new Subject();
       const text = new Subject();
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
@@ -124,11 +124,11 @@ describe('combinator.tsx', () => {
       text.next('test-text');
 
       setTimeout(() => {
-        Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
-        Chai.expect(!!div.querySelector('.className2')).to.be.eq(true);
-        Chai.expect(!!div.querySelector('.className3')).to.be.eq(true);
-        Chai.expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
-        Chai.expect(div.querySelector('.className3').textContent).to.be.eq('test-text');
+        expect(!!div.querySelector('.className1')).to.be.eq(true);
+        expect(!!div.querySelector('.className2')).to.be.eq(true);
+        expect(!!div.querySelector('.className3')).to.be.eq(true);
+        expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
+        expect(div.querySelector('.className3').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
       }, 100);
@@ -172,9 +172,9 @@ describe('combinator.tsx', () => {
 
       render(<Test/>, div);
       setTimeout(() => {
-        Chai.expect(!!div.querySelector('.className1')).to.be.eq(true);
-        Chai.expect(!!div.querySelector('.className2')).to.be.eq(true);
-        Chai.expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
+        expect(!!div.querySelector('.className1')).to.be.eq(true);
+        expect(!!div.querySelector('.className2')).to.be.eq(true);
+        expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
       }, 100);
@@ -196,7 +196,7 @@ describe('combinator.tsx', () => {
 
       render(<Test/>, div);
       setTimeout(() => {
-        Chai.expect(!!div.querySelector('.test-1')).to.be.eq(true);
+        expect(!!div.querySelector('.test-1')).to.be.eq(true);
         div.parentNode.removeChild(div);
         done();
       }, 100);

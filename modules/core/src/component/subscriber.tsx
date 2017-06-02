@@ -29,14 +29,16 @@ import {
   getProcess
 } from '../env';
 import {
-  isDefined
+  isDefined,
+  isArray,
+  filter,
+  clone,
+  assign,
+  map,
+  forIn,
+  some,
+  omit
 } from '../utils';
-import {
-  Symbol
-} from '../shims/symbol';
-import {
-  _
-} from '../shims/lodash';
 
 
 const process: Process = getProcess();
@@ -68,7 +70,9 @@ interface BindingObservableType {
  * Information about embedded observables and ReactElement.
  */
 class ObservableBinding {
-  constructor(private updater: (value: any) => void, private _observable: Observable<any>) {}
+  constructor(private updater: (value: any) => void, private _observable: Observable<any>) {
+    
+  }
 
 
   /**
@@ -176,9 +180,9 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
    */
   private subscribeAll() {
     if (this.bindings.length > 0) {
-      const bindings = _.map(this.bindings, binding => binding.observable());
+      const bindings = this.bindings.map(binding => binding.observable());
       this.subscription = Observable.combineLatest(...bindings).subscribe((bindings: BindingObservableType[]) => {
-        _.forEach(bindings, ({value, binding}) => binding.update(value));
+        bindings.forEach(({value, binding}) => binding.update(value));
         this.setState({vdom: this.createMutableElement(this.mutableTree)});
       });
     } else {
@@ -210,8 +214,8 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
    * @param el A parent ReactElement.
    */
   private updateChildren(el: React.ReactElement<any>, value: any, index: number) {
-    if (el.props.children && _.isArray(el.props.children)) {
-      if (_.isArray(value)) {
+    if (el.props.children && isArray(el.props.children)) {
+      if (isArray(value)) {
         el.props.children = el.props.children.slice(0, index).concat(value);
       } else {
         el.props.children[index] = value;
@@ -239,7 +243,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
     return {
       $$typeof: REACT_ELEMENT_TYPEOF,
       type: el.type,
-      props: _.clone(el.props),
+      props: clone(el.props),
       ref: el['ref'],
       key: el.key,
       _owner: el['_owner']
@@ -255,8 +259,8 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
     if (el instanceof Observable) {
       return true;
     } else {
-      const target = _.filter(el.props? (el.props.children? (!_.isArray(el.props.children)? [el.props.children]: el.props.children): []): [], v => isDefined(v));
-      const checkChildren = () => _.some(target, (child: React.ReactElement<any>|Observable<any>, i) => {
+      const target = filter(el.props? (el.props.children? (!isArray(el.props.children)? [el.props.children]: el.props.children): []): [], v => isDefined(v));
+      const checkChildren = () => target.some((child: React.ReactElement<any>|Observable<any>, i) => {
         if (child instanceof Observable) {
           return true;
         }
@@ -268,7 +272,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
         return this.areThereObservableInChildren(child as React.ReactElement<any>, depth + 1);
       });
       const props = el.props;
-      const checkProps = () => _.some(_.omit(props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
+      const checkProps = () => some(omit(props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
         return v instanceof Observable;
       });
 
@@ -284,7 +288,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
   private cloneChildren(el: React.ReactElement<any>, parent: React.ReactElement<any>, index: number, depth: number = 0) {
     const newElement = this.createMutableElement(el);
 
-    _.forEach(_.omit(newElement.props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
+    forIn(omit(newElement.props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
       if (v instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           newElement.props[k] = value;
@@ -298,8 +302,8 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
       return newElement;
     }
 
-    const target = _.filter(newElement.props.children? (!_.isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [], v => isDefined(v))
-    const children = _.map(target, (child: React.ReactElement<any>|Observable<any>, i) => {
+    const target = filter(newElement.props.children? (!isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [], v => isDefined(v));
+    const children = map(target, (child: React.ReactElement<any>|Observable<any>, i: number) => {
       if (child instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           this.updateChildren(newElement, value, i);
@@ -312,7 +316,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
     });
 
     if (newElement.props.children) {
-      if (_.isArray(newElement.props.children)) {
+      if (isArray(newElement.props.children)) {
         newElement.props.children = children;
       } else {
         newElement.props.children = children[0];

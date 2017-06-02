@@ -20,11 +20,9 @@ const fs           = require('fs-extra');
 const gulp         = require('gulp');
 const path         = require('path');
 const tsc          = require('gulp-typescript');
-const build        = require('./plugins/build');
 const del          = require('del');
 const karma        = require('karma');
 const merge        = require('merge2');
-const dtsGen       = require('dts-generator');
 const glob         = require('glob');
 const async        = require('async');
 const findup       = require('findup');
@@ -47,14 +45,6 @@ gulp.task('publish-all', () => {
 });
 
 
-/**
- * Install dependencies.
- */
-gulp.task('install', done => {
-  exec(`${BIN_DIR}jspm install`, {stdio: [0,1,2]});
-});
-
-
 gulp.task('clean', () => {
   try {fs.removeSync('./lib');} catch(e) {}
   try {fs.removeSync('./api-docs');} catch(e) {}
@@ -62,9 +52,12 @@ gulp.task('clean', () => {
 
 
 gulp.task('docs', () => {
+  const options = JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions;
+  delete options.lib;
+  options.target = process.cwd().indexOf('http') > -1? 'ES5': 'ES6';
   return gulp
-    .src(["src/**/*.ts*", '!src/**/__tests__/**/*'])
-    .pipe(typedoc(_.assign(JSON.parse(fs.readFileSync('./tsconfig.json')).compilerOptions, {
+    .src(["src/*.ts*", "src/**/*.ts*", '!src/**/__tests__/**/*'])
+    .pipe(typedoc(_.assign(options, {
 
       // Output options (see typedoc docs)
       out: "./api-docs",
@@ -98,37 +91,6 @@ gulp.task('typescript', ['clean'], () => {
 });
 
 
-gulp.task('typescript-cjs', () => {
-  const tsp = tsc.createProject('tsconfig.json', {
-    module: 'commonjs',
-    typescript: require('typescript'),
-    declaration: true
-  });
-  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-          .pipe(tsp());
-  return merge([
-    tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
-    tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/cjs`)),
-  ]);
-});
-
-
-gulp.task('typescript-es2015', () => {
-  const tsp = tsc.createProject('tsconfig.json', {
-    module: 'es2015',
-    target: 'ES5',
-    typescript: require('typescript'),
-    declaration: true
-  });
-  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
-          .pipe(tsp());
-  return merge([
-    tsResult.js.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
-    tsResult.dts.pipe(gulp.dest(`${TYPESCRIPT_DIST}/es2015`)),
-  ]);
-});
-
-
 gulp.task('publish', ['pre-publish'], () => {
   exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
 });
@@ -148,18 +110,18 @@ gulp.task('publish-minor', ['pre-publish-with-minor'], () => {
 
 
 gulp.task('update-core', ()=> {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, {stdio: [0,1,2]});
-  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/http && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/event && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev`, {stdio: [0,1,2]});
 });
 
 
 gulp.task('update-core-and-publish', () => {
-  exec(`cd ${__dirname}/modules/http && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, {stdio: [0,1,2]});
-  exec(`cd ${__dirname}/modules/event && jspm install @react-mvi/core=npm:@react-mvi/core --peer -y && npm install @react-mvi/core --save && npm run-script patch-and-publish`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/http && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev && npm run-script patch-and-publish`, {stdio: [0,1,2]});
+  exec(`cd ${__dirname}/modules/event && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev && npm run-script patch-and-publish`, {stdio: [0,1,2]});
 });
 
 
-gulp.task('check-releasable', ['typescript', 'typescript-cjs', 'typescript-es2015'], runKarma.bind(null, true, 'PhantomJS'));
+gulp.task('check-releasable', ['typescript'], runKarma.bind(null, true, 'PhantomJS'));
 
 
 gulp.task('pre-publish-with-patch', ['check-releasable'], () => {
@@ -190,13 +152,13 @@ gulp.task('pre-publish', ['check-releasable'], () => {
 
 
 function doPrepublish(pkg) {
-  glob.sync('./src/*').forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
+  glob.sync('./src/*').filter(file => file.indexOf('__tests__') === -1).forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
   pkg.main = 'index.js';
-  pkg.jspm.jspmNodeConversion = false;
-  pkg.jspm.main = 'index.js';
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
   fs.copySync('./package.json', './lib/package.json');
-  fs.copySync('./node_modules', './lib/node_modules');
+  try {
+    fs.copySync('./node_modules', './lib/node_modules');
+  } catch(e) {}
   try {
     fs.copySync('../../README.md', './lib/README.md');
     fs.copySync('../../docs', './lib/docs');
@@ -205,27 +167,6 @@ function doPrepublish(pkg) {
   }
   fs.remove('lib/_references.d.ts');
 }
-
-
-/**
- * Minify javascript
- */
-gulp.task('minify', ['typescript'], () => {
-  return gulp.src(`${process.cwd()}/lib/index.js`)
-    .pipe(build({
-      configFile: "config.js",
-      build: {
-        minify: true,
-        sourceMaps: false,
-        mangle: false,
-        globalDefs: {
-          DEBUG: false
-        }
-      }
-    }))
-    .pipe(gulp.dest(`${process.cwd()}/dist/`));
-});
-
 
 const KARMA_PID = '.karma.pid';
 const KARMA_CONF = require('./karma.conf')();
@@ -240,10 +181,14 @@ function doRunKarma(singleRun, browser, done) {
 
 
 function runKarma(singleRun, browser, done) {
-  if (!singleRun) {
-    doRunKarma(false, browser, done);
+  if (require('glob').sync('./src/**/__tests__/*.spec.ts*').length) {
+    if (!singleRun) {
+      doRunKarma(false, browser, done);
+    } else {
+      doRunKarma(true, browser, done);
+    }
   } else {
-    doRunKarma(true, browser, done);
+    done();
   }
 };
 
@@ -298,6 +243,4 @@ gulp.task('exit-tdd', () => {
 
 
 gulp.task('reload-tdd', ['exit-tdd', 'tdd']);
-
-gulp.task('build', ['minify']);
-gulp.task('default', ['pre-publish']);
+gulp.task('default', [ 'pre-publish']);

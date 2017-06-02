@@ -1,3 +1,4 @@
+"use strict";
 // -*- mode: typescript -*-
 /**
  * The MIT License (MIT)
@@ -15,115 +16,89 @@
  * @fileoverview
  * @author Taketoshi Aono
  */
-System.register([], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
-    var _this = this;
-    var graceful, nothing, stopOnError, Joiner, describeIf, itIf;
-    /// <reference path="./typings/index.d.ts" />
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Create functor that is function behave like class.
+ * @param {Function} fn The function that want to define methods.
+ * @param {Object} props Methods.
+ * @returns {Function}
+ */
+function functor(fn, props) {
+    for (var prop in props) {
+        fn[prop] = props[prop];
+    }
+    return fn;
+}
+/**
+ * Exit async function gracefully.
+ * @param {Function} cb Async function.
+ * @param {Function} done The Mocha async test case exit callback.
+ * @returns {Function} The function that is notify error to mocha.
+ */
+exports.graceful = functor(function (cb, done, optCallback) { return function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var error;
+    try {
+        cb.apply(_this, args);
+    }
+    catch (e) {
+        error = e;
+    }
+    finally {
+        optCallback && optCallback();
+        done(error);
+    }
+}; }, {
     /**
-     * Create functor that is function behave like class.
-     * @param {Function} fn The function that want to define methods.
-     * @param {Object} props Methods.
-     * @returns {Function}
+     * Run graceful function.
+     * @param {Function} cb Async function.
+     * @param {Function} done The Mocha async test case exit callback.
+     * @returns {*} Function return value.
      */
-    function functor(fn, props) {
-        for (var prop in props) {
-            fn[prop] = props[prop];
-        }
-        return fn;
-    }
-    return {
-        setters:[],
-        execute: function() {
-            /**
-             * Exit async function gracefully.
-             * @param {Function} cb Async function.
-             * @param {Function} done The Mocha async test case exit callback.
-             * @returns {Function} The function that is notify error to mocha.
-             */
-            exports_1("graceful", graceful = functor(function (cb, done, optCallback) { return function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
-                var error;
-                try {
-                    cb.apply(_this, args);
-                }
-                catch (e) {
-                    error = e;
-                }
-                finally {
-                    optCallback && optCallback();
-                    done(error);
-                }
-            }; }, {
-                /**
-                 * Run graceful function.
-                 * @param {Function} cb Async function.
-                 * @param {Function} done The Mocha async test case exit callback.
-                 * @returns {*} Function return value.
-                 */
-                run: function (cb, done, optCallback) { return graceful(cb, done, optCallback)(); }
-            }));
-            /**
-             * Create function that exit async test case.
-             * @param {Function} done The Mocha async test case exit callback.
-             * @returns {Function} Function that exit async test case.
-             */
-            exports_1("nothing", nothing = function (done, optCallback) { return function () { return (optCallback && optCallback(), done()); }; });
-            /**
-             * Create function that exit test case if error thrown.
-             * @param {Function} cb Async function.
-             * @param {Function} done The Mocha async test case exit callback.
-             * @returns {Function} Function that exit async test case if error thrown.
-             */
-            exports_1("stopOnError", stopOnError = functor(function (cb, done, optCallback) { return function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i - 0] = arguments[_i];
-                }
-                try {
-                    return cb.apply(_this, args);
-                }
-                catch (e) {
-                    optCallback && optCallback();
-                    done(e);
-                }
-            }; }, {
-                run: function (cb, done, optCallback) { return stopOnError(cb, done, optCallback)(); }
-            }));
-            Joiner = (function () {
-                function Joiner(time, cb) {
-                    this.time = time;
-                    this.cb = cb;
-                    this.current = 0;
-                }
-                Joiner.prototype.notify = function () {
-                    if (++this.current == this.time) {
-                        this.cb();
-                    }
-                };
-                return Joiner;
-            }());
-            exports_1("Joiner", Joiner);
-            exports_1("describeIf", describeIf = function (cond, name, cb) {
-                if (cond) {
-                    describe(name, cb);
-                }
-                else {
-                    describe.skip(name, cb);
-                }
-            });
-            exports_1("itIf", itIf = function (cond, name, cb) {
-                if (cond) {
-                    it(name, cb);
-                }
-                else {
-                    it.skip(name, cb);
-                }
-            });
-        }
-    }
+    run: function (cb, done, optCallback) { return exports.graceful(cb, done, optCallback)(); }
 });
+/**
+ * Create function that exit async test case.
+ * @param {Function} done The Mocha async test case exit callback.
+ * @returns {Function} Function that exit async test case.
+ */
+exports.nothing = function (done, optCallback) { return function () { return (optCallback && optCallback(), done()); }; };
+/**
+ * Create function that exit test case if error thrown.
+ * @param {Function} cb Async function.
+ * @param {Function} done The Mocha async test case exit callback.
+ * @returns {Function} Function that exit async test case if error thrown.
+ */
+exports.stopOnError = functor(function (cb, done, optCallback) { return function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    try {
+        return cb.apply(_this, args);
+    }
+    catch (e) {
+        optCallback && optCallback();
+        done(e);
+    }
+}; }, {
+    run: function (cb, done, optCallback) { return exports.stopOnError(cb, done, optCallback)(); }
+});
+var Joiner = (function () {
+    function Joiner(time, cb) {
+        this.time = time;
+        this.cb = cb;
+        this.current = 0;
+    }
+    Joiner.prototype.notify = function () {
+        if (++this.current == this.time) {
+            this.cb();
+        }
+    };
+    return Joiner;
+}());
+exports.Joiner = Joiner;

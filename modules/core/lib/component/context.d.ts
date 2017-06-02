@@ -16,6 +16,7 @@
  * @author Taketoshi Aono
  */
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { Module } from '../di/module';
 import { Injector } from '../di/injector';
 import { IO, BasicIOTypes } from '../io/io';
@@ -36,11 +37,11 @@ export interface ContextType {
  * React contextTypes.
  */
 export declare const ContextReactTypes: {
-    createProps: React.Requireable<any>;
-    clean: React.Requireable<any>;
-    connect: React.Requireable<any>;
-    injector: React.Requireable<any>;
-    io: React.Requireable<any>;
+    createProps: PropTypes.Requireable<any>;
+    clean: PropTypes.Requireable<any>;
+    connect: PropTypes.Requireable<any>;
+    injector: PropTypes.Requireable<any>;
+    io: PropTypes.Requireable<any>;
 };
 /**
  * Required props for Context Component.
@@ -62,11 +63,11 @@ export declare class Context extends React.Component<ContextProps, {}> {
     componentWillUnmount(): void;
     getChildContext(): ContextType;
     static readonly childContextTypes: {
-        createProps: React.Requireable<any>;
-        clean: React.Requireable<any>;
-        connect: React.Requireable<any>;
-        injector: React.Requireable<any>;
-        io: React.Requireable<any>;
+        createProps: PropTypes.Requireable<any>;
+        clean: PropTypes.Requireable<any>;
+        connect: PropTypes.Requireable<any>;
+        injector: PropTypes.Requireable<any>;
+        io: PropTypes.Requireable<any>;
     };
 }
 /**

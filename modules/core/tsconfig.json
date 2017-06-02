@@ -4,15 +4,17 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": false,
     "jsx": "React",
-    "module": "system",
+    "module": "commonjs",
     "noImplicitAny": false,
     "lib": ["dom", "es5", "es6", "es2016", "es2017"],
     "noLib": false,
     "baseUrl": "./",
-    "paths": {
-      "rxjs/*": ["jspm_packages/npm/rxjs@5.0.3/*"]
-    }
-  }
+    "alwaysStrict": true
+  },
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
 }

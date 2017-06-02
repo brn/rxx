@@ -16,8 +16,6 @@
  * @author Taketoshi Aono
  */
 
-/// <reference path="./typings/index.d.ts" />
-
 
 /**
  * Create functor that is function behave like class.
@@ -27,7 +25,7 @@
  */
 function functor<T, U>(fn: T, props: U): T & U {
   for (var prop in props) {
-    fn[prop] = props[prop];
+    fn[prop as any] = props[prop];
   }
   return fn as T & U;
 }
@@ -97,21 +95,3 @@ export class Joiner {
     }
   }
 }
-
-
-export const describeIf = (cond, name, cb) => {
-  if (cond) {
-    describe(name, cb);
-  } else {
-    describe.skip(name, cb);
-  }
-};
-
-
-export const itIf = (cond, name, cb) => {
-  if (cond) {
-    it(name, cb);
-  } else {
-    it.skip(name, cb);
-  }
-};

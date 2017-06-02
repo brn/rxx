@@ -4,9 +4,6 @@
  */
 
 import {
-  Promise
-} from './shims/promise';
-import {
   IO,
   IOResponse,
   SubjectStore
@@ -14,10 +11,6 @@ import {
 import {
   HttpRequest
 } from './http-request';
-import {
-  RequestInit,
-  Response
-} from './shims/fetch';
 
 
 /**

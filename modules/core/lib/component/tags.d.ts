@@ -16,13 +16,17 @@
  * @author Taketoshi Aono
  */
 import * as React from 'react';
+import { Observable, Subject } from 'rxjs/Rx';
+export declare type Observablify<T> = {
+    [P in keyof T]: Observable<T[P]> | Subject<T[P]> | T[P];
+};
 /**
  * Attributes of the Subscriber that passed through html tag.
  */
 export interface Attr<T> extends React.HTMLAttributes<T>, React.DOMAttributes<T>, React.ClassAttributes<Element> {
     ignoreSubtree?: boolean;
 }
-export declare type ElementConstructor<T> = new (p: Attr<T>, c: any) => React.Component<Attr<T>, {}>;
+export declare type ElementConstructor<T> = new (p: Observablify<Attr<T>>, c: any) => React.Component<Observablify<Attr<T>>, {}>;
 /**
  * All suppoertd subscriberified tag list.
  */

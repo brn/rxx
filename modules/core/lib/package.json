@@ -1,16 +1,18 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp --cwd",
-    "patch-and-publish": "gulp publish-patch --cwd",
-    "major-and-publish": "gulp publish-major --cwd",
-    "minor-and-publish": "gulp publish-minor --cwd",
-    "publish": "gulp publish --cwd",
-    "test": "gulp test --cwd",
-    "pre-publish": "gulp pre-publish --cwd"
+    "gulp": "node ../../node_modules/.bin/gulp --cwd",
+    "patch-and-publish": "node ../../node_modules/.bin/gulp publish-patch --cwd",
+    "major-and-publish": "node ../../node_modules/.bin/gulp publish-major --cwd",
+    "minor-and-publish": "node ../../node_modules/.bin/gulp publish-minor --cwd",
+    "publish-only": "node ../../node_modules/.bin/gulp publish --cwd",
+    "test": "node ../../node_modules/.bin/gulp test --cwd",
+    "tdd": "node ../../node_modules/.bin/gulp tdd --cwd",
+    "test-chrome": "node ../../node_modules/.bin/gulp test-chrome --cwd",
+    "pre-publish": "node node_modules/.bin/gulp pre-publish --cwd"
   },
   "repository": {
     "type": "git",
@@ -29,116 +31,26 @@
     "url": "https://github.com/brn/react-mvi/issues"
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
-  "jspm": {
-    "dependencies": {
-      "core-js": "npm:core-js@^2.4.0",
-      "source-map-support": "npm:source-map-support@^0.4.6",
-      "ts": "github:frankwallis/plugin-typescript@^5.3.1"
-    },
-    "devDependencies": {
-      "@react-mvi/testing": "npm:@react-mvi/testing@^0.0.16",
-      "babel-runtime": "npm:babel-runtime@^5.8.24",
-      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.10",
-      "react-addons-test-utils": "npm:react-addons-test-utils@^15.1.0"
-    },
-    "peerDependencies": {
-      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
-      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
-      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
-      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
-      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
-      "domain": "npm:jspm-nodelibs-domain@^0.2.0",
-      "es6-symbol": "npm:es6-symbol@^3.1.0",
-      "events": "npm:jspm-nodelibs-events@^0.2.0",
-      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
-      "http": "npm:jspm-nodelibs-http@^0.2.0",
-      "https": "npm:jspm-nodelibs-https@^0.2.0",
-      "lodash": "npm:lodash@^4.13.1",
-      "module": "npm:jspm-nodelibs-module@^0.2.0",
-      "net": "npm:jspm-nodelibs-net@^0.2.0",
-      "os": "npm:jspm-nodelibs-os@^0.2.0",
-      "path": "npm:jspm-nodelibs-path@^0.2.0",
-      "process": "npm:jspm-nodelibs-process@^0.2.0",
-      "react": "npm:react@^15.1.0",
-      "react-dom": "npm:react-dom@^15.1.0",
-      "rxjs": "npm:rxjs@^5.0.3",
-      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
-      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
-      "url": "npm:jspm-nodelibs-url@^0.2.0",
-      "util": "npm:jspm-nodelibs-util@^0.2.0",
-      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
-      "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
-    },
-    "overrides": {
-      "npm:babel-runtime@5.8.38": {
-        "main": false,
-        "dependencies": {},
-        "optionalDependencies": {
-          "core-js": "^1.2.0"
-        }
-      },
-      "npm:browserify-zlib@0.1.4": {
-        "dependencies": {
-          "readable-stream": "^2.0.2",
-          "pako": "~0.2.0"
-        },
-        "map": {
-          "_stream_transform": "readable-stream/transform"
-        }
-      },
-      "npm:inherits@2.0.1": {
-        "ignore": [
-          "test.js"
-        ]
-      },
-      "npm:inherits@2.0.3": {
-        "ignore": [
-          "test.js"
-        ]
-      },
-      "npm:lodash@4.13.1": {
-        "map": {
-          "buffer": "@empty",
-          "process": "@empty"
-        }
-      },
-      "npm:mocha@2.5.1": {
-        "browser": "mocha",
-        "main": "mocha",
-        "meta": {
-          "mocha.js": {
-            "deps": [
-              "./mocha.css!"
-            ],
-            "exports": "Mocha"
-          }
-        },
-        "dependencies": {
-          "css": "*"
-        },
-        "registry": "jspm"
-      },
-      "npm:typescript@2.1.4": {
-        "browser": {},
-        "map": {
-          "buffer": "@empty",
-          "child_process": "@empty",
-          "fs": "@empty",
-          "path": "@empty",
-          "process": "@empty",
-          "readline": "@empty"
-        }
-      }
-    },
-    "jspmNodeConversion": false,
-    "main": "index.js"
-  },
   "devDependencies": {
-    "@react-mvi/testing": "0.0.12",
-    "@types/mocha": "^2.2.33",
+    "@react-mvi/testing": "^0.0.19",
+    "@types/chai": "^3.5.2",
+    "@types/mocha": "^2.2.41",
+    "@types/prop-types": "^15.5.1",
     "@types/react": "^0.14.55",
     "@types/react-addons-test-utils": "^0.14.15",
     "@types/react-dom": "^0.14.19",
-    "ink-docstrap": "^1.2.0"
+    "chai": "^4.0.0",
+    "gulp": "^3.9.1",
+    "ink-docstrap": "^1.2.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "rxjs": "^5.4.0"
+  },
+  "peerDependencies": {
+    "react": "^15.5.2",
+    "rxjs": "^5.4.0",
+    "react-dom": "^15.5.4"
   }
 }

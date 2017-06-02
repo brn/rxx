@@ -28,8 +28,8 @@ import {
   Module
 } from './module';
 import {
-  _
-} from '../shims/lodash';
+  assign
+} from '../utils';
 
 
 /**
@@ -122,7 +122,7 @@ export abstract class AbstractModule implements Module {
    */
   public mixin(m: AbstractModule): void {
     m.configure();
-    _.extend(this.bindings, m.getBindings());
+    this.bindings = assign(this.bindings, m.getBindings());
   }
 }
 

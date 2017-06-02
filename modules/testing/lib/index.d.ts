@@ -15,4 +15,3 @@
  * @author Taketoshi Aono
  */
 export * from './async-utils';
-export * from './_frameworks';

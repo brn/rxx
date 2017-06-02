@@ -16,19 +16,16 @@
  * @author Taketoshi Aono
  */
 
-/// <reference path="../_references.d.ts"/>
-
 import 'core-js';
 import {
-  Chai,
   graceful
 } from '@react-mvi/testing';
 import {
   EventDispatcher
 } from '../index';
-
-
-const {expect} = Chai;
+import {
+  expect
+} from 'chai';
 
 
 describe('event.tsx', () => {
@@ -40,7 +37,7 @@ describe('event.tsx', () => {
   
   describe('EventDispatcher', () => {
     describe('#fire()', () => {
-      it('イベントを発火する', () => {
+      it('should dispatch event.', () => {
         let fired = false;
         const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;
@@ -52,7 +49,7 @@ describe('event.tsx', () => {
     });
 
     describe('#asFunction()', () => {
-      it('イベントを発火するコールバックを返す', () => {
+      it('should return event dispatching callback.', () => {
         let fired = false;
         const disp = instance.response.for<boolean>('test').subscribe(v => {
           fired = v;

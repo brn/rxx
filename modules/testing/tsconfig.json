@@ -6,13 +6,10 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "React",
-    "module": "system",
+    "module": "commonjs",
     "noImplicitAny": false
   },
   "exclude": [
     "node_modules"
-  ],
-  "files": [
-    "_references.d.ts"
   ]
 }

@@ -1,5 +1,4 @@
 import { HttpRequest } from './http-request';
-import { RequestInit, Response } from './shims/fetch';
 /**
  * Config for HttpRequestMock.
  * If when undefined property was passed, return sended parameter as is.

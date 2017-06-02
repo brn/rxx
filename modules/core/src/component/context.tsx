@@ -18,6 +18,7 @@
 
 
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import {
   ConnectableObservable,
   Observable,
@@ -39,11 +40,14 @@ import {
   Service
 }                 from '../service/service';
 import {
-  isDefined
+  isDefined,
+  assign,
+  forIn,
+  isArray,
+  isObject,
+  mapValues,
+  map
 }                 from '../utils';
-import {
-  _
-}                 from '../shims/lodash';
 
 
 export interface IOTypes extends BasicIOTypes {
@@ -67,18 +71,12 @@ export interface ContextType {
  * React contextTypes.
  */
 export const ContextReactTypes = {
-  createProps : React.PropTypes.func,
-  clean       : React.PropTypes.func,
-  connect     : React.PropTypes.func,
-  injector    : React.PropTypes.object,
-  io          : React.PropTypes.object
+  createProps : PropTypes.func,
+  clean       : PropTypes.func,
+  connect     : PropTypes.func,
+  injector    : PropTypes.object,
+  io          : PropTypes.object
 }
-
-
-/**
- * Check param is immutablejs object or not.
- */
-const isImmutable = v => v['isIterable'] && v['isIterable']()
 
 
 const isEnumerable = (v: any) => {
@@ -110,25 +108,19 @@ const connect = (v: any) => {
     return v.connect && v.connect();
   }
 
-  if (isImmutable(v)) {
-    return v;
-  }
-
   if (!isEnumerable(v)) {return}
 
-  _.forIn(v, (v, k) => {
+  forIn(v, (v, k) => {
     if (!v) {return;}
     if (v instanceof ConnectableObservable && v.connect) {
       v.connect();
-    } else if (isImmutable(v)) {
-      return v;
-    } else if (_.isArray(v)) {
+    } else if (isArray(v)) {
       v.forEach(connect);
-    } else if (_.isObject(v)) {
+    } else if (isObject(v)) {
       if (!isEnumerable(v)) {
         return;
       }
-      _.forIn(v, connect);
+      forIn(v, connect);
     }
   })
 }
@@ -156,10 +148,10 @@ export class Context extends React.Component<ContextProps, {}> {
   public constructor(props, c) {
     super(props, c);
     const self = this;
-    const injector = props.injector? props.injector: new Injector(props.modules);
+    const injector: Injector = props.injector? props.injector: new Injector(props.modules);
     const subscription: Subscription = new Subscription();
 
-    const ioModules: IOTypes = _.mapValues(injector.find(binding => {
+    const ioModules: IOTypes = mapValues(injector.find(binding => {
       if (!binding.instance && binding.val) {
         return binding.val[IO_MARK];
       } else if (binding.instance) {
@@ -167,16 +159,15 @@ export class Context extends React.Component<ContextProps, {}> {
       }
     }), (v, k) => injector.get(k)) as IOTypes;
 
-    const services: Service<any, any>[] = _.map(injector.find(binding => {
+    const services: Service<any, any>[] = map(injector.find(binding => {
       if (binding.val) {
         return !!binding.val[SERVICE_MARK];
       }
-      return;
-    }), (v, k) => injector.get(k));
+    }), (v, k: string) => injector.get(k));
 
     this.contextObject = {
       createProps<T>(...args: any[]) {
-        const ioResposens = _.mapValues(ioModules, v => v? v.response: null);
+        const ioResposens = mapValues(ioModules, v => v? v.response: null);
         return services.reduce((props, service) => {
           let result
           if (typeof service.initialize !== 'function') {
@@ -185,9 +176,9 @@ export class Context extends React.Component<ContextProps, {}> {
             result = service.initialize(ioResposens, injector, ...args);
           }
 
-          _.forEach(ioModules, io => subscription.add(io.subscribe(result)));
+          forIn(ioModules, io => subscription.add(io.subscribe(result)));
           
-          return _.assign(props, result['view'] || {});
+          return assign(props, result['view'] || {});
         }, {});
       },
       clean() {

@@ -17,15 +17,12 @@
  */
 
 
-/// <reference path="./declarations.d.ts"/>
-
 import {
   io,
   isDefined,
   IOResponse,
   SubjectStore,
   param,
-  Symbol,
   intercept,
   Outlet
 } from '@react-mvi/core';
@@ -40,16 +37,8 @@ import {
   HttpUploadProgressImpl
 } from './http-response';
 import {
-  querystring as qs
-} from './shims/query-string';
-import {
-  Promise
-} from './shims/promise';
-import {
-  fetch,
-  Response,
-  Fetch
-} from './shims/fetch';
+  qs
+} from './qs';
 import {
   HttpConfig,
   HttpMethod,
@@ -58,11 +47,14 @@ import {
   UploadEventType
 } from './types';
 
-
 export const HTTP_RESPONSE_INTERCEPT = Symbol('__http_request_intercept__');
 export const HTTP_REQUEST_INTERCEPT = Symbol('__http_request_request_intercept__');
 
 const typeMatcher = /\[object ([^\]]+)\]/
+
+export interface Fetch {
+  (input: RequestInfo, init?: RequestInit): Promise<Response>;
+}
 
 /**
  * Http request sender.
@@ -145,6 +137,17 @@ export class HttpRequest extends Outlet {
       });
     }
 
+    const errorHandler = (err, result) => {
+      const response = new HttpResponseImpl(false, err && err.status? err.status: 500, {}, null, result);
+      subjects.forEach(subject => subject.next(response));
+    };
+
+    const succeededHandler = (response, result) => {
+      const headers = this.processHeaders(response);
+      const httpResponse = new HttpResponseImpl(response.ok, response.status, headers, response.ok? result: null, response.ok? null: result);
+      subjects.forEach(subject => subject.next(httpResponse));
+    };
+
     return (() => {
       switch (config.method) {
       case HttpMethod.GET:
@@ -162,32 +165,32 @@ export class HttpRequest extends Outlet {
       .then(res => {
         // For IE|Edge
         if (!res.url) {
-          res.url = config.url;
+          const u = 'ur' + 'l';
+          try {
+            res[u] = config.url;
+          } catch(e) {}
         }
-        const handler = result => {
-          const headers = this.processHeaders(res);
-          const response = new HttpResponseImpl(res.ok, res.status, headers, res.ok? result: null, res.ok? null: result);
-          subjects.forEach(subject => subject.next(response));
-        };
         if (res.ok) {
-          this.getResponse(config.responseType, res).then(handler);
+          const resp = this.getResponse(config.responseType, res);
+          if (resp && resp.then) {
+            resp.then(ret => succeededHandler(res, ret), e => errorHandler(null, e));
+          }
         } else {
           const result = this.getResponse(this.getResponseTypeFromHeader(res), res);
           if (result && result.then) {
-            result.then(handler);
+            result.then(ret => succeededHandler(res, ret), e => errorHandler(null, e));
           } else {
-            handler(result);
+            succeededHandler(res, result);
           }
         }
-      }).catch(err => {
-        const handler = result => {
-          const response = new HttpResponseImpl(false, err && err.status? err.status: 500, {}, null, result);
-          subjects.forEach(subject => subject.next(response));
-        };
+      }, err => {
         if (err && typeof err.json === 'function') {
-          this.getResponse(config.responseType, err).then(handler);
+          const resp = this.getResponse(config.responseType, err);
+          if (resp && resp.then) {
+            resp.then(e => errorHandler(err, e), e => errorHandler(err, e));
+          }
         } else {
-          handler(err);
+          errorHandler(err, err);
         }
       });
   }
@@ -219,7 +222,7 @@ export class HttpRequest extends Outlet {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private get({url, headers = {}, data = null, mode}: HttpConfig): Promise<Response> {
-    return this.fetch(data? `${url}?${qs.stringify(data)}`: url, {
+    return this.fetch(data? `${url}?${qs(data)}`: url, {
       method: 'GET',
       headers,
       mode: mode || 'same-origin'

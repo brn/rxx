@@ -22,12 +22,6 @@ import {
   Subject,
   Subscription
 }             from 'rxjs/Rx';
-import {
-  Symbol
-}             from '../shims/symbol';
-import {
-  _
-}             from '../shims/lodash';
 
 
 export const IO_MARK = Symbol('io');

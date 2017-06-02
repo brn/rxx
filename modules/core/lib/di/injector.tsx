@@ -38,11 +38,15 @@ import {
   dynamicTargetSymbol
 }             from './inject';
 import {
-  Symbol
-} from '../shims/symbol';
-import {
-  _
-} from '../shims/lodash';
+  forIn,
+  isArray,
+  isRegExp,
+  isDefined,
+  filter,
+  map,
+  assign,
+  extend
+}             from '../utils';
 
 
 /**
@@ -123,7 +127,7 @@ class Injections<T> {
    */
   private extractInjectionTarget<T>(target: T, symbol: symbol) {
     var resources: any = target[symbol];
-    if (!_.isArray(resources)) {
+    if (!isArray(resources)) {
       if (!resources) {
         resources = [];
       } else {
@@ -183,11 +187,11 @@ export class Injector {
    * @param modules The `Module` that are defined dependency relations.
    */
   private initialize(modules: Module[]): void {
-    var obj: BindingRelation = {} as BindingRelation;
-    _.forEach(modules, (mod: Module) => {
+    let obj: BindingRelation = {} as BindingRelation;
+    modules.forEach((mod: Module) => {
       mod.configure();
-      _.extend(obj, mod.getBindings());
-      _.extend(this.templates, mod.getTemplates());
+      obj = assign(obj, mod.getBindings());
+      this.templates = assign(this.templates, mod.getTemplates());
       this.methodProxyDefs = this.methodProxyDefs.concat(mod.getIntercepts() || []);
     });
     obj['injector'] = this.fromParams(this);
@@ -200,13 +204,13 @@ export class Injector {
    * Instantiate eagerSingleton class.
    */
   private instantiateEagerSingletons() {
-    _.forIn(this.bindings, (v, k) => {
+    forIn(this.bindings, (v, k) => {
       if (v.eagerSingleton) {
         this.getInstanceFromSelf(k);
       }
     });
 
-    _.forEach(this.methodProxyDefs, (proxy, k) => {
+    this.methodProxyDefs.forEach((proxy, k) => {
       proxy['interceptor'][PROXY_ID] = proxyIdValue++;
       if (proxy['eagerSingleton']) {
         this.getInterceptorInstance(proxy);
@@ -280,7 +284,7 @@ export class Injector {
   public injectToInstance<T>(inst: T, params?: any): T {
     if (inst[injectionTargetSymbol]) {
       let keyArgs = this.createArguments(new Injections<T>(null, inst), params, true) as {};
-      return _.extend(inst, keyArgs) as any;
+      return extend(inst, keyArgs) as any;
     }
     return inst;
   }
@@ -337,12 +341,12 @@ export class Injector {
   public getInstanceFromSelf(key: string|RegExp): any {
     let ret;
     if (typeof key === 'string') {
-      ret = _.filter(_.assign(this.bindings, this.templates) as any, (binding: Binding, name: string) => name === key)[0];
+      ret = filter(assign(this.bindings, this.templates), (binding, name) => name === key)[0];
       let instance = ret? this.getInstance(key, null, ret, ret.template): null;
       return instance;
     } else {
       ret = [];
-      _.forIn(_.assign(this.bindings, this.templates) as any, (binding: Binding, name: string) => {
+      forIn(assign(this.bindings, this.templates), (binding: Binding, name: string) => {
         if ((key as RegExp).test(name)) {
           let instance = this.getInstance(name, null, binding, binding.template);
           ret.push(instance);
@@ -358,7 +362,7 @@ export class Injector {
    * @returns List of dependent names.
    */
   public selfKeys(): string[] {
-    return _.map(this.bindings, (binding: Binding, name: string) => name);
+    return map(this.bindings, (binding: Binding, name: string) => name);
   }
 
 
@@ -369,7 +373,7 @@ export class Injector {
   public keys(): string[] {
     let ret = [];
     this.findOnParent(injector => {
-      ret = ret.concat(_.map(injector.bindings, (binding: Binding, name: string) => name));
+      ret = ret.concat(map(injector.bindings, (binding: Binding, name: string) => name));
       return true
     });
     return ret;
@@ -383,7 +387,7 @@ export class Injector {
   public find(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
     const results = {} as {[key: string]: Binding};
     this.findOnParent(({bindings}) => {
-      _.forIn(bindings, (v, k) => {
+      forIn(bindings, (v, k) => {
         if (predicate(v, k)) {
           results[k] = v;
         }
@@ -400,7 +404,7 @@ export class Injector {
    */
   public findFromSelf(predicate: (binding: Binding, key: string) => boolean): {[key: string]: Binding} {
     const results = {} as {[key: string]: Binding};
-    _.forIn(this.bindings, (v, k) => {
+    forIn(this.bindings, (v, k) => {
       if (predicate(v, k)) {
         results[k] = v;
       }
@@ -421,7 +425,7 @@ export class Injector {
     let ret = this.invokeNewCall(ctor, args) as T;
     if (ret[injectionTargetSymbol] || ret[dynamicTargetSymbol]) {
       let keyArgs = this.createArguments(new Injections<T>(null, ret), params, true) as {};
-      _.assign(ret, keyArgs);
+      ret = extend(ret, keyArgs);
     }
     if (this.hasMethodProxyDefs) {
       this.applyInterceptor(ret);
@@ -495,7 +499,7 @@ export class Injector {
     const args = [];
     const keyArgs = {};
     const resources = injections.injections;
-    const keys = params? _.keys(params): [];
+    const keys = params? Object.keys(params): [];
     let bindingInfo;
     let bindingName;
     let dynamicName;
@@ -510,12 +514,12 @@ export class Injector {
       bindingName = resources[i][0];
       dynamicName = isDynamic? resources[i][1]: null;
 
-      if (_.isRegExp(bindingName)) {
+      if (isRegExp(bindingName)) {
         var inner = [];
         this.findOnParent(({bindings, templates}) => {
-          _.forEach(_.assign(bindings, templates) as any, (binding: Binding, name: string) => {
+          forIn(assign(bindings, templates) as any, (binding: Binding, name: string) => {
             bindingName.test(name) && inner.push(this.getInstance<T>(name, null, binding, false));
-            _.forEach(keys, key => {
+            keys.forEach(key => {
               if (bindingName.test(key)) {
                 inner.push(this.getInstance<T>(key, null, this.fromParams(params[key]), false));
               }
@@ -631,7 +635,7 @@ export class Injector {
       }
 
       const provided = provider.provide();
-      if (!_.isNil(provided)) {
+      if (!isDefined(provided)) {
         provided[INJECTION_NAME_SYMBOL] = bindingName; 
       }
       ret = provided;
@@ -659,17 +663,17 @@ export class Injector {
     if (!inst) {return}
 
     this.findOnParent(({methodProxyDefs}) => {
-      _.every(methodProxyDefs, (i: any) => {
+      methodProxyDefs.every((i: any) => {
         if (inst[i.targetSymbol]) {
-          if (_.isRegExp(inst[i.targetSymbol][0])) {
+          if (isRegExp(inst[i.targetSymbol][0])) {
             const regexp = inst[i.targetSymbol][0];
-            _.forIn(inst, (v: Function, k) => {
+            forIn(inst as any, (v: Function, k) => {
               if (regexp.test(k)) {
                 this.doApplyInterceptorIfNeccessary(inst, k, i);
               }
             });
           } else {
-            _.forIn(inst[i.targetSymbol], (s: string) => {
+            forIn(inst[i.targetSymbol], (s: string) => {
               if (inst[s]) {
                 if (typeof inst[s] !== 'function') {
                   throw new Error(`Interceptor only applyable to function.\nBut property ${s} is ${Object.prototype.toString.call(inst[s])}`);
