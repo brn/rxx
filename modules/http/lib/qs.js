@@ -19,10 +19,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 function qs(obj) {
     var ret = [];
-    for (var key in obj) {
+    for (var key in obj || {}) {
         var val = obj[key];
         ret.push("key=" + encodeURIComponent(val ? String(val) : ''));
     }
-    return ret.join('&');
+    return "" + (ret.length ? '?' : '') + ret.join('&');
 }
 exports.qs = qs;

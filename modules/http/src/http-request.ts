@@ -209,7 +209,7 @@ export class HttpRequest extends Outlet {
   }
 
 
-  protected get fetch(): Fetch {
+  protected getFetcher(): Fetch {
     return fetch;
   }
 
@@ -222,7 +222,7 @@ export class HttpRequest extends Outlet {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private get({url, headers = {}, data = null, mode}: HttpConfig): Promise<Response> {
-    return this.fetch(data? `${url}?${qs(data)}`: url, {
+    return this.getFetcher()(data? `${url}${qs(data)}`: url, {
       method: 'GET',
       headers,
       mode: mode || 'same-origin'
@@ -238,7 +238,7 @@ export class HttpRequest extends Outlet {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private post({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
-    return this.fetch(url, {
+    return this.getFetcher()(url, {
       headers,
       method: 'POST',
       mode: mode || 'same-origin',
@@ -255,7 +255,7 @@ export class HttpRequest extends Outlet {
    */
   @intercept(HTTP_REQUEST_INTERCEPT)
   private put({url, headers = {}, data = {} as any, json = true, form = false, mode}: HttpConfig): Promise<Response> {
-    return this.fetch(url, {
+    return this.getFetcher()(url, {
       headers: headers,
       method: 'PUT',
       mode: mode || 'same-origin',
@@ -280,7 +280,7 @@ export class HttpRequest extends Outlet {
     if (isDefined(data)) {
       req['body'] = json? JSON.stringify(data): form? this.serialize(data): data;
     }
-    return this.fetch(url, req);
+    return this.getFetcher()(url, req);
   }
 
 

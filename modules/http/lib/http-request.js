@@ -199,13 +199,9 @@ var HttpRequest = (function (_super) {
         res.headers.forEach(function (v, k) { return headers[k] = v; });
         return headers;
     };
-    Object.defineProperty(HttpRequest.prototype, "fetch", {
-        get: function () {
-            return fetch;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    HttpRequest.prototype.getFetcher = function () {
+        return fetch;
+    };
     /**
      * Send GET request.
      * @data url Target url.
@@ -214,7 +210,7 @@ var HttpRequest = (function (_super) {
      */
     HttpRequest.prototype.get = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? null : _c, mode = _a.mode;
-        return this.fetch(data ? url + "?" + qs_1.qs(data) : url, {
+        return this.getFetcher()(data ? "" + url + qs_1.qs(data) : url, {
             method: 'GET',
             headers: headers,
             mode: mode || 'same-origin'
@@ -228,7 +224,7 @@ var HttpRequest = (function (_super) {
      */
     HttpRequest.prototype.post = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
-        return this.fetch(url, {
+        return this.getFetcher()(url, {
             headers: headers,
             method: 'POST',
             mode: mode || 'same-origin',
@@ -243,7 +239,7 @@ var HttpRequest = (function (_super) {
      */
     HttpRequest.prototype.put = function (_a) {
         var url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, _d = _a.json, json = _d === void 0 ? true : _d, _e = _a.form, form = _e === void 0 ? false : _e, mode = _a.mode;
-        return this.fetch(url, {
+        return this.getFetcher()(url, {
             headers: headers,
             method: 'PUT',
             mode: mode || 'same-origin',
@@ -266,7 +262,7 @@ var HttpRequest = (function (_super) {
         if (core_1.isDefined(data)) {
             req['body'] = json ? JSON.stringify(data) : form ? this.serialize(data) : data;
         }
-        return this.fetch(url, req);
+        return this.getFetcher()(url, req);
     };
     HttpRequest.prototype.upload = function (_a) {
         var method = _a.method, url = _a.url, _b = _a.headers, headers = _b === void 0 ? {} : _b, _c = _a.data, data = _c === void 0 ? {} : _c, mode = _a.mode;

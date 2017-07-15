@@ -19,9 +19,9 @@
 
 export function qs(obj: {[key: string]: any}) {
   const ret = [];
-  for (const key in obj) {
+  for (const key in obj || {}) {
     const val = obj[key];
     ret.push(`key=${encodeURIComponent(val? String(val): '')}`);
   }
-  return ret.join('&');
+  return `${ret.length? '?': ''}${ret.join('&')}`;
 }

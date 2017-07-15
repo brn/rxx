@@ -43,7 +43,7 @@ export declare class HttpRequest extends Outlet {
      */
     callback(key: string, value?: any): (args?: any) => Promise<any>;
     private processHeaders(res);
-    protected readonly fetch: Fetch;
+    protected getFetcher(): Fetch;
     /**
      * Send GET request.
      * @data url Target url.
