@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@react-mvi/core@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@react-mvi/core/-/core-0.5.0.tgz#327ce2d7543b48a0cb9cf3dabb4fe40d1540422d"
+"@react-mvi/core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@react-mvi/core/-/core-1.0.0.tgz#7cffbdb79717bbdca2dddefc7a7c7f4a833e8f75"
 
 "@react-mvi/testing@^1.0.0":
   version "1.0.0"
@@ -158,9 +158,9 @@ react@^15.5.4:
     object-assign "^4.1.0"
     prop-types "^15.5.7"
 
-rxjs@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.0.tgz#a7db14ab157f9d7aac6a56e655e7a3860d39bf26"
+rxjs@^5.4.2:
+  version "5.4.2"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.2.tgz#2a3236fcbf03df57bae06fd6972fd99e5c08fcf7"
   dependencies:
     symbol-observable "^1.0.1"
 
@@ -180,9 +180,9 @@ type-detect@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.3.tgz#0e3f2670b44099b0b46c284d136a7ef49c74c2ea"
 
-typescript@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.3.4.tgz#3d38321828231e434f287514959c37a82b629f42"
+typescript@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.4.2.tgz#f8395f85d459276067c988aa41837a8f82870844"
 
 ua-parser-js@^0.7.9:
   version "0.7.12"

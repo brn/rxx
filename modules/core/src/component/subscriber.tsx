@@ -10,8 +10,10 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *  
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @fileoverview 
  * @author Taketoshi Aono
  */
@@ -21,9 +23,6 @@ import {
   Observable,
   Subscription
 } from 'rxjs/Rx';
-import {
-  IO_MARK
-} from '../io/io';
 import {
   Process,
   getProcess
@@ -47,7 +46,9 @@ const process: Process = getProcess();
 /**
  * Steal $$typeof symbol from dummy element.
  */
+/*tslint:disable:no-string-literal*/
 const REACT_ELEMENT_TYPEOF = React.createElement('div', {})['$$typeof'];
+/*tslint:enable:no-string-literal*/
 
 
 /**
@@ -71,14 +72,16 @@ interface BindingObservableType {
  */
 class ObservableBinding {
   constructor(private updater: (value: any) => void, private _observable: Observable<any>) {
-    
+
   }
 
 
   /**
    * Return Observable that flow BindingObservableType.
    */
-  public observable(): Observable<BindingObservableType> {return this._observable.map(value => ({value, binding: this}))}
+  public observable(): Observable<BindingObservableType> {
+    return this._observable.map(value => ({ value, binding: this }));
+  }
 
 
   /**
@@ -93,7 +96,7 @@ class ObservableBinding {
 /**
  * Identity function to return children.
  */
-const EmptyRoot = props => props.children
+const EmptyRoot = props => props.children;
 
 
 export interface SubscriberProps {
@@ -134,7 +137,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
     this.hasObservable = this.areThereObservableInChildren(<EmptyRoot>{this.props.children}</EmptyRoot>);
     // State has virtual dom tree that are covered by this component.
     this.state = {
-      vdom: this.hasObservable? null: this.props.children
+      vdom: this.hasObservable ? null : this.props.children
     };
   }
 
@@ -153,7 +156,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
    */
   public componentWillMount() {
     if (this.hasObservable) {
-      this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null)
+      this.mutableTree = this.cloneChildren(<EmptyRoot>{this.props.children}</EmptyRoot>, null, null);
       this.subscribeAll();
     }
   }
@@ -169,7 +172,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
       this.mutableTree = this.cloneChildren(<EmptyRoot>{nextProps.children}</EmptyRoot>, null, null);
       this.subscribeAll();
     } else {
-      this.setState({vdom: nextProps.children});
+      this.setState({ vdom: nextProps.children });
     }
   }
 
@@ -182,11 +185,11 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
     if (this.bindings.length > 0) {
       const bindings = this.bindings.map(binding => binding.observable());
       this.subscription = Observable.combineLatest(...bindings).subscribe((bindings: BindingObservableType[]) => {
-        bindings.forEach(({value, binding}) => binding.update(value));
-        this.setState({vdom: this.createMutableElement(this.mutableTree)});
+        bindings.forEach(({ value, binding }) => binding.update(value));
+        this.setState({ vdom: this.createMutableElement(this.mutableTree) });
       });
     } else {
-      this.setState({vdom: this.props.children});
+      this.setState({ vdom: this.props.children });
     }
   }
 
@@ -240,6 +243,8 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
    * @returns Mutable ReactElement like json.
    */
   private createMutableElement(el: React.ReactElement<any>): React.ReactElement<any> {
+    /*tslint:disable:no-object-literal-type-assertion*/
+    /*tslint:disable:no-string-literal*/
     return {
       $$typeof: REACT_ELEMENT_TYPEOF,
       type: el.type,
@@ -248,6 +253,8 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
       key: el.key,
       _owner: el['_owner']
     } as React.ReactElement<any>;
+    /*tslint:enable:no-object-literal-type-assertion*/
+    /*tslint:enable:no-string-literal*/
   }
 
 
@@ -255,12 +262,13 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
    * Clone all children trees that has mutable props, mutable children, recursively from root.
    * @param el Root React.ReactElement.
    */
-  private areThereObservableInChildren(el: React.ReactElement<any>|Observable<React.ReactElement<any>>, depth: number = 0) {
+  private areThereObservableInChildren(el: React.ReactElement<any> | Observable<React.ReactElement<any>>, depth: number = 0) {
     if (el instanceof Observable) {
       return true;
     } else {
-      const target = filter(el.props? (el.props.children? (!isArray(el.props.children)? [el.props.children]: el.props.children): []): [], v => isDefined(v));
-      const checkChildren = () => target.some((child: React.ReactElement<any>|Observable<any>, i) => {
+      const target = filter(
+        el.props ? (el.props.children ? (!isArray(el.props.children) ? [el.props.children] : el.props.children) : []) : [], v => isDefined(v));
+      const checkChildren = () => target.some((child: React.ReactElement<any> | Observable<any>, i) => {
         if (child instanceof Observable) {
           return true;
         }
@@ -272,13 +280,13 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
         return this.areThereObservableInChildren(child as React.ReactElement<any>, depth + 1);
       });
       const props = el.props;
-      const checkProps = () => some(omit(props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
+      const checkProps = () => some(omit(props, 'children'), (v: React.ReactElement<any> | Observable<any>, k: string) => {
         return v instanceof Observable;
       });
 
       return checkChildren() || checkProps();
     }
-}
+  }
 
 
   /**
@@ -288,7 +296,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
   private cloneChildren(el: React.ReactElement<any>, parent: React.ReactElement<any>, index: number, depth: number = 0) {
     const newElement = this.createMutableElement(el);
 
-    forIn(omit(newElement.props, 'children'), (v: React.ReactElement<any>|Observable<any>, k: string) => {
+    forIn(omit(newElement.props, 'children'), (v: React.ReactElement<any> | Observable<any>, k: string) => {
       if (v instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           newElement.props[k] = value;
@@ -302,8 +310,10 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
       return newElement;
     }
 
-    const target = filter(newElement.props.children? (!isArray(newElement.props.children)? [newElement.props.children]: newElement.props.children): [], v => isDefined(v));
-    const children = map(target, (child: React.ReactElement<any>|Observable<any>, i: number) => {
+    const target = filter(
+      newElement.props.children ?
+        (!isArray(newElement.props.children) ? [newElement.props.children] : newElement.props.children) : [], v => isDefined(v));
+    const children = map(target, (child: React.ReactElement<any> | Observable<any>, i: number) => {
       if (child instanceof Observable) {
         this.bindings.push(new ObservableBinding(value => {
           this.updateChildren(newElement, value, i);
@@ -312,6 +322,7 @@ export class Subscriber extends React.Component<SubscriberProps, any> {
       } else if (React.isValidElement(child) && !this.isSubscriber(child)) {
         return this.cloneChildren(child, newElement, i, depth + 1);
       }
+
       return child;
     });
 

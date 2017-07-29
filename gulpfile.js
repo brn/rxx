@@ -36,7 +36,8 @@ const exec         = require('child_process').execSync;
 const DIST = 'dist/';
 const TYPESCRIPT_DIST = `${process.cwd()}/lib`;
 const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
-
+const EXCLUDES = /\.linked-core|core|dom-storage/;
+const MODULES = fs.readdirSync(`${__dirname}/modules`).filter(v => !EXCLUDES.test(v));
 
 gulp.task('publish-all', () => {
   glob.sync('./modules/*').forEach((dir, done) => {
@@ -83,7 +84,7 @@ gulp.task('typescript', ['clean'], () => {
   });
   const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
           .pipe(tsp());
-
+  tsResult.on('error', () => process.exit(1));
   return merge([
     tsResult.js.pipe(gulp.dest(TYPESCRIPT_DIST)),
     tsResult.dts.pipe(gulp.dest(TYPESCRIPT_DIST)),
@@ -109,15 +110,47 @@ gulp.task('publish-minor', ['pre-publish-with-minor'], () => {
 });
 
 
-gulp.task('update-core', ()=> {
-  exec(`cd ${__dirname}/modules/http && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev`, {stdio: [0,1,2]});
-  exec(`cd ${__dirname}/modules/event && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev`, {stdio: [0,1,2]});
+gulp.task('update-core', ['unlink'], ()=> {
+  MODULES.forEach(module => {
+    process.chdir(`${__dirname}/modules/${module}`);
+    try {
+      exec(`yarn remove @react-mvi/core`, {stdio: [0,1,2]});
+    } catch(e) {}
+    exec(`yarn add @react-mvi/core --peer --dev`, {stdio: [0,1,2]});
+  });
 });
 
 
-gulp.task('update-core-and-publish', () => {
-  exec(`cd ${__dirname}/modules/http && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev && npm run-script patch-and-publish`, {stdio: [0,1,2]});
-  exec(`cd ${__dirname}/modules/event && npm uninstall @react-mvi/core --save && npm install @react-mvi/core --peer --dev && npm run-script patch-and-publish`, {stdio: [0,1,2]});
+gulp.task('unlink', ()=> {
+  MODULES.forEach(module => {
+    process.chdir(`${__dirname}/modules/${module}`);
+    try {
+      exec(`rm node_modules/@react-mvi/core`, {stdio: [0,1,2]});
+    } catch(e) {}
+  });
+});
+
+
+gulp.task('update-core-and-publish', ['update-core'], () => {
+  MODULES.forEach(module => {
+    exec(`cd ${__dirname}/modules/${module} && npm run-script patch-and-publish`, {stdio: [0,1,2]});
+  });
+});
+
+
+gulp.task('copy-linked-core', ['unlink'], () => {
+  function distributeCore(targetModule) {
+    const LINKED_CORE = '.linked-core';
+    process.chdir(`${__dirname}/modules/core`);
+    try {
+      fs.removeSync(`../${targetModule}/${LINKED_CORE}`);
+    } catch(e) {}
+    fs.copySync(`${__dirname}/modules/core/lib`, `${__dirname}/modules/${targetModule}/${LINKED_CORE}`);
+    process.chdir(`${__dirname}/modules/${targetModule}`);
+    exec(`ln -s ${__dirname}/modules/${targetModule}/${LINKED_CORE} node_modules/@react-mvi/core`, {stdio: [1,2,3]});
+  }
+
+  MODULES.forEach(module => distributeCore(module));
 });
 
 
@@ -157,13 +190,11 @@ function doPrepublish(pkg) {
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
   fs.copySync('./package.json', './lib/package.json');
   try {
-    fs.copySync('./node_modules', './lib/node_modules');
-  } catch(e) {}
-  try {
     fs.copySync('../../README.md', './lib/README.md');
     fs.copySync('../../docs', './lib/docs');
   } catch(e) {
     console.log(e);
+    process.exit(1);
   }
   fs.remove('lib/_references.d.ts');
 }
@@ -176,7 +207,14 @@ function doRunKarma(singleRun, browser, done) {
   return new karma.Server(_.assign(KARMA_CONF, {
     browsers: [browser],
     singleRun: singleRun
-  }), done).start();
+  }), (err) => {
+    if(err === 0){
+      done();
+    } else {
+      console.error('Karam test failed.');
+      process.exit(1);
+    }
+  }).start();
 };
 
 
@@ -196,13 +234,13 @@ function runKarma(singleRun, browser, done) {
 /**
  * Launch karma
  */
-gulp.task('test', runKarma.bind(null, true, 'PhantomJS'));
+gulp.task('test', runKarma.bind(null, true, 'ChromeHeadless'));
 
 
 /**
  * Launch karma
  */
-gulp.task('test-chrome', runKarma.bind(null, true, 'Chrome'));
+gulp.task('test-phantom', runKarma.bind(null, true, 'PhantomJS'));
 
 
 /**
@@ -220,7 +258,7 @@ gulp.task('tdd-jsdom', runKarma.bind(null, false, 'jsdom'));
 /**
  * Launch and watch karma
  */
-gulp.task('tdd', runKarma.bind(null, false, 'PhantomJS'));
+gulp.task('tdd', runKarma.bind(null, false, 'ChromeHeadless'));
 
 
 /**

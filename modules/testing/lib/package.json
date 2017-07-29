@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/testing",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Test module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -34,8 +34,19 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "dependencies": {},
   "devDependencies": {
+    "@react-mvi/core": "^1.0.0",
     "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.40",
-    "@types/sinon": "^2.1.1"
+    "@types/react": "^15.0.38",
+    "@types/react-dom": "^15.5.1",
+    "@types/sinon": "^2.1.1",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "rxjs": "^5.4.2",
+    "typescript": "^2.4.2"
+  },
+  "peerDependencies": {
+    "rxjs": ">= 5.0.0 <= 5.4.2"
   }
 }

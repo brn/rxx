@@ -7,7 +7,8 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "React",
     "module": "commonjs",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "lib": ["dom", "es5", "es6", "es2016", "es2017"]
   },
   "exclude": [
     "node_modules"

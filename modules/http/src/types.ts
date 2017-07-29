@@ -4,6 +4,10 @@
  */
 
 
+import {
+  StateHandlerData
+} from '@react-mvi/core';
+
 
 /**
  * The methods of the Http request.
@@ -44,22 +48,30 @@ export interface HttpConfig {
   url: string;
   method?: HttpMethod;
   headers?: any;
-  mode?: 'cors'|'same-origin'|'no-cors';
+  mode?: 'cors' | 'same-origin' | 'no-cors';
   json?: boolean;
-  data?: string|Blob|FormData|Object,
+  data?: string | Blob | FormData | Object;
   form?: boolean;
-  responseType?: ResponseType,
+  responseType?: ResponseType;
   upload?: boolean;
-};
+  reduce?<T, U>({ data: T, state: U }): any;
+}
+
+
+export enum ResponseObjectType {
+  RESPONSE = 1,
+  UPLOAD_PROGRESS = 2
+}
 
 
 
 export interface HttpResponse<T, E> {
   ok: boolean;
-  headers: {[key: string]: string};
+  headers: { [key: string]: string };
   status: number;
   response: T;
   error: E;
+  type: ResponseObjectType;
 }
 
 
@@ -68,7 +80,16 @@ export interface HttpUploadProgress {
   total: number;
   loaded: number;
   cancel(): void;
+  type: ResponseObjectType;
 }
 
 
-export function ____$_react_mvi_module_reference_bug_fix__dummy_$____() {}
+export function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }
+
+
+export interface Fetch {
+  (input: RequestInfo, init?: RequestInit): Promise<Response>;
+}
+
+
+export type HttpHandlerData = StateHandlerData<any, any>;

@@ -10,8 +10,10 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *  
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ *  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @fileoverview 
  * @author Taketoshi Aono
  */
@@ -40,20 +42,21 @@ const toSubscribable = (name: string) => {
     public render() {
       return (
         <Subscriber ignoreSubtree={this.props.ignoreSubtree}>
-          {React.createElement(name, assign(omit(this.props, ['ref', 'ignoreSubtree']), {ref: 'element'}))}
+          {React.createElement(name, assign(omit(this.props, ['ref', 'ignoreSubtree']), { ref: 'element' }))}
         </Subscriber>
-      )
+      );
     }
 
-    static displayName = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-  }
+    public static displayName = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+  };
 
   ret[SUBSCRIBER_MARK] = true;
+
   return ret;
-}
+};
 
 
-export type Observablify<T> = {[P in keyof T]: Observable<T[P]>|Subject<T[P]>|T[P]};
+export type Observablify<T> = {[P in keyof T]: Observable<T[P]> | Subject<T[P]> | T[P]};
 
 
 /**
@@ -64,7 +67,7 @@ export interface Attr<T> extends React.HTMLAttributes<T>, React.DOMAttributes<T>
 }
 
 
-export type ElementConstructor<T> = new(p: Observablify<Attr<T>>, c: any) => React.Component<Observablify<Attr<T>>, {}>;
+export type ElementConstructor<T> = new (p: Observablify<Attr<T>>, c: any) => React.Component<Observablify<Attr<T>>, {}>;
 
 
 /**
@@ -74,7 +77,7 @@ export interface Tags {
   A: ElementConstructor<HTMLAnchorElement>;
   Abbr: ElementConstructor<HTMLElement>;
   Address: ElementConstructor<HTMLElement>;
-  Area:ElementConstructor<HTMLAreaElement>;
+  Area: ElementConstructor<HTMLAreaElement>;
   Article: ElementConstructor<HTMLElement>;
   Aside: ElementConstructor<HTMLElement>;
   Audio: ElementConstructor<HTMLAudioElement>;
@@ -186,7 +189,7 @@ export interface Tags {
 }
 
 
-export const Tags: Tags = {} as Tags;
+export const Tags: Tags = {} as any;
 
 
 `a abbr address area article aside audio b base bdi bdo big blockquote body br
@@ -197,6 +200,6 @@ link main map mark menu menuitem meta meter nav noscript object ol optgroup
 option output p param picture pre progress q rp rt ruby s samp script section
 select small source span strong style sub summary sup table tbody td textarea
 tfoot th thead time title tr track u ul var video wbr`.replace(/\n/g, ' ').split(' ').forEach(tag => {
-  const exportName = `${tag.charAt(0).toUpperCase()}${tag.slice(1)}`;
-  Tags[exportName] = toSubscribable(tag);
-});
+    const exportName = `${tag.charAt(0).toUpperCase()}${tag.slice(1)}`;
+    Tags[exportName] = toSubscribable(tag);
+  });

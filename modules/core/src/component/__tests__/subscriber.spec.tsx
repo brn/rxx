@@ -10,8 +10,10 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *  
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @fileoverview 
  * @author Taketoshi Aono
  */
@@ -24,10 +26,10 @@ import {
 import * as React from 'react';
 import {
   render
-}                 from 'react-dom';
+} from 'react-dom';
 import {
   Subject
-}                 from 'rxjs/Rx';
+} from 'rxjs/Rx';
 import {
   Subscriber
 } from '../subscriber';
@@ -35,15 +37,10 @@ import {
   Tags as T
 } from '../tags';
 import {
-  ContextType
-} from '../context';
-import {
-  createModule
-} from '../../di/abstract-module';
-import {
   expect
 } from 'chai';
 
+const WAIT_TIME_MS = 100;
 
 describe('combinator.tsx', () => {
   describe('Subscriber', () => {
@@ -70,7 +67,7 @@ describe('combinator.tsx', () => {
         expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
-      }, 100);
+      }, WAIT_TIME_MS);
     });
 
 
@@ -78,6 +75,7 @@ describe('combinator.tsx', () => {
       const className1 = new Subject();
       const className2 = new Subject();
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
+
       const el = render(
         <Subscriber ignoreSubtree={true}>
           <div className={className1 as any}>
@@ -97,14 +95,14 @@ describe('combinator.tsx', () => {
         expect(div.querySelector('#test-el').className).to.be.eq('[object Object]');
         div.parentNode.removeChild(div);
         done();
-      }, 100);
+      }, WAIT_TIME_MS);
     });
   });
 
   describe('Tags', () => {
     it('Subscribe all observable', done => {
       const className1 = new Subject<string>();
-      const className2 = new Subject();
+      const className2 = new Subject<string>();
       const text = new Subject();
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
       const Test = () => {
@@ -118,7 +116,7 @@ describe('combinator.tsx', () => {
         );
       };
 
-      const el = render(<Test/>, div);
+      const el = render(<Test />, div);
       className1.next('className1');
       className2.next('className2');
       text.next('test-text');
@@ -131,29 +129,28 @@ describe('combinator.tsx', () => {
         expect(div.querySelector('.className3').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
-      }, 100);
+      }, WAIT_TIME_MS);
     });
-    
+
     it('Subscribe all observable', done => {
-      const className1 = new Subject();
-      const className2 = new Subject();
+      const className1 = new Subject<string>();
+      const className2 = new Subject<string>();
       const text = new Subject();
       const pub1 = className1.startWith('').publish();
       const pub2 = className2.startWith('').publish();
       const pub3 = text.startWith('').publish();
       const div = document.body.appendChild(document.createElement('div')) as HTMLDivElement;
       class Span extends React.Component<any, any> {
-        public render(){
+        public render() {
           return <T.Span ref="bar" className={this.props.pub2}>{this.props.text}</T.Span>;
         }
       }
       class Test extends React.Component<any, any> {
-        public context: ContextType;
         public render() {
           return (
             <T.Div className={pub1} ref="foo">
               <div className="hoge">
-                <Span ref="bar" pub2={pub2} text={pub3}/>
+                <Span ref="bar" pub2={pub2} text={pub3} />
               </div>
             </T.Div>
           );
@@ -168,16 +165,16 @@ describe('combinator.tsx', () => {
           className2.next('className2');
           text.next('test-text');
         }
-      };
+      }
 
-      render(<Test/>, div);
+      render(<Test />, div);
       setTimeout(() => {
         expect(!!div.querySelector('.className1')).to.be.eq(true);
         expect(!!div.querySelector('.className2')).to.be.eq(true);
         expect(div.querySelector('.className2').textContent).to.be.eq('test-text');
         div.parentNode.removeChild(div);
         done();
-      }, 100);
+      }, WAIT_TIME_MS);
     });
 
 
@@ -188,18 +185,18 @@ describe('combinator.tsx', () => {
         public render() {
           return (
             <Subscriber>
-              {ob.map(v => <span className={`test-${v}`}/>)}
+              {ob.map(v => <span className={`test-${v}`} />)}
             </Subscriber>
           );
         }
-      };
+      }
 
-      render(<Test/>, div);
+      render(<Test />, div);
       setTimeout(() => {
         expect(!!div.querySelector('.test-1')).to.be.eq(true);
         div.parentNode.removeChild(div);
         done();
-      }, 100);
+      }, WAIT_TIME_MS);
     });
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/core",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,10 @@
     "minor-and-publish": "node ../../node_modules/.bin/gulp publish-minor --cwd",
     "publish-only": "node ../../node_modules/.bin/gulp publish --cwd",
     "test": "node ../../node_modules/.bin/gulp test --cwd",
+    "test-phantom": "node ../../node_modules/.bin/gulp test-phantom --cwd",
     "tdd": "node ../../node_modules/.bin/gulp tdd --cwd",
-    "test-chrome": "node ../../node_modules/.bin/gulp test-chrome --cwd",
-    "pre-publish": "node node_modules/.bin/gulp pre-publish --cwd"
+    "pre-publish": "node node_modules/.bin/gulp pre-publish --cwd",
+    "link": "npm run pre-publish && gulp copy-linked-core"
   },
   "repository": {
     "type": "git",
@@ -31,26 +32,31 @@
     "url": "https://github.com/brn/react-mvi/issues"
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
+  "dependencies": {},
   "devDependencies": {
     "@react-mvi/testing": "^0.0.19",
     "@types/chai": "^3.5.2",
     "@types/mocha": "^2.2.41",
     "@types/prop-types": "^15.5.1",
-    "@types/react": "^0.14.55",
-    "@types/react-addons-test-utils": "^0.14.15",
-    "@types/react-dom": "^0.14.19",
+    "@types/react": "^15.0.38",
+    "@types/react-addons-test-utils": "^0.14.19",
+    "@types/react-dom": "^15.5.1",
+    "@types/react-test-renderer": "^15.5.2",
     "chai": "^4.0.0",
     "gulp": "^3.9.1",
     "ink-docstrap": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
     "prop-types": "^15.5.10",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "rxjs": "^5.4.0"
+    "react": "^15.6.1",
+    "react-addons-test-utils": "^15.6.0",
+    "react-dom": "^15.6.1",
+    "react-test-renderer": "^15.6.1",
+    "rxjs": "^5.4.2",
+    "typescript": "^2.4.1"
   },
   "peerDependencies": {
-    "react": "^15.5.2",
-    "rxjs": "^5.4.0",
-    "react-dom": "^15.5.4"
+    "react": ">= 15.0.0 <= 15.6.1",
+    "react-dom": ">= 15.0.0 <= 15.6.1",
+    "rxjs": ">= 5.0.0 <= 5.4.2"
   }
 }

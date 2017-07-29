@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/http",
-  "version": "0.5.5",
+  "version": "1.0.0",
   "description": "Http IO module for React MVI.",
   "main": "index.js",
   "scripts": {
@@ -32,11 +32,9 @@
     "url": "https://github.com/brn/react-mvi/issues"
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
-  "peerDependencies": {
-    "@react-mvi/core": "^0.5.0"
-  },
+  "peerDependencies": {},
   "devDependencies": {
-    "@react-mvi/core": "^0.5.0",
+    "@react-mvi/core": "^1.0.0",
     "@react-mvi/testing": "^1.0.0",
     "@types/chai": "^4.0.0",
     "@types/mocha": "^2.2.41",
@@ -46,8 +44,8 @@
     "core-js": "^2.4.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "rxjs": "^5.4.0",
-    "typescript": "^2.3.4",
+    "rxjs": "^5.4.2",
+    "typescript": "^2.4.2",
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {}
