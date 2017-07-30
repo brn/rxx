@@ -1,87 +1,152 @@
+/**
+ * @fileoverview
+ * @author Taketoshi Aono
+ */
+
+
 import * as React from 'react';
+import {
+  render
+} from 'react-dom';
 import {
   Observable
 } from 'rxjs/Rx';
 import {
-  createModule,
-  component,
-  IOResponse,
-  Tags as T,
-  run,
-  service
-} from '@react-mvi/core'
+  connect,
+  HandlerResponse,
+  intent,
+  registerHandlers,
+  Provider,
+  Store,
+  store,
+  Tags as T
+} from '@react-mvi/core';
 import {
-  EventDispatcher
-} from '@react-mvi/event'
-import {
-  HttpRequest,
+  HttpHandler,
   HttpResponse,
   HttpMethod,
+  HttpConfig,
   ResponseType
-} from '@react-mvi/http'
+} from '@react-mvi/http';
 
 
-class Repository {
-  public getCounterRequest(counterStream: Observable<number>) {
-    return counterStream.map(counterValue => ({
-      url: '/count',
-      method: HttpMethod.POST,
-      json: true,
-      responseType: ResponseType.JSON,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {
-        count: counterValue
+interface ViewState {
+  view: {
+    counter: number;
+  };
+}
+
+interface HttpState {
+  http: { [key: string]: HttpConfig };
+}
+
+type ObservableViewState = {
+  view: {[P in keyof ViewState['view']]: Observable<ViewState['view'][P]> };
+};
+
+type ObservableHttpState = {
+  http: { [key: string]: Observable<HttpConfig> };
+};
+
+
+type State = ViewState & HttpState;
+type ObservableState = ObservableViewState & ObservableHttpState;
+
+
+@intent
+class Intent {
+  private http: HandlerResponse;
+
+  private intent: HandlerResponse;
+
+  public plus() {
+    return this.intent.for<number, State>('counter::plus').share();
+  }
+
+  public minus() {
+    return this.intent.for<number, State>('counter::minus').share();
+  }
+
+  public saved(): Observable<{ count: number }> {
+    return this.http.for<HttpResponse<{ count: number }, void>, State>('counter::save')
+      .filter(({ data }) => data.ok)
+      .map(({ data }) => data.response)
+      .share();
+  }
+}
+
+
+@store
+class HttpStore implements Store<ObservableHttpState> {
+  private intent: Intent;
+
+  public initialize() {
+    const stream = this.intent.plus().mapTo(1)
+      .merge(this.intent.minus().mapTo(-1))
+      .scan((acc, next) => acc + next, 0);
+
+    return {
+      http: {
+        'counter::save': stream.map(count => ({
+          url: '/count',
+          method: HttpMethod.POST,
+          json: true,
+          responseType: ResponseType.JSON,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: {
+            count
+          }
+        }))
       }
-    }));
+    };
   }
 }
 
 
-class UseCase {
-  public getCounterValue(event: IOResponse) {
-    return event.for('counter::plus').mapTo(1)
-      .merge(event.for('counter::minus').mapTo(-1))
-      .scan((acc: number, e: number) => {
-        return acc + e;
-      }, 0)
+@store
+class ViewStore implements Store<ObservableViewState> {
+  private intent: Intent;
+
+  public initialize(): ObservableViewState {
+    return {
+      view: {
+        counter: this.intent.saved().map(({ count }) => count)
+      }
+    };
   }
 }
 
+registerHandlers({ http: new HttpHandler() });
 
-const Service = service(({http, event}: {[key: string]: IOResponse}, injector) => {
-  const repository = injector.get('repository');
-  const usecase = injector.get('usecase');
-  const counterRequest = repository.getCounterRequest(usecase.getCounterValue(event));
-  return {
-    http: {
-      'counter::mutate': counterRequest.publish()
-    },
-    view: {
-      counter: http.for<HttpResponse<{count: number}, void>>('counter::mutate').map(e => e.response.count).share().startWith(0)
-    }
+
+type ViewProps = {
+  onPlus(): void;
+  onMinus(): void;
+} & ObservableViewState['view'];
+
+
+const View = connect({
+  mapIntentToProps(intent) {
+    return {
+      onPlus: intent.callback('counter::plus'),
+      onMinus: intent.callback('counter::minus'),
+    };
+  }
+})(class View extends React.Component<ViewProps, {}> {
+  public render() {
+    return (
+      <div>
+        <button onClick={this.props.onPlus}>Plus</button>
+        <button onClick={this.props.onMinus}>Minus</button>
+        <T.Div>conter value is {this.props.counter}</T.Div>
+      </div>
+    );
   }
 });
 
-
-const module = createModule(config => {
-  config.bind('http').to(HttpRequest);
-  config.bind('event').to(EventDispatcher);
-  config.bind('usecase').to(UseCase);
-  config.bind('repository').to(Repository);
-  config.bind('aService').toInstance(Service);
-});
-
-
-const View = component((props: {counter: Observable<number>}, context) => {
-  return (
-    <div>
-      <button onClick={context.io.event.callback('counter::plus')}>Plus</button>
-      <button onClick={context.io.event.callback('counter::minus')}>Minus</button>
-      <T.Div>conter value is {props.counter}</T.Div>
-    </div>
-  )
-});
-
-run({component: View, modules: [module]}, document.querySelector('#app'));
+render(
+  <Provider intent={Intent} store={[ViewStore, HttpStore]}>
+    <View />
+  </Provider>, document.querySelector('#app'));
