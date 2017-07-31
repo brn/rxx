@@ -1,0 +1,15 @@
+{
+  "name": "<%= appName %>",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bundle": "node node_modules/.bin/webpack",
+    "start": "gulp serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {}
+}
