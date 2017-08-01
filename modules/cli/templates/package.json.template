@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "bundle": "node node_modules/.bin/webpack",
-    "start": "gulp serve"
+    "test": "karma start --single-run --browsers ChromeHeadless",
+    "start": "node node_modules/.bin/webpack-dev-server --config webpack.dev.config.js --hot"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "<%= author %>",
+  "license": "<%= license %>",
   "private": true,
   "dependencies": {},
   "devDependencies": {}

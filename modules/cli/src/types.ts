@@ -25,6 +25,8 @@ import {
 
 export interface GeneratorRequirements {
   appName: string;
+  author: string;
+  license: string;
   additionalModules: string[];
   language: LanguageType;
 }

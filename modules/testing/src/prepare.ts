@@ -31,16 +31,14 @@ import {
 } from '@react-mvi/core';
 import {
   Mocker,
-  MockManipulater
+  MockManipulator
 } from './mocker';
 
 
 export type Prepared<V> = {
   stores: Store<V>[];
   store: Store<V>;
-  intent: Mocker;
-  mock: MockManipulater;
-  intentInstance: any;
+  mock: MockManipulator;
 };
 
 
@@ -68,17 +66,12 @@ export function prepareTest<T extends IntentConstructor, U extends StoreConstruc
   }
 
   const context = { state: opt.state, __intent: null };
-  const provisioning = new Provisioning(context, IntentClass, StoreClass, opt.services || {});
+  const provisioning = new Provisioning(context, IntentClass, StoreClass, opt.services || {}, intent => new Mocker(intent, opt.state));
   provisioning.prepare();
-  const mock = new Mocker(
-    provisioning.getIntentInstance(),
-    provisioning.getState());
 
   return {
     store: provisioning.getStores()[0],
     stores: provisioning.getStores(),
-    mock: new MockManipulater(mock),
-    intent: mock,
-    intentInstance: provisioning.getIntent()
+    mock: new MockManipulator(provisioning.getIntentInstance())
   };
 }

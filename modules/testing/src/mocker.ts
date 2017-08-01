@@ -24,9 +24,18 @@ import {
 import * as _ from 'lodash';
 
 
+const sym = s => typeof Symbol === 'function' ? Symbol(s) : `@@${s}`;
+
+
+const STATE_SYM = sym('ReactMVIMockedIntentState');
+const SUBJECT_SYM = sym('ReactMVIMockedIntentSubject');
+
 export class Mocker {
-  public constructor(intent: any, private state: any) {
-    let proto = intent;
+  public constructor(private intent: any, private state: any) {
+    this[SUBJECT_SYM] = {};
+    this[STATE_SYM] = this.state;
+
+    let proto = this.intent;
     while (proto && proto !== Object.prototype) {
       _.keys(proto).forEach(key => {
 
@@ -38,10 +47,10 @@ export class Mocker {
         if (descriptor) {
           if (descriptor.get) {
             const clone: PropertyDescriptor = { ...descriptor };
-            clone.get = this.__proxify(key);
+            clone.get = Mocker.proxify(this, key);
             Object.defineProperty(this, key, clone);
           } else if (typeof descriptor.value === 'function') {
-            this[key] = this.__proxify(key);
+            Mocker.proxify(this, key);
           }
         }
       });
@@ -50,27 +59,28 @@ export class Mocker {
   }
 
 
-  private __proxify(methodName: string) {
-    this[`${methodName}__subject__`] = new Subject<any>();
+  private static proxify(mocker: Mocker, methodName: string) {
+    mocker[SUBJECT_SYM][methodName] = new Subject<any>();
 
     return () => {
-      return this[`${methodName}__subject__`].share();
+      return mocker[SUBJECT_SYM][methodName].share();
     };
   }
 
-
-  public getState() { return this.state; }
 }
 
 
-export class MockManipulater {
+export class MockManipulator {
   constructor(private mocker: Mocker) { }
 
-  public send(name: string, data: any) {
-    MockManipulater.send(this.mocker, name, data);
+  public send(name: string, data: any = {}) {
+    MockManipulator.send(this.mocker, name, data);
   }
 
-  public static send(mock: Mocker, name: string, data: any) {
-    mock[`${name}__subject__`].next({ data, state: mock.getState() });
+  public static send(mock: Mocker, name: string, data: any = {}) {
+    if (!mock[SUBJECT_SYM][name]) {
+      throw new Error(`$[name} is not valid property name.`);
+    }
+    mock[SUBJECT_SYM][name].next({ data, state: mock[STATE_SYM] });
   }
 }

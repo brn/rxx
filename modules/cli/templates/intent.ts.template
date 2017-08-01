@@ -10,6 +10,10 @@ import {
 
 
 @intent
-export class AppIntent {
+export class <%= classNamePrefix %>Intent {
   private intent: HandlerResponse;
+
+  public get onMounted() {
+    return this.intent.for<{}, {}>('app::mounted').share();
+  }
 }

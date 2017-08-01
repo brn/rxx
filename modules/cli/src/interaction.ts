@@ -17,17 +17,16 @@
  * @author Taketoshi Aono
  */
 
+declare module 'util' {
+  export function promisify(fn: Function): (...args: any[]) => Promise<any>;
+}
+
 import {
   GeneratorRequirements
 } from './types';
 import {
   LanguageType
 } from './options';
-
-declare module 'util' {
-  export function promisify(fn: Function): (...args: any[]) => Promise<any>;
-}
-
 import * as readline from 'readline';
 import {
   promisify
@@ -41,12 +40,12 @@ export class Interaction {
       output: process.stdout
     });
 
-    const question = promisify((question, callback) => {
-      rl.question(question, callback.bind(null, null));
-    });
+    const question = question => {
+      return new Promise<string>(r => rl.question(question, r));
+    };
 
     const getAppName = async () => {
-      const appName = await question('Application name?');
+      const appName = await question('Application name (default app)? ').then(v => v || 'app');
       if (!appName) {
         console.warn('Application name is required!');
 
@@ -59,17 +58,32 @@ export class Interaction {
 
       return appName;
     };
-    const appName = getAppName();
+    const appName = await getAppName();
 
-    const flagInstallAddtional = await question('Install addition module? (y/n)');
+    const license = await question('License? ');
+
+    const author = await question('Author? ');
+
+    const getFlagInstallAdditional = async () => {
+      const flag = await question('Install addition module? (default no) [y/n] ').then(v => v || 'n');
+      const yn = flag.toLowerCase();
+      if (yn !== 'y' && yn !== 'n') {
+        await getFlagInstallAdditional();
+      }
+
+      return yn === 'y';
+    };
+
+    const flagInstallAddtional = await getFlagInstallAdditional();
     let additionalModules = [];
     if (flagInstallAddtional) {
-      const additionalModuleNames = await question('Input additional module names (comma separeated list like "react,read-dom")');
+      const additionalModuleNames = await question('Input additional module names (comma separeated list like "react,read-dom") ');
       additionalModules = additionalModuleNames.split(',').map(v => v.trim());
     }
 
     const getLanguage = async () => {
-      const language = await question('Language are you want to use? (default ts) [ts/js]');
+      const languageInput = await question('Language are you want to use? (default ts) [ts/js] ').then(v => v || 'ts');
+      const language = languageInput.toLowerCase();
       if (language !== 'ts' && language !== 'js') {
         return await getLanguage();
       }
@@ -78,10 +92,42 @@ export class Interaction {
     };
     const language = await getLanguage();
 
-    return {
+    const result = {
       appName,
+      license,
       additionalModules,
-      language
+      language,
+      author
     };
+
+    this.print(result);
+    const isSure = async () => {
+      const ret = await question('Are you sure? [y/n] ');
+      const answer = ret.toLowerCase();
+      if (answer !== 'y' && answer !== 'n') {
+        return await isSure();
+      }
+
+      return answer === 'y';
+    };
+    const sure = await isSure();
+
+    if (sure) {
+      return result;
+    } else {
+      process.exit(0);
+    }
+
+    return result;
+  }
+
+
+  private static print(conf: GeneratorRequirements) {
+    console.log('====== CONFIGURATIONS ======');
+    console.log(`Application Name: ${conf.appName}`);
+    console.log(`Author: ${conf.author}`);
+    console.log(`License: ${conf.license}`);
+    console.log(`Additional Modules: ${conf.additionalModules}`);
+    console.log(`Language: ${LanguageType[conf.language].toLowerCase()}`);
   }
 }

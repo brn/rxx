@@ -51,7 +51,7 @@ const REACT_ELEMENT_TYPEOF = React.createElement('div', {})['$$typeof'];
 /*tslint:enable:no-string-literal*/
 
 
-const SYMBOL_KEY = '__react_mvi_subscriber__';
+const SYMBOL_KEY = '@@ReactMviSubscriber';
 /**
  * If this symbol was set to static property,
  * that mean this component is process Observable.

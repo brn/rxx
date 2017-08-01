@@ -147,7 +147,8 @@ export class Provisioning<ContextType extends { state: any; __intent: Intent }> 
     private context: ContextType,
     IntentClass: IntentConstructor,
     Store: StoreConstructor<any, any> | StoreConstructor<any, any>[],
-    private service: { [key: string]: any }) {
+    private service: { [key: string]: any },
+    private intentAdvice: (intentInstance: any) => any = v => v) {
     this.IntentClass = IntentClass;
     const stores: StoreConstructor<any, any>[] = this.storeConstructors = isArray(Store) ? Store : [Store];
   }
@@ -175,10 +176,10 @@ export class Provisioning<ContextType extends { state: any; __intent: Intent }> 
     if (!this.cache) {
       this.cache = {} as any;
 
-      const intentInstance = this.cache.intentInstance = new this.IntentClass({
+      const intentInstance = this.cache.intentInstance = this.intentAdvice(new this.IntentClass({
         intent: this.intent.response,
         ...mapValues(getHandlers(), v => v.response)
-      }) as any;
+      })) as any;
 
       const storeGroup = this.cache.storeGroup = new StoreGroup(intentInstance, this.storeConstructors, this.service);
       const intentHandler = this.cache.intentHandler = generateIntentHandler(this.intent);

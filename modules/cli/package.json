@@ -1,18 +1,22 @@
 {
-  "name": "cli",
+  "name": "@react-mvi/cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Commadline tools for react-mvi.",
+  "main": "lib/cli.js",
+  "bin": {
+    "rmvi": "lib/cli.js"
   },
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "bundle": "npx tsc -p tsconfig.json --outDir lib"
+  },
+  "author": "brn(Taketoshi Aono)",
+  "license": "MIT",
   "dependencies": {
     "ejs": "^2.5.7"
   },
   "devDependencies": {
     "@types/ejs": "^2.3.33",
+    "@types/npm": "^2.0.28",
     "typescript": "^2.4.2"
   }
 }

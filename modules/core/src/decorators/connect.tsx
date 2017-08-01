@@ -45,7 +45,7 @@ export function connect<T>(args: ConnectArgs = DEFAULT) {
     mapIntentToProps = i => ({})
   } = args;
 
-  return <T extends React.ComponentClass<any>>(C: T) => {
+  return <T extends React.ComponentClass<any>>(C: T): React.ComponentClass<any> => {
 
     // Set context type to passed to component.
     C.contextTypes = CONTEXT_TYPES;
@@ -96,4 +96,3 @@ export function connect<T>(args: ConnectArgs = DEFAULT) {
     };
   };
 }
-

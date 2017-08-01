@@ -6,6 +6,16 @@
   version "2.3.33"
   resolved "https://registry.yarnpkg.com/@types/ejs/-/ejs-2.3.33.tgz#0a4e0a7aeee09944154b06ce5a2ac6a118f92b00"
 
+"@types/node@*":
+  version "8.0.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.17.tgz#677bc8c118cfb76013febb62ede1f31d2c7222a1"
+
+"@types/npm@^2.0.28":
+  version "2.0.28"
+  resolved "https://registry.yarnpkg.com/@types/npm/-/npm-2.0.28.tgz#0ab7f460afc9aeeee46194389766031bc714520c"
+  dependencies:
+    "@types/node" "*"
+
 ejs@^2.5.7:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.7.tgz#cc872c168880ae3c7189762fd5ffc00896c9518a"

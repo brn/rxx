@@ -34,9 +34,10 @@ const exec         = require('child_process').execSync;
 
 
 const DIST = 'dist/';
-const TYPESCRIPT_DIST = `${process.cwd()}/lib`;
-const BIN_DIR = path.resolve(process.cwd(), './node_modules/.bin/') + '/';
-const EXCLUDES = /\.linked-core|core|dom-storage/;
+const TYPESCRIPT_DIST = `${process.cwd()}/lib/cjs`;
+const TYPESCRIPT_NEXT_DIST = `${process.cwd()}/lib/esnext`;
+const BIN_DIR = path.resolve(__dirname, './node_modules/.bin/') + '/';
+const EXCLUDES = /\.linked-core|core|dom-storage|cli/;
 const MODULES = fs.readdirSync(`${__dirname}/modules`).filter(v => !EXCLUDES.test(v));
 
 gulp.task('publish-all', () => {
@@ -74,6 +75,13 @@ gulp.task('docs', () => {
 });
 
 
+gulp.task('rollup', ['typescript-next'], () => {
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.cjs.js -o ./lib/dist/index.cjs.js`);
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.es.js -o ./lib/dist/index.esm.js`);
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.iife.js -o ./lib/dist/index.iife.js`);
+});
+
+
 /**
  * Compile typescript.
  */
@@ -88,6 +96,26 @@ gulp.task('typescript', ['clean'], () => {
   return merge([
     tsResult.js.pipe(gulp.dest(TYPESCRIPT_DIST)),
     tsResult.dts.pipe(gulp.dest(TYPESCRIPT_DIST)),
+  ]);
+});
+
+
+/**
+ * Compile typescript.
+ */
+gulp.task('typescript-next', ['typescript'], () => {
+  const tsp = tsc.createProject('tsconfig.json', {
+    typescript: require('typescript'),
+    declaration: false,
+    target: 'ESNext',
+    module: 'ES6'
+  });
+  const tsResult = gulp.src(['src/*', 'src/**/*', '!src/typings/main.d.ts', '!src/typings/main/**/*', '!src/**/__tests__/**', '!src/testing/**/*'])
+          .pipe(tsp());
+  tsResult.on('error', () => process.exit(1));
+  return merge([
+    tsResult.js.pipe(gulp.dest(TYPESCRIPT_NEXT_DIST)),
+    tsResult.dts.pipe(gulp.dest(TYPESCRIPT_NEXT_DIST)),
   ]);
 });
 
@@ -125,7 +153,13 @@ gulp.task('unlink', ()=> {
   MODULES.forEach(module => {
     process.chdir(`${__dirname}/modules/${module}`);
     try {
-      exec(`rm node_modules/@react-mvi/core`, {stdio: [0,1,2]});
+      exec(`yarn remove @react-mvi/core`, {stdio: [0,1,2]});
+    } catch(e) {}
+    try {
+      fs.removeSync('node_modules/@react-mvi/core');
+    } catch(e) {}
+    try {
+      fs.mkdirSync('node_modules/@react-mvi');
     } catch(e) {}
   });
 });
@@ -147,6 +181,7 @@ gulp.task('copy-linked-core', ['unlink'], () => {
     } catch(e) {}
     fs.copySync(`${__dirname}/modules/core/lib`, `${__dirname}/modules/${targetModule}/${LINKED_CORE}`);
     process.chdir(`${__dirname}/modules/${targetModule}`);
+    fs.removeSync(`node_modules/@react-mvi/core`);
     exec(`ln -s ${__dirname}/modules/${targetModule}/${LINKED_CORE} node_modules/@react-mvi/core`, {stdio: [1,2,3]});
   }
 
@@ -154,7 +189,7 @@ gulp.task('copy-linked-core', ['unlink'], () => {
 });
 
 
-gulp.task('check-releasable', ['typescript'], runKarma.bind(null, true, 'PhantomJS'));
+gulp.task('check-releasable', ['rollup'], runKarma.bind(null, true, 'PhantomJS'));
 
 
 gulp.task('pre-publish-with-patch', ['check-releasable'], () => {
@@ -185,8 +220,6 @@ gulp.task('pre-publish', ['check-releasable'], () => {
 
 
 function doPrepublish(pkg) {
-  glob.sync('./src/*').filter(file => file.indexOf('__tests__') === -1).forEach(file => fs.copySync(file, `./lib/${file.replace('src', '')}`));
-  pkg.main = 'index.js';
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
   fs.copySync('./package.json', './lib/package.json');
   try {

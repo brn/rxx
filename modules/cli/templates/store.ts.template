@@ -7,14 +7,22 @@ import {
   store,
   Store
 } from '@react-mvi/core';
+import {
+  Observable
+} from 'rxjs/Rx';
+import {
+  <%= classNamePrefix %>Intent
+} from '../intents/intent';
 
 
 @store
-export class <%= ClassNamePrefix %>Store implements Store<> {
+export class <%= classNamePrefix %>Store implements Store<{view: {greeting: Observable<string>}}> {
+  private intent: <%= classNamePrefix %>Intent;
+
   public initialize() {
     return {
       view: {
-
+        greeting: this.intent.onMounted.mapTo('Hello World!').startWith('')
       }
     };
   }

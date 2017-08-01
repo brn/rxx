@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -25,12 +26,16 @@ import {
 import {
   Generator
 } from './generator';
+import {
+  PostInstalls
+} from './post-installs';
 
 
 async function main() {
   try {
     const opt = await Interaction.collectInformation();
     new Generator(opt).generate();
+    await PostInstalls.run();
   } catch (e) {
     console.error(e);
     process.exit(1);
@@ -38,4 +43,4 @@ async function main() {
 }
 
 
-main();
+main().then(c => process.exit(0), c => process.exit(1));

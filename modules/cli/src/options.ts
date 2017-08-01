@@ -18,7 +18,12 @@
  */
 
 
-export const enum LanguageType {
+export enum LanguageType {
   TS = 1,
   JS = 2
+}
+
+
+export function npx(b: string) {
+  return `node_modules/.bin/${b}`;
 }
