@@ -18,23 +18,30 @@ import {
 
 
 export class MyHandler extends StateHandler {
+ /**
+  * Subscribe create subscription for Observables defined in State that created in Store.
+  */
   subscribe(props: {[key: string]: Observable<any>}): Subscription {
     const sub = new Subscription();
     if (props['my-state']) {
       const obs = props['my-state'];
-      for (let key in obs) {this.handleRequest(obs[key], key, sub)}
+      Object.keys(obs).forEach(k => {
+        sub.add(obs[k].subscribe(v => this.push(k, v)));
+      });
     }
     return sub;
   }
 
-  handleRequest(subject, key, sub) {
-    sub.add(obs[key].subscribe(v => {
-      MyApi.post(v).then(res => {
-        this.store.get(key).forEach(subject => {
-         subject.next(res);
-        })
-      });
-    }));
+ /**
+  * Push is main process of StateHandler.
+  * This method should be callable from external.
+  */
+  push(key: string, request: Object) {
+    MyApi.post(request).then(res => {
+      this.store.get(key).forEach(subject => {
+        subject.next(res);
+      })
+    });
   }
 }
 ```

@@ -12,6 +12,7 @@ That has map function like `mapStateToProps` and `mapIntentToProps`.
 
 ### Options
 
+```typescript
 connect({
   /**
    * mapStateToProps convert state to ReactComponent props.
@@ -34,6 +35,7 @@ connect({
     }
   }
 })
+```
 
 ### Use with typescript
 
@@ -52,7 +54,7 @@ export interface Props {
   ...
 }
 
-export const Component = connect(class Component extends React.Component<Props, {}> {
+export const Component = connect()(class Component extends React.Component<Props, {}> {
   public context: ProviderContextType<{}>;
 
   render() {

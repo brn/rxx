@@ -44,7 +44,7 @@ And Store class must decorated by `store` decorator, that decorator merge intent
 
 ### Store.initialize return value
 
-Store class must return value as showed in below.
+Store class must return value as shown in below.
 
 ```typescript
 return {
@@ -57,18 +57,18 @@ return {
 }
 ```
 
-That return value has the __view__ section and other StateHandler specific sections.
+That return value has the __view__ section and other section is StateHandler specific sections.
 
 
 ### View Section
 
 In brief,  
 the __view__ section is handled by [React Component that connected to Provider](./create_connected_component.md).  
-And only __view__ section is passed to the view component.
+And only __view__ section is passed to the Root Component.
 
 
 ### StateHandler Specific Section
 
 The StateHandler specific sections are defined by each StateHandlers.  
 In above examples __http__ section is StateHandler Specific Section that processed by `@react-miv/http`.
-Thease section is not decided by core modules, it's decided by each StateHandler modules.
+These section is not decided by core modules, it's decided by each StateHandler modules.

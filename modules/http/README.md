@@ -1,108 +1,71 @@
-# react-mvi/http
-react-mvi io module for http request.
+# @react-mvi/http
+
+react-mvi StateHandler for http request.
 
 ## Requirements
 
-- jspm > 0.17.0-beta.16
-- @react-mvi/core
+- @react-mvi/core >= 1.0.0
 
 ## Installation
 
-```jspm install @react-mvi/http=npm:@react-mvi/http```
-
-### For typescript user.
-
-Please install type definitions below.
-
-* ```typings install dt~react --save --global```
-* ```typings install dt~react-dom --save --global```
-
-Typescript version < 1.9
-
-tsconfig.json
-```json
-{
-  "compilerOptions": {
-    "target": "ES5",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "jsx": "React",
-    "module": "system",
-    "noImplicitAny": false
-  }
-}
-```
-
-```
-npm install @react-mvi/http
-```
-
-Typescript version >= 1.9
-
-tsconfig.json
-```json
-{
-  "compilerOptions": {
-    "target": "ES5",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "jsx": "React",
-    "module": "system",
-    "noImplicitAny": false
-    "baseDir": ".",
-    "baseURL": ".",
-    "paths": {
-      "@react-mvi/http": ["jspm_packages/npm/@react-mvi/http@{version-you-installed}/index.ts"],
-      ...
-    }
-  }
-}
-```
-
+```nps install @react-mvi/http```
 
 ## Usage
 
-First, register HttpRequest class to @react-mvi/core di container module.
+First, register HttpHandler to @react-mvi/core handlers by __registerHandlers__.
 
 ```typescript
 import {
-  AbstractModule
+  registerHandlers
 } from '@react-mvi/core';
 import {
-  HttpRequest
+  HttpHandler
 } from '@react-mvi/http';
 
 
-export class Module extends AbstractModule {
-  configure() {
-    this.bind('http').to(HttpRequest).asSingleton();
+registerHandlers({
+  http: new HttpHandler()
+})
+```
+
+`@react-mvi/http` use http property of Store returned object.
+
+See example below.
+
+Create request stream.
+
+```typescript
+// Send request.
+class AStore extends Store<{http: {[key: string]: HttpConfig}}> {
+  public render() {
+    return {
+      http: {
+        'app::requestSubmit': this.intent.onSubmit().mapTo({...})
+      }
+    }
   }
 }
 ```
 
-@react-mvi/http use http property of service returned object.
-
-See example below.
+Receive response with stream.
 
 ```typescript
-// Send request.
-const myService = service((io, injector) => {
-  ...
-  return {
-    http: {
-      'foo::bar': someHttpReq
-    }
+@intent
+class Intent {
+  private intent: HandlerResponse;
+  private http: HandlerResponse;
+  
+  public onSubmit() {
+    return this.intent.for('app::onSubmit');
   }
-})
-```
 
-```typescript
-// Receive response.
-http.response.for('foo::bar').map(res => res.response);
+  public onSubmitResponse() {
+    return this.http.for('app::requestSubmit');
+  }
+}
+
+// In Store.
+this.intent.onSubmitResponse().map(...)
 ```
 
 ## Request Specification

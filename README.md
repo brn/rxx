@@ -4,6 +4,7 @@ react-mvi is Model-View-Intent based minimal framework with Reactjs and RxJS.
 
 - We remove all `shouldComponentUpdate` from React by create each props as RxJS.Observable.
 - We built more redux user friendly Model-View-Intent framework than [cyclejs](http://cycle.js.org/).
+- Asynchronous process is no more problem, StateHandler make it easy and clean.
 - Command line tool has been prepared! as `@react-mvi/cli`
 
 Inspired by  
@@ -108,3 +109,5 @@ render(
 
 - [@react-mvi/core](modules/core)
 - [@react-mvi/http](modules/http)
+- [@react-mvi/testing](modules/testing)
+- [@react-mvi/cli](modules/cli)

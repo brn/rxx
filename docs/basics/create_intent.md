@@ -2,8 +2,8 @@
 
 ## What is Intent?
 
-Intent is `user will` so it's include click, touch, scroll, etc...
-So intent receive user will and convert it to RxJS Observable.
+Intent is `user will` that include click, touch, scroll, etc...  
+__Intent receive user will and convert it to RxJS Observable.__
 
 ### Implements Intent
 
