@@ -1,13 +1,12 @@
-# Create your own IO Modules.
+# Create your own StateHandler.
 
-This section describe how you create your own io module.
+This section describe how you create your own StateHandler.
 
 ## Examples
 
 ```typescript
 import {
-  Outlet,
-  io
+  StateHandler
 } from '@react-mvi/core';
 import {
   Observable,
@@ -18,12 +17,11 @@ import {
 } from './my-api';
 
 
-@io
-export class MyIOClass extends Outlet {
+export class MyHandler extends StateHandler {
   subscribe(props: {[key: string]: Observable<any>}): Subscription {
     const sub = new Subscription();
-    if (props['my-io']) {
-      const obs = props['my-io'];
+    if (props['my-state']) {
+      const obs = props['my-state'];
       for (let key in obs) {this.handleRequest(obs[key], key, sub)}
     }
     return sub;
@@ -46,14 +44,13 @@ Check these two line.
 
 
 ```typescript
-@io
-export class MyIOClass extends Outlet {
+export class MyHandler extends StateHandler {
 ```
 
 ```typescript
 this.store.get(key).forEach
 ```
 
-First, io module must decorated by io decorator.  
-Second, `this.store` is base class _Outlet_ protected property and holds some Rx.Subject with keys.  
-If your service accessed IOResponse.for(key), at same time Rx.Subject is made inside of Outlet.store with same key.
+First, StateHandler class must extends StateHandler.  
+Second, `this.store` is base class _StateHandler_ protected property and holds some Rx.Subject with keys.  
+If your Intent accessed HandlerResponse.for(key), at same time Rx.Subject is made inside of StateHandler.store with same key.

@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@types/commander@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/@types/commander/-/commander-2.9.1.tgz#d4e464425baf4685bd49dd233be11de9c00c0784"
+  dependencies:
+    "@types/node" "*"
+
 "@types/ejs@^2.3.33":
   version "2.3.33"
   resolved "https://registry.yarnpkg.com/@types/ejs/-/ejs-2.3.33.tgz#0a4e0a7aeee09944154b06ce5a2ac6a118f92b00"
@@ -15,6 +21,10 @@
   resolved "https://registry.yarnpkg.com/@types/npm/-/npm-2.0.28.tgz#0ab7f460afc9aeeee46194389766031bc714520c"
   dependencies:
     "@types/node" "*"
+
+commander@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
 ejs@^2.5.7:
   version "2.5.7"

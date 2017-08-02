@@ -27,6 +27,12 @@ import {
 import {
   GeneratorRequirements
 } from './types';
+import {
+  PackageManagerName,
+  PackageManagerFactory,
+  PackageManager,
+  PackageInstallType
+} from './package-manager';
 
 
 type JSON = { [key: string]: any };
@@ -46,7 +52,7 @@ const DEPENDENCIES = [
   'tslib',
   'es6-promise',
   'es6-symbol'
-].join(' ');
+];
 
 const DEV_DEPENDENCIES = [
   'webpack',
@@ -63,8 +69,11 @@ const DEV_DEPENDENCIES = [
   'karma-sourcemap-loader',
   'karma-mocha-reporter',
   'karma-webpack',
-  'webpack-dev-server'
-].join(' ');
+  'webpack-dev-middleware',
+  'webpack-hot-middleware',
+  'express',
+  'serve-static'
+];
 
 const TYPES = [
   '@types/react',
@@ -72,18 +81,30 @@ const TYPES = [
   '@types/prop-types',
   '@types/chai',
   '@types/mocha'
-].join(' ');
+];
 
 const DEV_TYPES = [
   '@types/chai',
   '@types/mocha'
-].join(' ');
+];
 
 function converNameToValidJSClassNamePrefix(appName: string): string {
   const baseName = `${appName[0].toUpperCase()}${appName.slice(1)}`;
 
   return baseName
     .replace(/(?:_+|-+)([a-zA-Z])/g, (_, $1) => $1.toUpperCase());
+}
+
+function mkdir(dirName: string) {
+  try {
+    fs.mkdirSync(dirName);
+  } catch (e) {
+    if (fs.existsSync(dirName)) {
+      return;
+    }
+    console.error(e);
+    process.exit(1);
+  }
 }
 
 export class Generator {
@@ -101,12 +122,15 @@ export class Generator {
 
   private author: string;
 
-  constructor({ appName, additionalModules, language, license, author }: GeneratorRequirements) {
+  private packageManager: PackageManager;
+
+  constructor({ appName, additionalModules, language, license, author, packageManager }: GeneratorRequirements) {
     this.appName = appName;
     this.additionalModules = additionalModules;
     this.language = language;
     this.license = license;
     this.author = author;
+    this.packageManager = PackageManagerFactory.create(packageManager);
     const prefix = converNameToValidJSClassNamePrefix(this.appName);
     this.templateGenerator = language === LanguageType.TS ?
       new TypescriptTemplateGenerator(prefix) : new JSTemplateGenerator(prefix);
@@ -117,6 +141,8 @@ export class Generator {
     this.initDependencies();
     this.deployWebpackConfigs();
     this.deployKarmaConfig();
+    this.deployCerts();
+    this.deployServer();
     this.templateGenerator.generate();
   }
 
@@ -125,8 +151,8 @@ export class Generator {
     const pkg = ejs.render(this.pkg, this);
     fs.writeFileSync('package.json', pkg);
     try {
-      execSync(`npm install ${DEPENDENCIES} ${this.language === LanguageType.TS ? TYPES : ''}`, { stdio });
-      execSync(`npm install ${DEV_DEPENDENCIES} ${this.language === LanguageType.TS ? DEV_TYPES : ''} -D`, { stdio });
+      this.packageManager.install(DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : []).concat(this.additionalModules));
+      this.packageManager.install(DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? DEV_TYPES : []), PackageInstallType.DEV);
     } catch (e) {
       console.error(e);
       process.exit(1);
@@ -135,11 +161,27 @@ export class Generator {
 
 
   private deployWebpackConfigs() {
-    ['webpack.config.js', 'webpack.dev.config.js', 'webpack.dll.config.js', 'webpack.dll.dev.config.js'].forEach(name => {
-      const conf = fs.readFileSync(`${TEMPLATE_DIR}/${name}.template`, 'utf8');
+    ['webpack.config.js', 'webpack.dll.config.js', 'index.html'].forEach(name => {
+      const conf = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/${name}.template`, 'utf8'), this);
       fs.writeFileSync(name, conf);
     });
   }
+
+
+  private deployCerts() {
+    mkdir('./certs');
+    ['server.key', 'server.crt'].forEach(name => {
+      const conf = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/certs/${name}`, 'utf8'), this);
+      fs.writeFileSync(`./certs/${name}`, conf);
+    });
+  }
+
+
+  private deployServer() {
+    const conf = fs.readFileSync(`${TEMPLATE_DIR}/server.js.template`, 'utf8');
+    fs.writeFileSync('server.js', conf);
+  }
+
 
   private deployKarmaConfig() {
     const conf = fs.readFileSync(`${TEMPLATE_DIR}/karma.conf.js.template`, 'utf8');
@@ -153,25 +195,8 @@ interface TemplateGenerator {
 }
 
 
-abstract class AbstractTemplateGenerator implements TemplateGenerator {
-  public abstract generate();
-
-  protected mkdir(dirName: string) {
-    try {
-      fs.mkdirSync(dirName);
-    } catch (e) {
-      if (fs.existsSync(dirName)) {
-        return;
-      }
-      console.error(e);
-      process.exit(1);
-    }
-  }
-}
-
-
-class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
-  constructor(private classNamePrefix: string) { super(); }
+class TypescriptTemplateGenerator implements TemplateGenerator {
+  constructor(private classNamePrefix: string) { }
 
   private static STORE_DIR = 'src/stores';
 
@@ -181,7 +206,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 
 
   public generate() {
-    this.mkdir('src');
+    mkdir('src');
     this.deployIndex();
     this.deployStore();
     this.deployTest();
@@ -208,7 +233,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployStore() {
     const dir = TypescriptTemplateGenerator.STORE_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const store = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/store.ts.template`, 'utf8'), this);
     const targetPath = `${dir}/store.ts`;
     if (fs.existsSync(targetPath)) {
@@ -224,7 +249,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployIntent() {
     const dir = TypescriptTemplateGenerator.INTENT_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const intent = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/intent.ts.template`, 'utf8'), this);
     const targetPath = `${dir}/intent.ts`;
     if (fs.existsSync(targetPath)) {
@@ -240,7 +265,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployView() {
     const dir = TypescriptTemplateGenerator.VIEW_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const view = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/component.tsx.template`, 'utf8'), this);
     const targetPath = `${dir}/app.tsx`;
     if (fs.existsSync(targetPath)) {
@@ -266,7 +291,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployTest() {
     const dir = TypescriptTemplateGenerator.STORE_DIR;
-    this.mkdir(`${dir}/__tests__`);
+    mkdir(`${dir}/__tests__`);
     const spec = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/store.spec.ts.template`, 'utf8'), this);
     const targetPath = `${dir}/__tests__/store.spec.ts`;
     if (fs.existsSync(targetPath)) {
@@ -281,7 +306,7 @@ class TypescriptTemplateGenerator extends AbstractTemplateGenerator {
 }
 
 
-class JSTemplateGenerator extends AbstractTemplateGenerator {
+class JSTemplateGenerator implements TemplateGenerator {
   private static STORE_DIR = 'lib/stores';
 
   private static INTENT_DIR = 'lib/intents';
@@ -289,11 +314,11 @@ class JSTemplateGenerator extends AbstractTemplateGenerator {
   private static VIEW_DIR = 'lib/views';
 
 
-  constructor(private classNamePrefix: string) { super(); }
+  constructor(private classNamePrefix: string) { }
 
 
   public generate() {
-    this.mkdir('lib');
+    mkdir('lib');
     this.deployIndex();
     this.deployStore();
     this.deployIntent();
@@ -317,7 +342,7 @@ class JSTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployStore() {
     const dir = JSTemplateGenerator.STORE_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const store = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/store.js.template`, 'utf8'), this);
     const targetPath = `${dir}/store.js`;
     if (fs.existsSync(targetPath)) {
@@ -333,7 +358,7 @@ class JSTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployIntent() {
     const dir = JSTemplateGenerator.INTENT_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const intent = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/intent.js.template`, 'utf8'), this);
     const targetPath = `${dir}/intent.js`;
     if (fs.existsSync(targetPath)) {
@@ -349,7 +374,7 @@ class JSTemplateGenerator extends AbstractTemplateGenerator {
 
   private deployView() {
     const dir = JSTemplateGenerator.VIEW_DIR;
-    this.mkdir(dir);
+    mkdir(dir);
     const view = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/component.jsx.template`, 'utf8'), this);
     const targetPath = `${dir}/app.jsx`;
     if (fs.existsSync(targetPath)) {

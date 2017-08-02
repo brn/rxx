@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "bundle": "node node_modules/.bin/webpack",
-    "test": "karma start --single-run --browsers ChromeHeadless",
-    "start": "node node_modules/.bin/webpack-dev-server --config webpack.dev.config.js --hot"
+    "dll-prod": "NODE_ENV=production node node_modules/.bin/webpack --config webpack.dll.config.js",
+    "dll-debug": "NODE_ENV=debug node node_modules/.bin/webpack --config webpack.dll.config.js",
+    "bundle": "NODE_ENV=production node node_modules/.bin/webpack",
+    "test": "NODE_ENV=debug karma start --single-run --browsers ChromeHeadless",
+    "start": "NODE_ENV=debug node server.js"
   },
   "author": "<%= author %>",
   "license": "<%= license %>",
   "private": true,
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "rmvi": {
+    "packageManager": "<%= packageManager.name %>"
+  }
 }

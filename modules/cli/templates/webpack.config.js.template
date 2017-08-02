@@ -5,22 +5,32 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const REACT_MVI_BASE_PATH = path.join(__dirname, "node_modules", "@react-mvi");
+
+const PRODUCTION = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: {
     app: "./src/index"
   },
   output: {
-    filename: "./dist/[name].js"
+    path: PRODUCTION? `${__dirname}/dist`: '/',
+    filename: "[name].js",
+    publicPath: '/dist/'
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"]
   },
+  devtool: PRODUCTION? 'inline-source-map': '',
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    ...(PRODUCTION? [
+      new webpack.optimize.UglifyJsPlugin(),
+    ]: [
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoEmitOnErrorsPlugin()
+    ]),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
+      'process.env.NODE_ENV': PRODUCTION? '"production"': '"debug"'
     }),
     new webpack.ProvidePlugin({
       'Promise': 'es6-promise',
@@ -30,13 +40,13 @@ module.exports = {
     }),
     new webpack.DllReferencePlugin({
       context: __dirname,
-      manifest: require('./dll/vendor.production-manifest.json')
+      manifest: PRODUCTION? require('./dll/vendor.production-manifest.json'):
+        require('./dll/vendor.development-manifest.json')
     })
   ],
   module: {
     rules: [
-      { test: /\.tsx?$/, loader: ['awesome-typescript-loader'], exclude: /node_modules/ },
-      { test: /\.dataurl$/, loader: 'raw-loader' }
+      { test: /\.tsx?$/, loader: ['awesome-typescript-loader'], exclude: /node_modules/ }
     ]
   }
 };

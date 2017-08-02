@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -19,18 +20,7 @@
 
 
 import {
-  LanguageType
-} from './options';
-import {
-  PackageManagerName
-} from './package-manager';
+  PostInstalls
+} from './post-installs';
 
-
-export interface GeneratorRequirements {
-  appName: string;
-  author: string;
-  license: string;
-  additionalModules: string[];
-  language: LanguageType;
-  packageManager: PackageManagerName;
-}
+PostInstalls.dev();

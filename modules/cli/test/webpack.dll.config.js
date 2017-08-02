@@ -7,9 +7,11 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
 module.exports = {
   entry: {
-    ['vendor.production']: [
+    [PRODUCTION? 'vendor.production': 'vendor.development']: [
       'es6-promise',
       'react',
       'react-dom',
@@ -21,6 +23,7 @@ module.exports = {
       'whatwg-fetch'
     ]
   },
+  devtool: PRODUCTION? 'inline-source-map': '',
   output: {
     filename: '[name].dll.js',
     path: `${__dirname}/dll`,
@@ -38,9 +41,12 @@ module.exports = {
       name: 'vendor_library'
     }),
 
-    new webpack.optimize.UglifyJsPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    })
+      'process.env.NODE_ENV': PRODUCTION? '"production"': '"debug"'
+    }),
+
+    ...(PRODUCTION? [
+      new webpack.optimize.UglifyJsPlugin(),
+    ]: [])
   ]
 };

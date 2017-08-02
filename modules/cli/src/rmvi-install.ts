@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -19,56 +20,30 @@
 
 
 import {
-  execSync
-} from 'child_process';
+  PostInstalls
+} from './post-installs';
 import {
-  npx
-} from './options';
+  pkg
+} from './pkg';
 import {
-  PackageManagerFactory,
   PackageInstallType
 } from './package-manager';
+import * as commander from 'commander';
 
 
-/*tslint:disable:no-magic-numbers*/
-const EXEC_OPT = { stdio: [0, 1, 2] };
-/*tslint:enable:no-magic-numbers*/
+commander
+  .version(pkg.version)
+  .option('-D, --dev', 'Install module in devDependencies.')
+  .option('--peer', 'Install module in peerDependencies.')
+  .parse(process.argv);
 
 
-export type InstallOpt = { modules: string[]; installType: PackageInstallType };
-
-
-export class PostInstalls {
-  public static async run() {
-    execSync(`npm run dll-prod`, EXEC_OPT);
-    execSync(`npm run dll-debug`, EXEC_OPT);
-  }
-
-  public static async update(pkg) {
-    const modules = [];
-    for (const dep in pkg.dependencies) {
-      if (dep.indexOf('@react-mvi') > -1) {
-        modules.push(dep);
-      }
-    }
-    const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-    packageManager.uninstall(modules);
-    packageManager.install(modules);
-  }
-
-
-  public static async dev() {
-    execSync('npm start', EXEC_OPT);
-  }
-
-
-  public static async build() {
-    execSync('npm run bundle', EXEC_OPT);
-  }
-
-
-  public static install(pkg: any, { modules, installType }: InstallOpt) {
-    const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-    packageManager.install(modules, installType);
-  }
+if (!pkg.version) {
+  throw new Error('install called before init.');
 }
+const modules = commander.args;
+PostInstalls.install(pkg, {
+  modules,
+  installType: commander.dev ? PackageInstallType.DEV :
+    PackageInstallType.PEER ? commander.peer : PackageInstallType.PROD
+});

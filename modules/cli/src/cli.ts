@@ -19,28 +19,23 @@
  */
 
 
-
-import {
-  Interaction
-} from './interaction';
-import {
-  Generator
-} from './generator';
-import {
-  PostInstalls
-} from './post-installs';
+import * as commander from 'commander';
 
 
-async function main() {
-  try {
-    const opt = await Interaction.collectInformation();
-    new Generator(opt).generate();
-    await PostInstalls.run();
-  } catch (e) {
-    console.error(e);
-    process.exit(1);
-  }
+commander
+  .command('init', 'Initialize react-mvi application.')
+  .command('update', 'Update react-mvi module.')
+  .command('build', 'Build your application.')
+  .command('dev', 'Build your application.')
+  .command('install <modules...>', 'Install module with specified package maanger.')
+  .alias('i');
+
+
+/*tslint:disable:no-magic-numbers*/
+if (!process.argv.slice(2).length) {
+  commander.outputHelp();
+  process.exit(1);
 }
+/*tslint:enable:no-magic-numbers*/
 
-
-main().then(c => process.exit(0), c => process.exit(1));
+commander.parse(process.argv);

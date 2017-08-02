@@ -25,6 +25,6 @@ render(
   <Provider intent={<%= classNamePrefix %>Intent} store={<%= classNamePrefix %>Store}>
     <<%= classNamePrefix %>Component/>
   </Provider>,
-  document.querySelector('app')
+  document.querySelector('.app')
 );
 

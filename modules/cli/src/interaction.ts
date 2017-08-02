@@ -25,6 +25,9 @@ import {
   GeneratorRequirements
 } from './types';
 import {
+  PackageManagerName
+} from './package-manager';
+import {
   LanguageType
 } from './options';
 import * as readline from 'readline';
@@ -64,6 +67,18 @@ export class Interaction {
 
     const author = await question('Author? ');
 
+    const getPackageManager = async () => {
+      const pk = await question('Select package manager (default npm) [npm/yarn] ');
+      if (!pk) { return PackageManagerName.NPM; }
+      if (pk !== 'npm' && pk !== 'yarn') {
+        return await getPackageManager();
+      }
+
+      return pk === 'npm' ? PackageManagerName.NPM : PackageManagerName.YARN;
+    };
+
+    const packageManager = await getPackageManager();
+
     const getFlagInstallAdditional = async () => {
       const flag = await question('Install addition module? (default no) [y/n] ').then(v => v || 'n');
       const yn = flag.toLowerCase();
@@ -97,7 +112,8 @@ export class Interaction {
       license,
       additionalModules,
       language,
-      author
+      author,
+      packageManager
     };
 
     this.print(result);
@@ -127,6 +143,7 @@ export class Interaction {
     console.log(`Application Name: ${conf.appName}`);
     console.log(`Author: ${conf.author}`);
     console.log(`License: ${conf.license}`);
+    console.log(`Package Manager: ${PackageManagerName[conf.packageManager].toLowerCase()}`);
     console.log(`Additional Modules: ${conf.additionalModules}`);
     console.log(`Language: ${LanguageType[conf.language].toLowerCase()}`);
   }

@@ -17,20 +17,12 @@
  * @author Taketoshi Aono
  */
 
+import * as fs from 'fs';
 
-import {
-  LanguageType
-} from './options';
-import {
-  PackageManagerName
-} from './package-manager';
-
-
-export interface GeneratorRequirements {
-  appName: string;
-  author: string;
-  license: string;
-  additionalModules: string[];
-  language: LanguageType;
-  packageManager: PackageManagerName;
-}
+export const pkg = (() => {
+  try {
+    return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+  } catch (e) {
+    return {};
+  }
+})();

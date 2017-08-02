@@ -12,7 +12,7 @@ const _ = require('lodash');
 
 
 module.exports = config => {
-  const webpack = _.clone(require('./webpack.dev.config'));
+  const webpack = _.clone(require('./webpack.config'));
   delete webpack.entry;
   delete webpack.output;
 

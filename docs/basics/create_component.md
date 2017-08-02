@@ -15,28 +15,33 @@ you simply add some required properties to child component.
 ### In react-mvi
 
 react-mvi use context system as well.  
-react-mvi context has some useful function or properties and IO modules.  
+react-mvi context has some useful function or properties.  
 
 How do you create component which has context?
 
-The component which has created from __run__ or __runnable__ has root context,  
-so, only you need is create child component by __component__ function of react-mvi/core.
+The component which has created from `Provider` has root context,  
+so, only you need is create child component with `context` decorator function of `react-mvi/core`.
 
 *Exmaples*
 
 ```typescript
 import {
-  component,
-  ContextType
-} from '@react-mvi/component';
+  context,
+  ProviderContextType
+} from '@react-mvi/core';
 
 export interface Props {
   ...
 }
 
-const Component = component((props: Props, context: ContextType): React.Component<T, {}> => {
-  ...
-}, 'Component');
+@context
+class Component extends React.Component<Props, {}> {
+  public context: ProviderContextType<{}>;
+
+  render() {
+    ...
+  }
+}
 ```
 
 or
@@ -44,30 +49,28 @@ or
 
 ```typescript
 import {
-  component,
-  ContextType
-} from '@react-mvi/component';
+  view,
+  ProviderContextType
+} from '@react-mvi/core';
 
 export interface Props {
   ...
 }
 
-const Component = component(class extends React.Component<Props, {}> {
-  public render() {
+const Component = view((props: Props, context: ProviderContextType<{}>) => {
     return ...
-  }
 }, 'Component');
 ```
 
 It is easy, isn't it?  
-__component__ function accept two argument type.  
+__view__ function accept two argument type.  
 First is function that is return React Component and this function called by props and context.  
 Second is class that extends React Component and that class has props and context in instance properties.  
 
 That's all!  
 
 Oh, forgot one thing,
-The last arguments of __comopnent__ function is component name.  
+The last arguments of __view__ function is component name.  
 What is component name?  
 React component has name which named by __function.name__ or __displayName__ property.
-The __component__ function add displayName to your component to easy to debug.
+The __view__ function add displayName to your component to easy to debug.

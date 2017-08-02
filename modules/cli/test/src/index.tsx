@@ -25,6 +25,6 @@ render(
   <Provider intent={AppIntent} store={AppStore}>
     <AppComponent/>
   </Provider>,
-  document.querySelector('app')
+  document.querySelector('.app')
 );
 

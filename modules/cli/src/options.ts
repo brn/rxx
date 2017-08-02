@@ -27,3 +27,17 @@ export enum LanguageType {
 export function npx(b: string) {
   return `node_modules/.bin/${b}`;
 }
+
+
+export function singleton<T>(t: T) {
+  let instance = null;
+  Object.defineProperty(t, 'instance', {
+    get() {
+      if (!instance) {
+        instance = new (t as any)();
+      }
+
+      return instance;
+    }
+  });
+}
