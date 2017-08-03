@@ -16,11 +16,12 @@ module.exports = config => {
   delete webpack.entry;
   delete webpack.output;
 
+  const SPECS = <% if (language === 1) { %>'./src/**/__tests__/**/*.spec.ts*'<%} else {%>'./lib/**/__tests__/**/*.spec.js*'<%}%>
+
   config.set({
     plugins: [
       "karma-mocha",
       "karma-chrome-launcher",
-      "karma-phantomjs-launcher",
       "karma-source-map-support",
       'karma-sourcemap-loader',
       "karma-mocha-reporter",
@@ -29,7 +30,7 @@ module.exports = config => {
     frameworks: ["mocha", "source-map-support"],
     files: [
       {pattern: './dll/vendor.development.dll.js'},
-      {pattern: './src/**/__tests__/**/*.spec.ts*', watched: false}
+      {pattern: SPECS, watched: false}
     ],
     reporters: ["mocha"],
     mochaReporter: {
@@ -37,7 +38,7 @@ module.exports = config => {
     },
     usePolling: false,
     preprocessors: {
-      './src/**/__tests__/**/*.spec.ts*': ['webpack', 'sourcemap']
+      [SPECS]: ['webpack', 'sourcemap']
     },
     mime: {
       'text/x-typescript': ['ts','tsx']

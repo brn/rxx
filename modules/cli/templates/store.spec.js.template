@@ -3,28 +3,17 @@
  */
 
 
-import {
-  Prepared,
-  prepareTest
-} from '@react-mvi/testing';
-import {
-  Observable
-} from 'rxjs/Rx';
-import {
-  AppStore
-} from '../store';
-import {
-  AppIntent
-} from '../../intents/intent';
-import {
-  expect
-} from 'chai';
+import { prepareTest } from '@react-mvi/testing';
+import { Observable } from 'rxjs/Rx';
+import { <%= classNamePrefix %>Store } from '../store';
+import { <%= classNamePrefix %>Intent } from '../../intents/intent';
+import { expect } from 'chai';
 
 
-describe('AppStore', () => {
-  let prepared: Prepared<{view: {greeting: Observable<string>}}>;
+describe('<%= classNamePrefix %>Store', () => {
+  let prepared;
   beforeEach(() => {
-    prepared = prepareTest(AppIntent, AppStore);
+    prepared = prepareTest(<%= classNamePrefix %>Intent, <%= classNamePrefix %>Store);
   });
 
   describe('initialize().view.greeting', () => {

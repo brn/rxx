@@ -1,10 +1,10 @@
 {
   "name": "@react-mvi/http",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Http IO module for React MVI.",
-  "main": "cjs/index.js",
-  "jsnext:main": "esnext/index.js",
-  "types": "cjs/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "jsnext:main": "lib/esnext/index.js",
+  "types": "lib/cjs/index.d.ts",
   "scripts": {
     "gulp": "node ../../node_modules/.bin/gulp --cwd",
     "patch-and-publish": "node ../../node_modules/.bin/gulp publish-patch --cwd",
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "peerDependencies": {},
   "devDependencies": {
-    "@react-mvi/core": "^1.0.2",
+    "@react-mvi/core": "^1.0.4",
     "@react-mvi/testing": "^1.0.0",
     "@types/chai": "^4.0.0",
     "@types/mocha": "^2.2.41",

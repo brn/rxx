@@ -48,6 +48,7 @@ gulp.task('publish-all', () => {
 
 
 gulp.task('clean', () => {
+  try {fs.removeSync('./dist');} catch(e) {}
   try {fs.removeSync('./lib');} catch(e) {}
   try {fs.removeSync('./api-docs');} catch(e) {}
 });
@@ -76,9 +77,9 @@ gulp.task('docs', () => {
 
 
 gulp.task('rollup', ['typescript-next'], () => {
-  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.cjs.js -o ./lib/dist/index.cjs.js`);
-  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.es.js -o ./lib/dist/index.esm.js`);
-  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.iife.js -o ./lib/dist/index.iife.js`);
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.cjs.js -o ./dist/index.cjs.js`);
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.es.js -o ./dist/index.esm.js`);
+  exec(`${BIN_DIR}/rollup -c ${__dirname}/rollup.config.iife.js -o ./dist/index.iife.js`);
 });
 
 
@@ -121,20 +122,20 @@ gulp.task('typescript-next', ['typescript'], () => {
 
 
 gulp.task('publish', ['pre-publish'], () => {
-  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+  exec('npm publish --access public', {stdio: [0,1,2]});
 });
 
 
 gulp.task('publish-patch', ['pre-publish-with-patch'], () => {
-  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+  exec('npm publish --access public', {stdio: [0,1,2]});
 });
 
 gulp.task('publish-major', ['pre-publish-with-major'], () => {
-  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+  exec('npm publish --access public', {stdio: [0,1,2]});
 });
 
 gulp.task('publish-minor', ['pre-publish-with-minor'], () => {
-  exec('cd lib && npm publish --access public', {stdio: [0,1,2]});
+  exec('npm publish --access public', {stdio: [0,1,2]});
 });
 
 
@@ -179,7 +180,8 @@ gulp.task('copy-linked-core', ['unlink'], () => {
     try {
       fs.removeSync(`../${targetModule}/${LINKED_CORE}`);
     } catch(e) {}
-    fs.copySync(`${__dirname}/modules/core/lib`, `${__dirname}/modules/${targetModule}/${LINKED_CORE}`);
+    fs.copySync(`${__dirname}/modules/core`, `${__dirname}/modules/${targetModule}/${LINKED_CORE}`);
+    fs.removeSync(`${__dirname}/modules/${targetModule}/${LINKED_CORE}/node_modules`);
     process.chdir(`${__dirname}/modules/${targetModule}`);
     fs.removeSync(`node_modules/@react-mvi/core`);
     exec(`ln -s ${__dirname}/modules/${targetModule}/${LINKED_CORE} node_modules/@react-mvi/core`, {stdio: [1,2,3]});
@@ -221,15 +223,6 @@ gulp.task('pre-publish', ['check-releasable'], () => {
 
 function doPrepublish(pkg) {
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, "  "));
-  fs.copySync('./package.json', './lib/package.json');
-  try {
-    fs.copySync('../../README.md', './lib/README.md');
-    fs.copySync('../../docs', './lib/docs');
-  } catch(e) {
-    console.log(e);
-    process.exit(1);
-  }
-  fs.remove('lib/_references.d.ts');
 }
 
 const KARMA_PID = '.karma.pid';

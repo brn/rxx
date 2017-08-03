@@ -9,6 +9,7 @@ Now we support below commands.
 - init
 - update
 - dev
+- test
 - build
 - install
 
@@ -50,6 +51,14 @@ Launch webpack-dev-server.
 
 ```
 rmvi dev
+```
+
+### test
+
+Test current project with webpack.
+
+```
+rmvi test
 ```
 
 

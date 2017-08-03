@@ -18,7 +18,7 @@
  * @author Taketoshi Aono
  */
 
-
+import * as commander from 'commander';
 import {
   PostInstalls
 } from './post-installs';
@@ -27,8 +27,13 @@ import {
 } from './pkg';
 
 
+commander
+  .option('-d, --debug', 'Create debug bundle')
+  .parse(process.argv);
+
+
 if (!pkg.version) {
   throw new Error('build called before init.');
 }
 
-PostInstalls.build();
+PostInstalls.build(commander.debug);

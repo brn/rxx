@@ -1,10 +1,10 @@
 {
   "name": "@react-mvi/testing",
-  "version": "2.0.2",
+  "version": "2.0.6",
   "description": "Test module for React MVI.",
-  "main": "cjs/index.js",
-  "jsnext:main": "esnext/index.js",
-  "types": "cjs/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "jsnext:main": "lib/esnext/index.js",
+  "types": "lib/cjs/index.d.ts",
   "scripts": {
     "gulp": "node ../../node_modules/.bin/gulp --cwd",
     "patch-and-publish": "node ../../node_modules/.bin/gulp publish-patch --cwd",
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "dependencies": {},
   "devDependencies": {
-    "@react-mvi/core": "^1.0.2",
+    "@react-mvi/core": "^1.0.4",
     "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.40",
     "@types/react": "^15.0.38",

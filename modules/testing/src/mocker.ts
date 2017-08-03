@@ -21,7 +21,6 @@
 import {
   Subject
 } from 'rxjs/Rx';
-import * as _ from 'lodash';
 
 
 const sym = s => typeof Symbol === 'function' ? Symbol(s) : `@@${s}`;
@@ -30,27 +29,38 @@ const sym = s => typeof Symbol === 'function' ? Symbol(s) : `@@${s}`;
 const STATE_SYM = sym('ReactMVIMockedIntentState');
 const SUBJECT_SYM = sym('ReactMVIMockedIntentSubject');
 
+const BUILTINS = (() => {
+  const keys = Object.getOwnPropertyNames(Object.prototype);
+  const result = Object.create(null);
+  for (let i = 0, len = keys.length; i < len; i++) {
+    result[keys[i]] = true;
+  }
+  result.constructor = true;
+
+  return result;
+})();
+
 export class Mocker {
-  public constructor(private intent: any, private state: any) {
+  public constructor(intent: any, state: any) {
     this[SUBJECT_SYM] = {};
-    this[STATE_SYM] = this.state;
+    this[STATE_SYM] = state;
 
-    let proto = this.intent;
+    let proto = intent;
     while (proto && proto !== Object.prototype) {
-      _.keys(proto).forEach(key => {
+      Object.getOwnPropertyNames(proto).forEach(key => {
 
-        if (this[key]) {
+        if (this[key] || BUILTINS[key]) {
           return;
         }
 
         const descriptor = Object.getOwnPropertyDescriptor(proto, key);
         if (descriptor) {
-          if (descriptor.get) {
+          if (typeof descriptor.get === 'function') {
             const clone: PropertyDescriptor = { ...descriptor };
             clone.get = Mocker.proxify(this, key);
             Object.defineProperty(this, key, clone);
           } else if (typeof descriptor.value === 'function') {
-            Mocker.proxify(this, key);
+            this[key] = Mocker.proxify(this, key);
           }
         }
       });

@@ -57,18 +57,23 @@ export class PostInstalls {
   }
 
 
-  public static async dev() {
+  public static dev() {
     execSync('npm start', EXEC_OPT);
   }
 
 
-  public static async build() {
-    execSync('npm run bundle', EXEC_OPT);
+  public static build(isDebug = false) {
+    execSync(`npm run bundle${isDebug ? '-debug' : ''}`, EXEC_OPT);
   }
 
 
   public static install(pkg: any, { modules, installType }: InstallOpt) {
     const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
     packageManager.install(modules, installType);
+  }
+
+
+  public static test() {
+    execSync('npm run test', EXEC_OPT);
   }
 }

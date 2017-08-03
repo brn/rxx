@@ -18,9 +18,11 @@
  * @author Taketoshi Aono
  */
 
-
+import * as commander from 'commander';
 import {
   PostInstalls
 } from './post-installs';
+
+commander.parse(process.argv);
 
 PostInstalls.dev();

@@ -9,21 +9,22 @@ import {
 } from '@react-mvi/core';
 
 
-export const AppComponent = connect({
+@connect({
   mapIntentToProps(intent) {
     return {
       onMount: intent.callback('app::mounted')
-    }
+    };
   }
-})(class Component extends React.Component<{onMount(): void}, {}> {
-  public render() {
+})
+export class <%= classNamePrefix %>Component extends React.Component {
+  render() {
     return (
       <div>Hello World!</div>
     );
   }
 
 
-  public componentDidMount() {
+  componentDidMount() {
     this.props.onMount();
   }
-});
+}

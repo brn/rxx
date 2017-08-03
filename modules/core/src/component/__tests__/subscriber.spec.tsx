@@ -19,7 +19,6 @@
  */
 
 
-import 'core-js';
 import {
   Observable
 } from 'rxjs/Rx';

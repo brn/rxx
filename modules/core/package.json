@@ -1,10 +1,10 @@
 {
   "name": "@react-mvi/core",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "React MVI micro framework.",
-  "main": "cjs/index.js",
-  "jsnext:main": "esnext/index.js",
-  "types": "cjs/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "jsnext:main": "lib/esnext/index.js",
+  "types": "lib/cjs/index.d.ts",
   "scripts": {
     "gulp": "node ../../node_modules/.bin/gulp --cwd",
     "patch-and-publish": "node ../../node_modules/.bin/gulp publish-patch --cwd",

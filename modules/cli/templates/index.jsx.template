@@ -10,20 +10,20 @@ import {
   Provider
 } from '@react-mvi/core';
 import {
-  AppComponent
+  <%= classNamePrefix %>Component
 } from './views/app';
 import {
-  AppIntent
+  <%= classNamePrefix %>Intent
 } from './intents/intent';
 import {
-  AppStore
+  <%= classNamePrefix %>Store
 } from './stores/store';
 
 
 
 render(
-  <Provider intent={AppIntent} store={AppStore}>
-    <AppComponent/>
+  <Provider intent={<%= classNamePrefix %>Intent} store={<%= classNamePrefix %>Store}>
+    <<%= classNamePrefix %>Component/>
   </Provider>,
   document.querySelector('.app')
 );

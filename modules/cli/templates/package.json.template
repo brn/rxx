@@ -7,6 +7,7 @@
     "dll-prod": "NODE_ENV=production node node_modules/.bin/webpack --config webpack.dll.config.js",
     "dll-debug": "NODE_ENV=debug node node_modules/.bin/webpack --config webpack.dll.config.js",
     "bundle": "NODE_ENV=production node node_modules/.bin/webpack",
+    "bundle-debug": "NODE_ENV=debug node node_modules/.bin/webpack",
     "test": "NODE_ENV=debug karma start --single-run --browsers ChromeHeadless",
     "start": "NODE_ENV=debug node server.js"
   },
@@ -16,6 +17,8 @@
   "dependencies": {},
   "devDependencies": {},
   "rmvi": {
+    "language": "<%if (language === 1) {%>ts<%} else {%>js<%}%>",
+    "additionalModules": [<%- additionalModules.map(m => `"${m}"`).join(', ') %>],
     "packageManager": "<%= packageManager.name %>"
   }
 }

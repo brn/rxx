@@ -30,7 +30,9 @@ import {
 
 commander.parse(process.argv);
 
+
 if (!pkg.version) {
-  throw new Error('update called before init.');
+  throw new Error('test called before init.');
 }
-PostInstalls.update(pkg);
+
+PostInstalls.test();

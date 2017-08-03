@@ -5,22 +5,23 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: {
-    app: "./src/index"
+    app: <% if (language === 1) { %>"./src/index" <%} else {%> "./lib/index" <% } %>
   },
   output: {
-    path: PRODUCTION? `${__dirname}/dist`: '/',
+    path: `${__dirname}/dist`,
     filename: "[name].js",
-    publicPath: '/dist/'
+    publicPath: '/assets/'
   },
   resolve: {
-    extensions: [".js", ".ts", ".tsx"]
+    extensions: [".js", ".jsx", ".ts", ".tsx"]
   },
-  devtool: PRODUCTION? 'inline-source-map': '',
+  devtool: !PRODUCTION? 'inline-source-map': '',
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     ...(PRODUCTION? [
@@ -42,11 +43,40 @@ module.exports = {
       context: __dirname,
       manifest: PRODUCTION? require('./dll/vendor.production-manifest.json'):
         require('./dll/vendor.development-manifest.json')
-    })
+    }),
+    new SWPrecacheWebpackPlugin(
+      {
+        cacheId: '<%= appName%>',
+        dontCacheBustUrlsMatching: /\.\w{8}\./,
+        filename: 'sw.js',
+        minify: PRODUCTION,
+        staticFileGlobs: [
+          'dll/vendor.production.dll.js'
+        ],
+        stripPrefix: 'dll',
+        navigateFallback: '/assets/index.html',
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+        mergeStaticsConfig: true
+      }
+    )
   ],
   module: {
     rules: [
+      <% if (language === 1) { %>
       { test: /\.tsx?$/, loader: ['awesome-typescript-loader'], exclude: /node_modules/ }
+      <% } else { %>
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['react', 'env'],
+            plugins: [require("babel-plugin-transform-decorators-legacy").default]
+          } 
+        }
+      }
+      <% } %>
     ]
   }
 };

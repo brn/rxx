@@ -15,7 +15,7 @@ export const <%= classNamePrefix %>Component = connect({
       onMount: intent.callback('app::mounted')
     }
   }
-})(class Component extends React.Component<{onMount(): void}, {}> {
+})(class <%= classNamePrefix %>Component extends React.Component<{onMount(): void}, {}> {
   public render() {
     return (
       <div>Hello World!</div>

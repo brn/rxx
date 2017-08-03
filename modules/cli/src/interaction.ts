@@ -17,6 +17,8 @@
  * @author Taketoshi Aono
  */
 
+import 'colors';
+
 declare module 'util' {
   export function promisify(fn: Function): (...args: any[]) => Promise<any>;
 }
@@ -36,8 +38,68 @@ import {
 } from 'util';
 
 
+export function createDefaultOptions(): GeneratorRequirements {
+  return {
+    appName: 'app',
+    license: 'MIT',
+    additionalModules: [],
+    language: LanguageType.TS,
+    author: '',
+    packageManager: PackageManagerName.NPM,
+    git: {
+      use: true,
+      remote: ''
+    }
+  };
+}
+
+
+export class UserInputValidator {
+  public static validateAppName(appName: string) {
+    if (!appName) {
+      console.warn('Application name is required!');
+
+      return false;
+    } else if (!/^[a-zA-Z$][a-zA-Z-_$0-9]+$/.test(appName)) {
+      console.warn('Invalid application name!');
+
+      return false;
+    }
+
+    return true;
+  }
+
+  public static validatePm(pm: string) {
+    if (pm !== 'npm' && pm !== 'yarn') {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  public static validateYesNo(answer: string) {
+    if (answer !== 'y' && answer !== 'n') {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  public static validateLanguage(lang: string) {
+    if (lang !== 'ts' && lang !== 'js') {
+      return false;
+    }
+
+    return true;
+  }
+}
+
+
 export class Interaction {
   public static async collectInformation(): Promise<GeneratorRequirements> {
+    const result = createDefaultOptions();
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
@@ -48,41 +110,35 @@ export class Interaction {
     };
 
     const getAppName = async () => {
-      const appName = await question('Application name (default app)? ').then(v => v || 'app');
-      if (!appName) {
-        console.warn('Application name is required!');
-
-        return await getAppName();
-      } else if (!/^[a-zA-Z$][a-zA-Z-_$0-9]+$/.test(appName)) {
-        console.warn('Invalid application name!');
-
+      const appName = await question('Application name (default app)? ').then(v => v || result.appName);
+      if (!UserInputValidator.validateAppName(appName)) {
         return await getAppName();
       }
 
       return appName;
     };
-    const appName = await getAppName();
+    result.appName = await getAppName();
 
-    const license = await question('License? ');
+    result.license = await question('License? ');
 
-    const author = await question('Author? ');
+    result.author = await question('Author? ');
 
     const getPackageManager = async () => {
-      const pk = await question('Select package manager (default npm) [npm/yarn] ');
-      if (!pk) { return PackageManagerName.NPM; }
-      if (pk !== 'npm' && pk !== 'yarn') {
+      const pm = await question('Select package manager (default npm) [npm/yarn] ').then(v => v || result.license);
+      if (!pm) { return PackageManagerName.NPM; }
+      if (!UserInputValidator.validatePm(pm)) {
         return await getPackageManager();
       }
 
-      return pk === 'npm' ? PackageManagerName.NPM : PackageManagerName.YARN;
+      return pm === 'npm' ? PackageManagerName.NPM : PackageManagerName.YARN;
     };
 
-    const packageManager = await getPackageManager();
+    result.packageManager = await getPackageManager();
 
     const getFlagInstallAdditional = async () => {
       const flag = await question('Install addition module? (default no) [y/n] ').then(v => v || 'n');
       const yn = flag.toLowerCase();
-      if (yn !== 'y' && yn !== 'n') {
+      if (!UserInputValidator.validateYesNo(yn)) {
         await getFlagInstallAdditional();
       }
 
@@ -90,37 +146,42 @@ export class Interaction {
     };
 
     const flagInstallAddtional = await getFlagInstallAdditional();
-    let additionalModules = [];
     if (flagInstallAddtional) {
       const additionalModuleNames = await question('Input additional module names (comma separeated list like "react,read-dom") ');
-      additionalModules = additionalModuleNames.split(',').map(v => v.trim());
+      result.additionalModules = additionalModuleNames.split(',').map(v => v.trim());
     }
 
     const getLanguage = async () => {
       const languageInput = await question('Language are you want to use? (default ts) [ts/js] ').then(v => v || 'ts');
       const language = languageInput.toLowerCase();
-      if (language !== 'ts' && language !== 'js') {
+      if (!UserInputValidator.validateLanguage(language)) {
         return await getLanguage();
       }
 
-      return language === 'ts' ? LanguageType.TS : LanguageType.JS;
+      return LanguageType[language.toUpperCase()];
     };
-    const language = await getLanguage();
+    result.language = await getLanguage();
 
-    const result = {
-      appName,
-      license,
-      additionalModules,
-      language,
-      author,
-      packageManager
+    const getGitUse = async () => {
+      const use = await question('Use Git? (default yes) [y/n] ').then(v => v || 'y');
+      const isUse = use.toLowerCase();
+      if (!UserInputValidator.validateYesNo(use)) {
+        return await getGitUse();
+      }
+
+      return isUse === 'y';
     };
+    result.git.use = await getGitUse();
+
+    if (result.git.use) {
+      result.git.remote = await question('Git repository url? (default empty) ').then(v => v || '');
+    }
 
     this.print(result);
     const isSure = async () => {
       const ret = await question('Are you sure? [y/n] ');
       const answer = ret.toLowerCase();
-      if (answer !== 'y' && answer !== 'n') {
+      if (!UserInputValidator.validateYesNo(answer)) {
         return await isSure();
       }
 
@@ -139,11 +200,15 @@ export class Interaction {
 
 
   private static print(conf: GeneratorRequirements) {
-    console.log('====== CONFIGURATIONS ======');
+    console.log('\n====== CONFIGURATIONS ======'.bold);
     console.log(`Application Name: ${conf.appName}`);
     console.log(`Author: ${conf.author}`);
     console.log(`License: ${conf.license}`);
     console.log(`Package Manager: ${PackageManagerName[conf.packageManager].toLowerCase()}`);
+    console.log(`Use Git: ${conf.git.use ? 'y' : 'n'}`);
+    if (conf.git.use) {
+      console.log(`Git remote repository url: ${conf.git.remote}`);
+    }
     console.log(`Additional Modules: ${conf.additionalModules}`);
     console.log(`Language: ${LanguageType[conf.language].toLowerCase()}`);
   }

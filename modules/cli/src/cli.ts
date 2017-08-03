@@ -21,21 +21,52 @@
 
 import * as commander from 'commander';
 
+const VALID_COMMANDS = {
+  'init': {
+    desc: 'Initialize react-mvi application with interaction.'
+  },
+  'new': {
+    desc: 'Initialize react-mvi application with command line options.'
+  },
+  'update': {
+    desc: 'Update react-mvi module.'
+  },
+  'build': {
+    desc: 'Build your application.'
+  },
+  'test': {
+    desc: 'Unit test your application.'
+  },
+  'dev': {
+    desc: 'Start dev server.'
+  },
+  'install': {
+    args: '<modules...>',
+    desc: 'Install module with specified package maanger.',
+    alias: 'i'
+  }
+};
+
+function createCommand() {
+  for (const cmdName in VALID_COMMANDS) {
+    const { desc, args, alias } = VALID_COMMANDS[cmdName];
+    const next = commander.command(`${cmdName}${args ? ` ${args}` : ''}`, desc);
+    if (alias) {
+      next.alias(alias);
+    }
+  }
+
+  return commander;
+}
 
 commander
-  .command('init', 'Initialize react-mvi application.')
-  .command('update', 'Update react-mvi module.')
-  .command('build', 'Build your application.')
-  .command('dev', 'Build your application.')
-  .command('install <modules...>', 'Install module with specified package maanger.')
-  .alias('i');
+  .option('--no-color', 'Disable terminal color.');
 
-
-/*tslint:disable:no-magic-numbers*/
-if (!process.argv.slice(2).length) {
-  commander.outputHelp();
-  process.exit(1);
-}
-/*tslint:enable:no-magic-numbers*/
-
-commander.parse(process.argv);
+createCommand()
+  .allowUnknownOption(false)
+  .action(name => {
+    if (name !== 'help' && !VALID_COMMANDS[name]) {
+      console.log(`\n${name} is not a valid rmvi command. See rmvi --help\n`);
+    }
+  })
+  .parse(process.argv);

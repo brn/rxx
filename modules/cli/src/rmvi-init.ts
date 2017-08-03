@@ -19,6 +19,7 @@
  */
 
 
+import * as commander from 'commander';
 import {
   Interaction
 } from './interaction';
@@ -29,11 +30,14 @@ import {
   PostInstalls
 } from './post-installs';
 
+commander.parse(process.argv);
+
 
 const init = async () => {
   const opt = await Interaction.collectInformation();
   new Generator(opt).generate();
   await PostInstalls.run();
+  PostInstalls.build();
 };
 
 init().then(() => process.exit(0), e => {

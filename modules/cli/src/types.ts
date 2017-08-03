@@ -26,6 +26,11 @@ import {
 } from './package-manager';
 
 
+export interface Git {
+  use: boolean;
+  remote: string;
+}
+
 export interface GeneratorRequirements {
   appName: string;
   author: string;
@@ -33,4 +38,5 @@ export interface GeneratorRequirements {
   additionalModules: string[];
   language: LanguageType;
   packageManager: PackageManagerName;
+  git: Git;
 }

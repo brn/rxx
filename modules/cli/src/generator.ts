@@ -25,7 +25,8 @@ import {
   LanguageType
 } from './options';
 import {
-  GeneratorRequirements
+  GeneratorRequirements,
+  Git
 } from './types';
 import {
   PackageManagerName,
@@ -63,6 +64,7 @@ const DEV_DEPENDENCIES = [
   'karma',
   'glob',
   'chai',
+  'mocha',
   'karma-mocha',
   'karma-chrome-launcher',
   'karma-source-map-support',
@@ -71,8 +73,17 @@ const DEV_DEPENDENCIES = [
   'karma-webpack',
   'webpack-dev-middleware',
   'webpack-hot-middleware',
+  'sw-precache-webpack-plugin',
   'express',
   'serve-static'
+];
+
+const JS_DEV_DEPENDENCIES = [
+  'babel-loader',
+  'babel-core',
+  'babel-preset-env',
+  'babel-preset-react',
+  'babel-plugin-transform-decorators-legacy'
 ];
 
 const TYPES = [
@@ -124,13 +135,16 @@ export class Generator {
 
   private packageManager: PackageManager;
 
-  constructor({ appName, additionalModules, language, license, author, packageManager }: GeneratorRequirements) {
+  private git: Git;
+
+  constructor({ appName, additionalModules, language, license, author, packageManager, git }: GeneratorRequirements) {
     this.appName = appName;
     this.additionalModules = additionalModules;
     this.language = language;
     this.license = license;
     this.author = author;
     this.packageManager = PackageManagerFactory.create(packageManager);
+    this.git = git;
     const prefix = converNameToValidJSClassNamePrefix(this.appName);
     this.templateGenerator = language === LanguageType.TS ?
       new TypescriptTemplateGenerator(prefix) : new JSTemplateGenerator(prefix);
@@ -138,6 +152,7 @@ export class Generator {
 
 
   public generate() {
+    this.initGit();
     this.initDependencies();
     this.deployWebpackConfigs();
     this.deployKarmaConfig();
@@ -147,12 +162,28 @@ export class Generator {
   }
 
 
+  private initGit() {
+    if (this.git.use) {
+      try {
+        execSync('git init', { stdio });
+      } catch (e) { console.error(e); }
+      if (this.git.remote) {
+        try {
+          execSync(`git remote add origin ${this.git.remote}`, { stdio });
+        } catch (e) { console.error(e); }
+      }
+    }
+  }
+
+
   private initDependencies() {
     const pkg = ejs.render(this.pkg, this);
     fs.writeFileSync('package.json', pkg);
     try {
       this.packageManager.install(DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : []).concat(this.additionalModules));
-      this.packageManager.install(DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? DEV_TYPES : []), PackageInstallType.DEV);
+      this.packageManager.install(
+        DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? DEV_TYPES : JS_DEV_DEPENDENCIES),
+        PackageInstallType.DEV);
     } catch (e) {
       console.error(e);
       process.exit(1);
@@ -184,7 +215,7 @@ export class Generator {
 
 
   private deployKarmaConfig() {
-    const conf = fs.readFileSync(`${TEMPLATE_DIR}/karma.conf.js.template`, 'utf8');
+    const conf = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/karma.conf.js.template`, 'utf8'), this);
     fs.writeFileSync('karma.conf.js', conf);
   }
 }
@@ -323,12 +354,13 @@ class JSTemplateGenerator implements TemplateGenerator {
     this.deployStore();
     this.deployIntent();
     this.deployView();
+    this.deployTest();
   }
 
 
   private deployIndex() {
     const index = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/index.jsx.template`, 'utf8'), this);
-    const targetPath = 'src/index.jsx';
+    const targetPath = 'lib/index.jsx';
     if (fs.existsSync(targetPath)) {
       return console.info(`${targetPath} is already exists. Skip.`);
     }
@@ -382,6 +414,22 @@ class JSTemplateGenerator implements TemplateGenerator {
     }
     try {
       fs.writeFileSync(targetPath, view);
+    } catch (e) {
+      console.error(e); process.exit(1);
+    }
+  }
+
+
+  private deployTest() {
+    const dir = JSTemplateGenerator.STORE_DIR;
+    mkdir(`${dir}/__tests__`);
+    const spec = ejs.render(fs.readFileSync(`${TEMPLATE_DIR}/store.spec.js.template`, 'utf8'), this);
+    const targetPath = `${dir}/__tests__/store.spec.js`;
+    if (fs.existsSync(targetPath)) {
+      return console.info(`${targetPath} is already exists. Skip.`);
+    }
+    try {
+      fs.writeFileSync(targetPath, spec);
     } catch (e) {
       console.error(e); process.exit(1);
     }
