@@ -52,7 +52,8 @@ const DEPENDENCIES = [
   'rxjs',
   'tslib',
   'es6-promise',
-  'es6-symbol'
+  'es6-symbol',
+  'whatwg-fetch'
 ];
 
 const DEV_DEPENDENCIES = [
@@ -121,6 +122,8 @@ function mkdir(dirName: string) {
 export class Generator {
   private pkg: string = fs.readFileSync(path.join(TEMPLATE_DIR, 'package.json.template'), 'utf8');
 
+  private dllList = DEPENDENCIES;
+
   private templateGenerator: TemplateGenerator;
 
   private appName: string;
@@ -137,7 +140,9 @@ export class Generator {
 
   private git: Git;
 
-  constructor({ appName, additionalModules, language, license, author, packageManager, git }: GeneratorRequirements) {
+  private installTypings: boolean;
+
+  constructor({ appName, additionalModules, language, license, author, packageManager, git, installTypings }: GeneratorRequirements) {
     this.appName = appName;
     this.additionalModules = additionalModules;
     this.language = language;
@@ -145,6 +150,7 @@ export class Generator {
     this.author = author;
     this.packageManager = PackageManagerFactory.create(packageManager);
     this.git = git;
+    this.installTypings = installTypings;
     const prefix = converNameToValidJSClassNamePrefix(this.appName);
     this.templateGenerator = language === LanguageType.TS ?
       new TypescriptTemplateGenerator(prefix) : new JSTemplateGenerator(prefix);
@@ -180,7 +186,7 @@ export class Generator {
     const pkg = ejs.render(this.pkg, this);
     fs.writeFileSync('package.json', pkg);
     try {
-      this.packageManager.install(DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : []).concat(this.additionalModules));
+      this.packageManager.install(DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : []));
       this.packageManager.install(
         DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? DEV_TYPES : JS_DEV_DEPENDENCIES),
         PackageInstallType.DEV);

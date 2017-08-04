@@ -18,6 +18,7 @@
  */
 
 
+import uniq = require('lodash.uniq');
 import {
   execSync
 } from 'child_process';
@@ -51,6 +52,11 @@ export interface PackageManager {
 }
 
 
+export function sanitizeModuleNameList(modules: string[]) {
+  return uniq(modules.map(v => v.trim()));
+}
+
+
 @singleton
 export class Npm implements PackageManager {
   public name = 'npm';
@@ -58,7 +64,7 @@ export class Npm implements PackageManager {
   public static instance: Npm;
 
   public install(modules: string[], type = PackageInstallType.PROD) {
-    execSync(`npm install ${modules.join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
+    execSync(`npm install ${sanitizeModuleNameList(modules).join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
   }
 
 
@@ -76,7 +82,7 @@ export class Yarn implements PackageManager {
 
   public install(modules: string[], type = PackageInstallType.PROD) {
     this.checkYarn();
-    execSync(`yarn add ${modules.join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
+    execSync(`yarn add ${sanitizeModuleNameList(modules).join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
   }
 
 

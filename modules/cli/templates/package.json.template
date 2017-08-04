@@ -2,7 +2,7 @@
   "name": "<%= appName %>",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
   "scripts": {
     "dll-prod": "NODE_ENV=production node node_modules/.bin/webpack --config webpack.dll.config.js",
     "dll-debug": "NODE_ENV=debug node node_modules/.bin/webpack --config webpack.dll.config.js",
@@ -16,9 +16,17 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {},
+  <%if (git.use && git.remote) {%>
+  "repository": {
+    "type": "git",
+    "url": <%- git.remote %>
+  },
+  <%}%>
   "rmvi": {
     "language": "<%if (language === 1) {%>ts<%} else {%>js<%}%>",
     "additionalModules": [<%- additionalModules.map(m => `"${m}"`).join(', ') %>],
-    "packageManager": "<%= packageManager.name %>"
+    "packageManager": "<%- packageManager.name %>",
+    "installTypings": <%- installTypings %>,
+    "dllList": <%- JSON.stringify(dllList, null, '  ') %>
   }
 }

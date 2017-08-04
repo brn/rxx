@@ -29,15 +29,20 @@ import {
 import {
   PostInstalls
 } from './post-installs';
+import {
+  pkg,
+  checkPkg
+} from './pkg';
 
 commander.parse(process.argv);
 
+checkPkg(pkg);
+process.exit(0);
 
 const init = async () => {
   const opt = await Interaction.collectInformation();
   new Generator(opt).generate();
-  await PostInstalls.run();
-  PostInstalls.build();
+  PostInstalls.run();
 };
 
 init().then(() => process.exit(0), e => {

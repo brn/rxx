@@ -23,7 +23,8 @@ import {
   PostInstalls
 } from './post-installs';
 import {
-  pkg
+  pkg,
+  checkPkg
 } from './pkg';
 import {
   PackageInstallType
@@ -41,9 +42,12 @@ commander
 if (!pkg.version) {
   throw new Error('install called before init.');
 }
+checkPkg(pkg);
+
 const modules = commander.args;
 PostInstalls.install(pkg, {
   modules,
   installType: commander.dev ? PackageInstallType.DEV :
-    PackageInstallType.PEER ? commander.peer : PackageInstallType.PROD
+    PackageInstallType.PEER ? commander.peer : PackageInstallType.PROD,
+  installTypescriptTypes: pkg.rmvi.installTyings
 });

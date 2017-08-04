@@ -11,17 +11,7 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: {
-    [PRODUCTION? 'vendor.production': 'vendor.development']: [
-      'es6-promise',
-      'react',
-      'react-dom',
-      'rxjs',
-      '@react-mvi/core',
-      '@react-mvi/http',
-      'es6-symbol',
-      'tslib',
-      'whatwg-fetch'
-    ]
+    [PRODUCTION? 'vendor.production': 'vendor.development']: require('./package.json').rmvi.dllList
   },
   devtool: PRODUCTION? 'inline-source-map': '',
   output: {

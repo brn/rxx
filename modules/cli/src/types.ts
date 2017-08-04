@@ -37,6 +37,7 @@ export interface GeneratorRequirements {
   license: string;
   additionalModules: string[];
   language: LanguageType;
+  installTypings: boolean;
   packageManager: PackageManagerName;
   git: Git;
 }

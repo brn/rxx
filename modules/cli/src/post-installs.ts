@@ -18,6 +18,10 @@
  */
 
 
+import * as fs from 'fs';
+import {
+  getPkg
+} from './pkg';
 import {
   execSync
 } from 'child_process';
@@ -26,7 +30,8 @@ import {
 } from './options';
 import {
   PackageManagerFactory,
-  PackageInstallType
+  PackageInstallType,
+  sanitizeModuleNameList
 } from './package-manager';
 
 
@@ -35,16 +40,27 @@ const EXEC_OPT = { stdio: [0, 1, 2] };
 /*tslint:enable:no-magic-numbers*/
 
 
-export type InstallOpt = { modules: string[]; installType: PackageInstallType };
+export type InstallOpt = { modules: string[]; installType: PackageInstallType; installTypescriptTypes?: boolean };
 
 
 export class PostInstalls {
-  public static async run() {
-    execSync(`npm run dll-prod`, EXEC_OPT);
-    execSync(`npm run dll-debug`, EXEC_OPT);
+  public static run() {
+    const pkg = getPkg();
+    const sanitizedModules = this.sanitizeModulesWithExistsDependencies(pkg, pkg.rmvi.additionalModules || []);
+
+    if (sanitizedModules.length) {
+      this.install(pkg, {
+        modules: sanitizedModules,
+        installType: PackageInstallType.PROD,
+        installTypescriptTypes: pkg.rmvi.installTypes
+      });
+    }
+    this.updateDLL();
+    this.build();
   }
 
-  public static async update(pkg) {
+
+  public static update(pkg) {
     const modules = [];
     for (const dep in pkg.dependencies) {
       if (dep.indexOf('@react-mvi') > -1) {
@@ -54,6 +70,8 @@ export class PostInstalls {
     const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
     packageManager.uninstall(modules);
     packageManager.install(modules);
+
+    this.updateDLL();
   }
 
 
@@ -67,13 +85,81 @@ export class PostInstalls {
   }
 
 
-  public static install(pkg: any, { modules, installType }: InstallOpt) {
-    const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-    packageManager.install(modules, installType);
+  public static install(pkg: any, { modules, installType, installTypescriptTypes }: InstallOpt) {
+    const sanitizedModules = this.sanitizeModulesWithExistsDependencies(pkg, modules);
+    if (sanitizedModules.length) {
+      const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
+      packageManager.install(sanitizedModules, installType);
+      if (installType === PackageInstallType.PROD) {
+        const manifest = this.readDLLManifest(pkg);
+        if (manifest) {
+          this.writeDLLManifest(sanitizedModules, pkg);
+        }
+      }
+
+      if (installTypescriptTypes) {
+        this.installTypesIfExists(pkg, modules);
+      }
+
+      this.updateDLL();
+    }
   }
 
 
   public static test() {
     execSync('npm run test', EXEC_OPT);
+  }
+
+
+  private static installTypesIfExists(pkg, modules) {
+    try {
+      const types = modules.map(module => {
+        const name = `@types/${module}`;
+        const ret = execSync(`npm search --json ${name}`).toString('utf8');
+
+        return JSON.parse(ret).filter(m => m === name);
+      }).reduce((i, n) => i.concat(n), []);
+
+      this.install(pkg, { modules: types, installType: PackageInstallType.DEV });
+    } catch (e) {
+      console.error(e);
+      process.exit(1);
+    }
+  }
+
+
+  private static readDLLManifest(pkg: any): string[] {
+    try {
+      return pkg.rmvi.dllList;
+    } catch (e) {
+      console.error(e);
+
+      return null;
+    }
+  }
+
+
+  private static writeDLLManifest(pkg: any, newDLLList: string[]) {
+    try {
+      const clone = { ...pkg };
+      clone.rmvi = { ...clone.rmvi };
+      clone.rmvi.dllList = newDLLList;
+      fs.writeFileSync('./package.json', JSON.stringify(clone, null, '  '), 'utf8');
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+
+  private static updateDLL() {
+    execSync(`npm run dll-prod`, EXEC_OPT);
+    execSync(`npm run dll-debug`, EXEC_OPT);
+  }
+
+
+  private static sanitizeModulesWithExistsDependencies(pkg, modules: string[]) {
+    return sanitizeModuleNameList(Object.keys(pkg.dependencies || {})
+      .concat(Object.keys(pkg.devDependencies || {}))
+      .concat(pkg.rmvi.additionalModules));
   }
 }

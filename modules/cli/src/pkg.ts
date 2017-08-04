@@ -19,10 +19,25 @@
 
 import * as fs from 'fs';
 
-export const pkg = (() => {
+export const pkg = getPkg();
+
+
+export function getPkg() {
   try {
     return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   } catch (e) {
     return {};
   }
-})();
+}
+
+
+export function checkPkg(pkg) {
+  if (pkg.name && !pkg.rmvi) {
+    const m = [
+      'This application is not controlled by rmvi.',
+      'To continue command, before call "rmvi migrate"'
+    ];
+
+    throw new Error(m.join('\n'));
+  }
+}

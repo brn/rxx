@@ -106,14 +106,6 @@ function getOptions() {
 }
 
 
-const init = async () => {
-  const opt = getOptions();
-  new Generator(opt).generate();
-  await PostInstalls.run();
-  PostInstalls.build();
-};
-
-init().then(() => process.exit(0), e => {
-  console.error(e);
-  process.exit(1);
-});
+const opt = getOptions();
+new Generator(opt).generate();
+PostInstalls.run();
