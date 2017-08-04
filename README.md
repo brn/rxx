@@ -80,6 +80,15 @@ render(
 
 ```
 
+## Installation and setup
+
+
+```
+npm install @react-mvi/cli -g
+rmvi init
+```
+
+
 ## Guide
 
 - Examples

@@ -18,13 +18,18 @@
  * @author Taketoshi Aono
  */
 
+import {
+  PostInstalls
+} from '../post-installs';
+import {
+  pkg,
+  checkPkg
+} from '../pkg';
 
-import * as yargs from 'yargs';
 
-/*tslint:disable:no-unused-expression*/
-yargs
-  .option('no-color', {})
-  .commandDir('./cmd')
-  .demandCommand(1)
-  .help()
-  .argv;
+export const command = 'dev';
+export const desc = 'Start dev server.';
+export const handler = () => {
+  checkPkg(pkg);
+  PostInstalls.dev();
+};

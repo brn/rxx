@@ -24,9 +24,8 @@
   <%}%>
   "rmvi": {
     "language": "<%if (language === 1) {%>ts<%} else {%>js<%}%>",
-    "additionalModules": [<%- additionalModules.map(m => `"${m}"`).join(', ') %>],
+    "additionalModules": <%- JSON.stringify(additionalModules, null, '  ') %>,
     "packageManager": "<%- packageManager.name %>",
-    "installTypings": <%- installTypings %>,
-    "dllList": <%- JSON.stringify(dllList, null, '  ') %>
+    "installTypings": <%- installTypings %>
   }
 }

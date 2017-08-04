@@ -31,13 +31,22 @@ export function getPkg() {
 }
 
 
-export function checkPkg(pkg) {
+export function checkPkg(pkg, allowMigrated = false) {
   if (pkg.name && !pkg.rmvi) {
     const m = [
-      'This application is not controlled by rmvi.',
-      'To continue command, before call "rmvi migrate"'
+      `\n${pkg.name} is not controlled by rmvi.`,
+      'To continue command, call "rmvi migrate"\n'
     ];
 
-    throw new Error(m.join('\n'));
+    console.log(m.join('\n'));
+    process.exit(1);
+  } else if (!allowMigrated && pkg.rmvi && pkg.rmvi.migrated) {
+    const m = [
+      `\n${pkg.name} is migrated project.`,
+      'Migrated project only allow commands "install" and "update".\n'
+    ];
+
+    console.log(m.join('\n'));
+    process.exit(1);
   }
 }

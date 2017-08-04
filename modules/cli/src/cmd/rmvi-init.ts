@@ -19,33 +19,34 @@
  */
 
 
-import * as commander from 'commander';
+import * as yargs from 'yargs';
 import {
   Interaction
-} from './interaction';
+} from '../interaction';
 import {
   Generator
-} from './generator';
+} from '../generator';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
 import {
   pkg,
   checkPkg
-} from './pkg';
+} from '../pkg';
 
-commander.parse(process.argv);
 
-checkPkg(pkg);
-process.exit(0);
+export const command = 'init';
+export const desc = 'Initialize react-mvi application with interaction.';
+export const handler = () => {
+  checkPkg(pkg);
+  const init = async () => {
+    const opt = await Interaction.collectInformation();
+    new Generator(opt).generate();
+    PostInstalls.run();
+  };
 
-const init = async () => {
-  const opt = await Interaction.collectInformation();
-  new Generator(opt).generate();
-  PostInstalls.run();
+  init().then(() => process.exit(0), e => {
+    console.error(e);
+    process.exit(1);
+  });
 };
-
-init().then(() => process.exit(0), e => {
-  console.error(e);
-  process.exit(1);
-});

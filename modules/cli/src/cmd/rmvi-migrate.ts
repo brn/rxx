@@ -18,22 +18,41 @@
  * @author Taketoshi Aono
  */
 
-import * as commander from 'commander';
+
+import * as yargs from 'yargs';
+import {
+  Interaction,
+  UserInputValidator,
+  createDefaultOptions
+} from '../interaction';
+import {
+  PackageManagerName
+} from '../package-manager';
+import {
+  Generator
+} from '../generator';
+import {
+  LanguageType
+} from '../options';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
 import {
-  pkg
-} from './pkg';
+  pkg,
+  checkPkg
+} from '../pkg';
 
 
-commander
-  .option('-d, --debug', 'Create debug bundle')
-  .parse(process.argv);
+export const command = 'migrate';
+export const desc = 'Migrate current application to react-mvi application';
+export const handler = argv => {
+  const init = async () => {
+    const opt = await Interaction.collectMigrateInformation();
+    new Generator(opt).migrate();
+  };
 
-
-if (!pkg.version) {
-  throw new Error('build called before init.');
-}
-
-PostInstalls.build(commander.debug);
+  init().then(() => process.exit(0), e => {
+    console.error(e);
+    process.exit(1);
+  });
+};

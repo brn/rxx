@@ -92,10 +92,7 @@ const TYPES = [
   '@types/react-dom',
   '@types/prop-types',
   '@types/chai',
-  '@types/mocha'
-];
-
-const DEV_TYPES = [
+  '@types/mocha',
   '@types/chai',
   '@types/mocha'
 ];
@@ -121,8 +118,6 @@ function mkdir(dirName: string) {
 
 export class Generator {
   private pkg: string = fs.readFileSync(path.join(TEMPLATE_DIR, 'package.json.template'), 'utf8');
-
-  private dllList = DEPENDENCIES;
 
   private templateGenerator: TemplateGenerator;
 
@@ -168,6 +163,26 @@ export class Generator {
   }
 
 
+  public migrate() {
+    const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+    pkg.rmvi = {
+      language: LanguageType[this.language].toLowerCase(),
+      additionalModules: [],
+      packageManager: this.packageManager.name,
+      installTypings: this.installTypings,
+      migrated: true
+    };
+    fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
+
+    try {
+      this.packageManager.install(DEPENDENCIES);
+    } catch (e) {
+      console.error(e);
+      process.exit(1);
+    }
+  }
+
+
   private initGit() {
     if (this.git.use) {
       try {
@@ -186,9 +201,9 @@ export class Generator {
     const pkg = ejs.render(this.pkg, this);
     fs.writeFileSync('package.json', pkg);
     try {
-      this.packageManager.install(DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : []));
+      this.packageManager.install(DEPENDENCIES);
       this.packageManager.install(
-        DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? DEV_TYPES : JS_DEV_DEPENDENCIES),
+        DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : JS_DEV_DEPENDENCIES),
         PackageInstallType.DEV);
     } catch (e) {
       console.error(e);

@@ -19,18 +19,21 @@
  */
 
 
-import * as commander from 'commander';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
 import {
-  pkg
-} from './pkg';
+  pkg,
+  checkPkg
+} from '../pkg';
 
 
-commander.parse(process.argv);
-
-if (!pkg.version) {
-  throw new Error('update called before init.');
-}
-PostInstalls.update(pkg);
+export const command = 'update';
+export const desc = 'Update react-mvi module.';
+export const handler = () => {
+  checkPkg(pkg, true);
+  if (!pkg.version) {
+    throw new Error('update called before init.');
+  }
+  PostInstalls.update(pkg);
+};

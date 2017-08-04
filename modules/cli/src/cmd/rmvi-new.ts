@@ -19,38 +19,42 @@
  */
 
 
-import * as commander from 'commander';
+import * as yargs from 'yargs';
 import {
   Interaction,
   UserInputValidator,
   createDefaultOptions
-} from './interaction';
+} from '../interaction';
 import {
   PackageManagerName
-} from './package-manager';
+} from '../package-manager';
 import {
   Generator
-} from './generator';
+} from '../generator';
 import {
   LanguageType
-} from './options';
+} from '../options';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
+import {
+  pkg,
+  checkPkg
+} from '../pkg';
 
-/*tslint:disable:no-string-literal*/
-(commander as any)['name'] = null;
-/*tslint:enable:no-string-literal*/
-commander
-  .option('-n, --name [name]', 'Application name.')
-  .option('-l, --license [license]', 'Application license')
-  .option('-a, --author [authoer]', 'Application Author')
-  .option('-p, --pm [package-manager]', 'Package manager one of [npm/yarn]')
-  .option('-m, --module [additional-modules...]', 'Additional install modules (comma separeated list like "react,react-dom")')
-  .option('-l, --lang [language]', 'Language one of [ts/js]')
-  .option('-g, --git [repository]', 'Initialize git.')
-  .allowUnknownOption(false)
-  .parse(process.argv);
+
+export const command = 'new';
+export const desc = 'Initialize react-mvi application with command line options.';
+export const builder = yargs => {
+  return yargs
+    .option('name [name]', { alias: 'a', desc: 'Application name.' })
+    .option('license [license]', { alias: 'l', desc: 'Application license' })
+    .option('author [authoer]', { alias: 'a', desc: 'Application Author' })
+    .option('pm [package-manager]', { alias: 'p', desc: 'Package manager one of [npm/yarn]' })
+    .option('module [additional-modules...]', { alias: 'm', desc: 'Additional install modules (comma separeated list like "react,react-dom")' })
+    .option('lang [language]', { alias: 'l', desc: 'Language one of [ts/js]' })
+    .option('git [repository]', { alias: 'g', desc: 'Initialize git.' });
+};
 
 
 type Options = {
@@ -64,13 +68,13 @@ type Options = {
 };
 
 
-function getOptions() {
+function getOptions(argv: Options) {
   const result = createDefaultOptions();
-  const { name, license, author, pm, module, lang, git }: Options = commander.opts();
+  const { name, license, author, pm, module, lang, git }: Options = argv;
 
-  result.license = license;
-  result.additionalModules = (module || '').split(',').map(v => v.trim());
-  result.author = author;
+  result.license = license || result.license;
+  result.additionalModules = (module || '').split(',').map(v => v.trim()).filter(v => !!v);
+  result.author = author || '';
 
   if (name) {
     if (!UserInputValidator.validateAppName(name)) {
@@ -105,7 +109,9 @@ function getOptions() {
   return result;
 }
 
-
-const opt = getOptions();
-new Generator(opt).generate();
-PostInstalls.run();
+export const handler = argv => {
+  checkPkg(pkg);
+  const opt = getOptions(argv);
+  new Generator(opt).generate();
+  PostInstalls.run();
+};

@@ -19,20 +19,21 @@
  */
 
 
-import * as commander from 'commander';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
 import {
-  pkg
-} from './pkg';
+  pkg,
+  checkPkg
+} from '../pkg';
 
+export const command = 'test';
+export const desc = 'Unit test your application.';
+export const handler = () => {
+  checkPkg(pkg);
+  if (!pkg.version) {
+    throw new Error('test called before init.');
+  }
 
-commander.parse(process.argv);
-
-
-if (!pkg.version) {
-  throw new Error('test called before init.');
-}
-
-PostInstalls.test();
+  PostInstalls.test();
+};

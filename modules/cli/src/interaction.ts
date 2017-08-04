@@ -17,12 +17,12 @@
  * @author Taketoshi Aono
  */
 
-import 'colors';
-
 declare module 'util' {
   export function promisify(fn: Function): (...args: any[]) => Promise<any>;
 }
 
+import * as fs from 'fs';
+import 'colors';
 import {
   GeneratorRequirements
 } from './types';
@@ -114,6 +114,30 @@ const question = question => {
   return new Promise<string>(r => rl.question(question, r));
 };
 
+const MIGRATION_INTERACTIONS: InteractionConfig[] = [
+  {
+    message: 'What package manager are you use? (default npm) [npm/yarn]',
+    update(pm: string, r) { r.packageManager = pm === 'npm' ? PackageManagerName.NPM : PackageManagerName.YARN; },
+    defaultValue(v) { return PackageManagerName[v.packageManager]; },
+    validation(v) { return UserInputValidator.validatePm(v); },
+    lower: true
+  },
+  {
+    message: 'What language are you use? (default ts) [ts/js]',
+    defaultValue: r => LanguageType[r.language].toLowerCase(),
+    update: (v: string, r) => r.language = LanguageType[v.toUpperCase()],
+    validation: v => UserInputValidator.validateLanguage(v),
+    lower: true,
+    child: {
+      if: v => v === 'ts',
+      defaultValue: v => 'y',
+      message: 'Install typings when new module installed if possible? (default yes) [y/n]',
+      lower: true,
+      update(v, r) { r.installTypings = v === 'y'; }
+    }
+  }
+];
+
 const INTERACTIONS: InteractionConfig[] = [
   {
     message: 'Application name (default app)?',
@@ -146,7 +170,7 @@ const INTERACTIONS: InteractionConfig[] = [
     child: {
       if: v => v === 'y',
       message: 'Input additional module names (comma separeated list like "react,read-dom")',
-      update(v, r) { r.additionalModules = v.split(',').map(v => v.trim()); }
+      update(v, r) { r.additionalModules = v.split(',').map(v => v.trim()).filter(v => !!v); }
     }
   },
   {
@@ -180,12 +204,21 @@ const INTERACTIONS: InteractionConfig[] = [
 
 export class Interaction {
   public static async collectInformation(): Promise<GeneratorRequirements> {
-    return await this.processInteractions(INTERACTIONS);
+    return await this.processInteractions(createDefaultOptions(), INTERACTIONS);
   }
 
+  public static async collectMigrateInformation(): Promise<GeneratorRequirements> {
+    const opt = createDefaultOptions();
+    const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+    opt.appName = pkg.name;
+    opt.license = pkg.license;
+    opt.author = pkg.author;
+    opt.git.use = false;
 
-  private static async processInteractions(interactions: InteractionConfig[]) {
-    const result = createDefaultOptions();
+    return await this.processInteractions(opt, MIGRATION_INTERACTIONS);
+  }
+
+  private static async processInteractions(result: GeneratorRequirements, interactions: InteractionConfig[]) {
     const handler = interactions.map(interaction => {
       return this.createInteractionHandler(interaction, result);
     });
@@ -252,7 +285,7 @@ export class Interaction {
     console.log(`Author                      : ${conf.author}`);
     console.log(`License                     : ${conf.license}`);
     console.log(`Package Manager             : ${PackageManagerName[conf.packageManager].toLowerCase()}`);
-    console.log(`Use Git                     : ${conf.git.use ? 'y' : 'n'}`);
+    console.log(`Use Git                     : ${conf.git.use}`);
     if (conf.git.use) {
       console.log(`Git remote repository       : ${conf.git.remote}`);
     }

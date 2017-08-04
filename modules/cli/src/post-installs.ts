@@ -30,8 +30,7 @@ import {
 } from './options';
 import {
   PackageManagerFactory,
-  PackageInstallType,
-  sanitizeModuleNameList
+  PackageInstallType
 } from './package-manager';
 
 
@@ -46,15 +45,15 @@ export type InstallOpt = { modules: string[]; installType: PackageInstallType; i
 export class PostInstalls {
   public static run() {
     const pkg = getPkg();
-    const sanitizedModules = this.sanitizeModulesWithExistsDependencies(pkg, pkg.rmvi.additionalModules || []);
 
-    if (sanitizedModules.length) {
+    if (pkg.rmvi.additionalModules.length) {
       this.install(pkg, {
-        modules: sanitizedModules,
+        modules: pkg.rmvi.additionalModules,
         installType: PackageInstallType.PROD,
         installTypescriptTypes: pkg.rmvi.installTypes
       });
     }
+
     this.updateDLL();
     this.build();
   }
@@ -71,7 +70,9 @@ export class PostInstalls {
     packageManager.uninstall(modules);
     packageManager.install(modules);
 
-    this.updateDLL();
+    if (!pkg.rmvi.migrated) {
+      this.updateDLL();
+    }
   }
 
 
@@ -86,22 +87,16 @@ export class PostInstalls {
 
 
   public static install(pkg: any, { modules, installType, installTypescriptTypes }: InstallOpt) {
-    const sanitizedModules = this.sanitizeModulesWithExistsDependencies(pkg, modules);
-    if (sanitizedModules.length) {
+    if (modules.length) {
       const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-      packageManager.install(sanitizedModules, installType);
-      if (installType === PackageInstallType.PROD) {
-        const manifest = this.readDLLManifest(pkg);
-        if (manifest) {
-          this.writeDLLManifest(sanitizedModules, pkg);
-        }
-      }
-
+      packageManager.install(modules, installType);
       if (installTypescriptTypes) {
         this.installTypesIfExists(pkg, modules);
       }
 
-      this.updateDLL();
+      if (installType === PackageInstallType.PROD) {
+        this.updateDLL();
+      }
     }
   }
 
@@ -117,7 +112,7 @@ export class PostInstalls {
         const name = `@types/${module}`;
         const ret = execSync(`npm search --json ${name}`).toString('utf8');
 
-        return JSON.parse(ret).filter(m => m === name);
+        return JSON.parse(ret).map(v => v.name).filter(m => m === name);
       }).reduce((i, n) => i.concat(n), []);
 
       this.install(pkg, { modules: types, installType: PackageInstallType.DEV });
@@ -128,38 +123,8 @@ export class PostInstalls {
   }
 
 
-  private static readDLLManifest(pkg: any): string[] {
-    try {
-      return pkg.rmvi.dllList;
-    } catch (e) {
-      console.error(e);
-
-      return null;
-    }
-  }
-
-
-  private static writeDLLManifest(pkg: any, newDLLList: string[]) {
-    try {
-      const clone = { ...pkg };
-      clone.rmvi = { ...clone.rmvi };
-      clone.rmvi.dllList = newDLLList;
-      fs.writeFileSync('./package.json', JSON.stringify(clone, null, '  '), 'utf8');
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-
   private static updateDLL() {
     execSync(`npm run dll-prod`, EXEC_OPT);
     execSync(`npm run dll-debug`, EXEC_OPT);
-  }
-
-
-  private static sanitizeModulesWithExistsDependencies(pkg, modules: string[]) {
-    return sanitizeModuleNameList(Object.keys(pkg.dependencies || {})
-      .concat(Object.keys(pkg.devDependencies || {}))
-      .concat(pkg.rmvi.additionalModules));
   }
 }

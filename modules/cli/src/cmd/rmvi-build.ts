@@ -18,36 +18,26 @@
  * @author Taketoshi Aono
  */
 
-
+import * as yargs from 'yargs';
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
 import {
   pkg,
   checkPkg
-} from './pkg';
-import {
-  PackageInstallType
-} from './package-manager';
-import * as commander from 'commander';
+} from '../pkg';
 
+export const command = 'build';
+export const desc = 'Build your application.';
+export const builder = (yargs) => {
+  return yargs.option('--debug', { alias: '-d' });
+};
 
-commander
-  .version(pkg.version)
-  .option('-D, --dev', 'Install module in devDependencies.')
-  .option('--peer', 'Install module in peerDependencies.')
-  .parse(process.argv);
+export const handler = argv => {
+  checkPkg(pkg);
+  if (!pkg.version) {
+    throw new Error('build called before init.');
+  }
 
-
-if (!pkg.version) {
-  throw new Error('install called before init.');
-}
-checkPkg(pkg);
-
-const modules = commander.args;
-PostInstalls.install(pkg, {
-  modules,
-  installType: commander.dev ? PackageInstallType.DEV :
-    PackageInstallType.PEER ? commander.peer : PackageInstallType.PROD,
-  installTypescriptTypes: pkg.rmvi.installTyings
-});
+  PostInstalls.build(argv.debug);
+};

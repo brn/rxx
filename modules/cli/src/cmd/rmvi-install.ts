@@ -18,11 +18,40 @@
  * @author Taketoshi Aono
  */
 
-import * as commander from 'commander';
+
 import {
   PostInstalls
-} from './post-installs';
+} from '../post-installs';
+import {
+  pkg,
+  checkPkg
+} from '../pkg';
+import {
+  PackageInstallType
+} from '../package-manager';
+import * as yargs from 'yargs';
 
-commander.parse(process.argv);
 
-PostInstalls.dev();
+export const command = 'install [modules..]';
+export const desc = 'Install module with specified package maanger.';
+export const builder = yargs => {
+  return yargs
+    .option('dev', { alias: 'D', desc: 'Install module in devDependencies.' })
+    .option('peer', { desc: 'Install module in peerDependencies.' });
+};
+
+export const handler = argv => {
+  checkPkg(pkg, true);
+  if (!pkg.version) {
+    throw new Error('install called before init.');
+  }
+
+  const modules = argv.modules;
+  PostInstalls.install(pkg, {
+    modules,
+    installType: argv.dev ? PackageInstallType.DEV :
+      PackageInstallType.PEER ? argv.peer : PackageInstallType.PROD,
+    installTypescriptTypes: pkg.rmvi.installTypings
+  });
+
+};
