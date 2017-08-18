@@ -168,10 +168,7 @@ export class StreamStore implements StreamCollection {
    * @inheritDoc
    */
   public has(key: string): boolean {
-    const splited = key.split('::');
-    const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
-
-    return !!this.subjectMap[key] || (globalKey ? !!this.subjectMap[globalKey] : false);
+    return this.get(key).length > 0;
   }
 
 
@@ -190,16 +187,17 @@ export class StreamStore implements StreamCollection {
   /**
    * @inheritDoc
    */
-  public get(key: string): Subject<any>[] {
+  public get(keySpace: string): Subject<any>[] {
     const ret = [];
-    const splited = key.split('::');
-    const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
-    const globalBus = globalKey && this.subjectMap[globalKey] ? this.subjectMap[globalKey] : null;
-    if (this.subjectMap[key]) {
-      ret.push(this.subjectMap[key]);
+    const [ns, key] = keySpace.split('::');
+    const globalKeys = [`*::${key}`, `${ns}::*`];
+    const globalBus = globalKeys.filter(key => !!this.subjectMap[key]).map(key => this.subjectMap[key]);
+    if (this.subjectMap[keySpace]) {
+      ret.push(this.subjectMap[keySpace]);
     }
-    if (globalBus) {
-      ret.push(globalBus);
+
+    if (globalBus.length) {
+      return ret.concat(globalBus);
     }
 
     return ret;

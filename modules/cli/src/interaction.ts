@@ -50,7 +50,8 @@ export function createDefaultOptions(): GeneratorRequirements {
     git: {
       use: true,
       remote: ''
-    }
+    },
+    isPrivate: false
   };
 }
 
@@ -188,6 +189,13 @@ const INTERACTIONS: InteractionConfig[] = [
     }
   },
   {
+    message: 'Is Private? (default no) [y/n]',
+    defaultValue: v => 'n',
+    validation: isPrivate => UserInputValidator.validateYesNo(isPrivate),
+    update: (v, r) => r.isPrivate = v === 'y',
+    lower: true
+  },
+  {
     message: 'Use Git? (default yes) [y/n]',
     defaultValue: v => 'y',
     validation: use => UserInputValidator.validateYesNo(use),
@@ -291,6 +299,7 @@ export class Interaction {
     }
     console.log(`Additional Modules          : ${conf.additionalModules}`);
     console.log(`Language                    : ${LanguageType[conf.language].toLowerCase()}`);
+    console.log(`Private                     : ${conf.isPrivate}`);
     if (conf.language === LanguageType.TS) {
       console.log(`Install typings with module : ${conf.installTypings}`);
     }

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -20,26 +19,41 @@
 
 
 import {
-  PostInstalls
-} from '../post-installs';
-import {
-  pkg,
-  checkPkg
-} from '../pkg';
+  spawn,
+  ChildProcess
+} from 'child_process';
 
+export type ProcessOut = { stderr: string; stdout: string };
 
-export const command = 'update';
-export const desc = 'Update react-mvi module.';
-export const handler = async () => {
-  checkPkg(pkg, true);
-  if (!pkg.version) {
-    throw new Error('update called before init.');
+export class Process {
+  public static async run(cmd: string, args: string[], pipe = false): Promise<ProcessOut> {
+    return new Promise<ProcessOut>((resolve, reject) => {
+      /*tslint:disable:no-magic-numbers*/
+      const proc = spawn(cmd, args, { stdio: pipe ? 'pipe' : 'inherit' });
+      /*tslint:enable:no-magic-numbers*/
+      let stdout = '';
+      let stderr = '';
+      if (pipe) {
+        ['stdout', 'stderr'].forEach(stdio => proc[stdio].on('data', d => {
+          if (stdio === 'stderr') {
+            console.error(d);
+            if (d) {
+              stderr += d.toString('utf8');
+            }
+          } else if (stdio === 'stdout') {
+            console.log(d);
+            if (d) {
+              stdout += d.toString('utf8');
+            }
+          }
+        }));
+      }
+      proc.on('exit', () => {
+        resolve({ stdout, stderr });
+      });
+      proc.on('error', e => {
+        reject(e);
+      });
+    });
   }
-  try {
-    await PostInstalls.update(pkg);
-    process.exit(0);
-  } catch (e) {
-    console.error(e.stack);
-    process.exit(1);
-  }
-};
+}

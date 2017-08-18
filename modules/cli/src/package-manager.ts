@@ -19,12 +19,16 @@
 
 
 import uniq = require('lodash.uniq');
+import * as npm from 'npm';
 import {
   execSync
 } from 'child_process';
 import {
   singleton
 } from './options';
+import {
+  Process
+} from './process';
 
 
 /*tslint:disable:no-magic-numbers*/
@@ -46,8 +50,8 @@ export enum PackageManagerName {
 
 
 export interface PackageManager {
-  install(modules: string[], type?: PackageInstallType): void;
-  uninstall(modules: string[]): void;
+  install(modules: string[], type?: PackageInstallType): Promise<any>;
+  uninstall(modules: string[]): Promise<any>;
   name: string;
 }
 
@@ -63,13 +67,15 @@ export class Npm implements PackageManager {
 
   public static instance: Npm;
 
-  public install(modules: string[], type = PackageInstallType.PROD) {
-    execSync(`npm install ${sanitizeModuleNameList(modules).join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
+  public async install(modules: string[], type = PackageInstallType.PROD) {
+    const opt = type === PackageInstallType.DEV ? ['-D'] : [];
+
+    return await Process.run('npm', ['install', ...sanitizeModuleNameList(modules), ...opt]);
   }
 
 
-  public uninstall(modules: string[]) {
-    execSync(`npm uninstall ${modules.join(' ')}`, { stdio });
+  public async uninstall(modules: string[]) {
+    return await Process.run('npm', ['uninstall', ...modules]);
   }
 }
 
@@ -80,24 +86,27 @@ export class Yarn implements PackageManager {
 
   public static instance: Yarn;
 
-  public install(modules: string[], type = PackageInstallType.PROD) {
-    this.checkYarn();
-    execSync(`yarn add ${sanitizeModuleNameList(modules).join(' ')} ${type === PackageInstallType.DEV ? '-D' : ''}`, { stdio });
+  public async install(modules: string[], type = PackageInstallType.PROD) {
+    await this.checkYarn();
+    const opt = type === PackageInstallType.DEV ? ['-D'] : [];
+
+    return await Process.run('yarn', ['add', ...sanitizeModuleNameList(modules), ...opt]);
   }
 
 
-  public uninstall(modules: string[]) {
-    this.checkYarn();
-    execSync(`yarn remove ${modules.join(' ')}`, { stdio });
+  public async uninstall(modules: string[]) {
+    await this.checkYarn();
+
+    return await Process.run('yarn', ['remove', ...modules]);
   }
 
 
-  private checkYarn() {
+  private async checkYarn() {
     try {
-      execSync('yarn --version');
+      await Process.run('yarn', ['--version']);
     } catch (e) {
       console.log('yarn not found. So install.');
-      execSync('npm i -g yarn', { stdio });
+      await Process.run('npm', ['i', '-g', 'yarn']);
     }
   }
 }

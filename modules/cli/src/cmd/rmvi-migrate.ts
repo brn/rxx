@@ -45,10 +45,20 @@ import {
 
 export const command = 'migrate';
 export const desc = 'Migrate current application to react-mvi application';
+export const builder = yargs => {
+  return yargs.option('webpack', { desc: 'Replace webpack.config.js and reserve original one.' });
+};
 export const handler = argv => {
   const init = async () => {
-    const opt = await Interaction.collectMigrateInformation();
-    new Generator(opt).migrate();
+    try {
+      const opt = await Interaction.collectMigrateInformation();
+      await new Generator(opt).migrate({ replaceWebpack: argv.webpack });
+      if (argv.webpack) {
+        await PostInstalls.run();
+      }
+    } catch (e) {
+      throw e;
+    }
   };
 
   init().then(() => process.exit(0), e => {

@@ -131,6 +131,8 @@ export class Provisioning<ContextType extends { state: any; __intent: Intent }> 
 
   private handlerSubscriptions: Subscription[] = [];
 
+  private unobservablifiedState: any;
+
   private cache: {
     storeGroup: StoreGroup;
     stores: Store<any>[];
@@ -201,6 +203,7 @@ export class Provisioning<ContextType extends { state: any; __intent: Intent }> 
       }
 
       this.subscription = combineTemplate(state).subscribe(state => {
+        this.unobservablifiedState = state;
         this.intent.setState(state);
         forIn(getHandlers(), v => v.setState(state));
       });
@@ -217,6 +220,11 @@ export class Provisioning<ContextType extends { state: any; __intent: Intent }> 
 
   public getState() {
     return this.cache.storeState;
+  }
+
+
+  public getUnobservablifiedStateGetter() {
+    return () => this.unobservablifiedState;
   }
 
 

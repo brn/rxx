@@ -30,7 +30,8 @@ import {
   expect
 } from 'chai';
 import {
-  extend
+  extend,
+  omit
 } from '../../utils';
 
 
@@ -45,6 +46,7 @@ class ContextProvider extends React.Component<any, any> {
     return {
       intent: this.props.intent,
       state: this.props.state,
+      unobservablifiedStateGetter() { return { test: 1 }; },
       parent: this.props.parent
     };
   }
@@ -81,20 +83,24 @@ describe('connect.tsx', () => {
       const CONTEXT = { intent: 'ok', state: 'state', parent: 'parent' };
       const { Component, context, props } = init();
       const renderer = TestRenderer.create(<ContextProvider {...CONTEXT}><Component /></ContextProvider>);
-      expect(context).to.be.deep.eq({ intent: 'ok', state: 'state', parent: 'parent' });
+      expect(omit(context, 'unobservablifiedStateGetter')).to.be.deep.eq({ intent: 'ok', state: 'state', parent: 'parent' });
     });
 
     it('should convert state to props', () => {
-      const { Component, context, props } = init({ mapStateToProps(s) { return { convertedValue: s.value }; } });
+      const { Component, context, props } = init({ mapStateToProps(s, p) { return { convertedValue: p.value }; } });
       const renderer = TestRenderer.create(<Component value="1" />);
       expect(props).to.be.deep.eq({ convertedValue: '1' });
     });
 
     it('should convert intent to props', () => {
       const CONTEXT = { intent: 'intent', state: 'state', parent: 'parent' };
-      const { Component, context, props } = init({ mapIntentToProps(intent) { return { convertedValue: intent }; } });
+      const { Component, context, props } = init({
+        mapIntentToProps(intent, getState, props) {
+          return { convertedValue: intent, state: getState() };
+        }
+      });
       const renderer = TestRenderer.create(<ContextProvider {...CONTEXT}><Component /></ContextProvider>);
-      expect(props).to.be.deep.eq({ convertedValue: 'intent' });
+      expect(props).to.be.deep.eq({ convertedValue: 'intent', state: { test: 1 } });
     });
   });
 });

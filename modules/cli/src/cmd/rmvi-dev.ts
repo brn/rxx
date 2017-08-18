@@ -29,7 +29,14 @@ import {
 
 export const command = 'dev';
 export const desc = 'Start dev server.';
-export const handler = () => {
+export const handler = async () => {
   checkPkg(pkg);
-  PostInstalls.dev();
+  try {
+    await PostInstalls.dev();
+  } catch (e) {
+    console.error(e.stack);
+    process.exit(1);
+  }
+
+  process.exit(0);
 };

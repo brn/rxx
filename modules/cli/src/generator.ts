@@ -20,7 +20,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ejs from 'ejs';
-import { execSync } from 'child_process';
 import {
   LanguageType
 } from './options';
@@ -34,6 +33,9 @@ import {
   PackageManager,
   PackageInstallType
 } from './package-manager';
+import {
+  Process
+} from './process';
 
 
 type JSON = { [key: string]: any };
@@ -76,7 +78,9 @@ const DEV_DEPENDENCIES = [
   'webpack-hot-middleware',
   'sw-precache-webpack-plugin',
   'express',
-  'serve-static'
+  'serve-static',
+  'npm-run-all',
+  'rimraf'
 ];
 
 const JS_DEV_DEPENDENCIES = [
@@ -137,7 +141,19 @@ export class Generator {
 
   private installTypings: boolean;
 
-  constructor({ appName, additionalModules, language, license, author, packageManager, git, installTypings }: GeneratorRequirements) {
+  private isPrivate: boolean;
+
+  constructor({
+    appName,
+    additionalModules,
+    language,
+    license,
+    author,
+    packageManager,
+    git,
+    installTypings,
+    isPrivate
+  }: GeneratorRequirements) {
     this.appName = appName;
     this.additionalModules = additionalModules;
     this.language = language;
@@ -146,15 +162,17 @@ export class Generator {
     this.packageManager = PackageManagerFactory.create(packageManager);
     this.git = git;
     this.installTypings = installTypings;
+    this.isPrivate = isPrivate;
     const prefix = converNameToValidJSClassNamePrefix(this.appName);
     this.templateGenerator = language === LanguageType.TS ?
       new TypescriptTemplateGenerator(prefix) : new JSTemplateGenerator(prefix);
   }
 
 
-  public generate() {
-    this.initGit();
-    this.initDependencies();
+  public async generate() {
+    await this.initGit();
+    this.initPakcageJSON();
+    await this.initDependencies();
     this.deployWebpackConfigs();
     this.deployKarmaConfig();
     this.deployCerts();
@@ -163,52 +181,70 @@ export class Generator {
   }
 
 
-  public migrate() {
+  public migrate({ replaceWebpack }: { replaceWebpack: boolean }) {
     const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     pkg.rmvi = {
       language: LanguageType[this.language].toLowerCase(),
       additionalModules: [],
       packageManager: this.packageManager.name,
       installTypings: this.installTypings,
-      migrated: true
+      migrated: !replaceWebpack
     };
     fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
 
-    try {
-      this.packageManager.install(DEPENDENCIES);
-    } catch (e) {
-      console.error(e);
-      process.exit(1);
+    this.initDependencies(replaceWebpack);
+
+    if (replaceWebpack) {
+      this.renameWebpackConfig();
+      this.deployWebpackConfigs();
     }
   }
 
 
-  private initGit() {
+  private async initGit() {
     if (this.git.use) {
       try {
-        execSync('git init', { stdio });
+        await Process.run('git', ['init']);
       } catch (e) { console.error(e); }
       if (this.git.remote) {
         try {
-          execSync(`git remote add origin ${this.git.remote}`, { stdio });
+          await Process.run('git', ['remote', 'add', 'origin', this.git.remote]);
         } catch (e) { console.error(e); }
       }
     }
   }
 
 
-  private initDependencies() {
+  private initPakcageJSON() {
     const pkg = ejs.render(this.pkg, this);
     fs.writeFileSync('package.json', pkg);
+  }
+
+
+  private async initDependencies(installDevDependencies = true) {
     try {
-      this.packageManager.install(DEPENDENCIES);
-      this.packageManager.install(
-        DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : JS_DEV_DEPENDENCIES),
-        PackageInstallType.DEV);
+      await this.packageManager.install(DEPENDENCIES);
+      if (installDevDependencies) {
+        await this.packageManager.install(
+          DEV_DEPENDENCIES.concat(this.language === LanguageType.TS ? TYPES : JS_DEV_DEPENDENCIES),
+          PackageInstallType.DEV);
+      }
     } catch (e) {
       console.error(e);
       process.exit(1);
     }
+  }
+
+
+  private renameWebpackConfig() {
+    try {
+      const conf = fs.readFileSync('./webpack.config.js', 'utf8');
+      fs.writeFileSync('./webpack.config.js.orig', conf);
+    } catch (e) { }
+    try {
+      const conf = fs.readFileSync('./webpack.dll.config.js', 'utf8');
+      fs.writeFileSync('./webpack.dll.config.js.orig', conf);
+    } catch (e) { }
   }
 
 

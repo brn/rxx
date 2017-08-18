@@ -53,6 +53,7 @@ export const builder = yargs => {
     .option('pm [package-manager]', { alias: 'p', desc: 'Package manager one of [npm/yarn]' })
     .option('module [additional-modules...]', { alias: 'm', desc: 'Additional install modules (comma separeated list like "react,react-dom")' })
     .option('lang [language]', { alias: 'l', desc: 'Language one of [ts/js]' })
+    .option('private', { alias: 'P', desc: 'Treat as private package.' })
     .option('git [repository]', { alias: 'g', desc: 'Initialize git.' });
 };
 
@@ -65,6 +66,7 @@ type Options = {
   module?: string;
   lang?: 'ts' | 'js';
   git?: string;
+  private: boolean;
 };
 
 
@@ -75,6 +77,7 @@ function getOptions(argv: Options) {
   result.license = license || result.license;
   result.additionalModules = (module || '').split(',').map(v => v.trim()).filter(v => !!v);
   result.author = author || '';
+  result.isPrivate = argv.private || false;
 
   if (name) {
     if (!UserInputValidator.validateAppName(name)) {
@@ -109,9 +112,15 @@ function getOptions(argv: Options) {
   return result;
 }
 
-export const handler = argv => {
-  checkPkg(pkg);
-  const opt = getOptions(argv);
-  new Generator(opt).generate();
-  PostInstalls.run();
+export const handler = async (argv) => {
+  try {
+    checkPkg(pkg);
+    const opt = getOptions(argv);
+    await new Generator(opt).generate();
+    await PostInstalls.run();
+    process.exit(0);
+  } catch (e) {
+    console.error(e.stack);
+    process.exit(1);
+  }
 };

@@ -23,15 +23,15 @@ import {
   getPkg
 } from './pkg';
 import {
-  execSync
-} from 'child_process';
-import {
   npx
 } from './options';
 import {
   PackageManagerFactory,
   PackageInstallType
 } from './package-manager';
+import {
+  Process
+} from './process';
 
 
 /*tslint:disable:no-magic-numbers*/
@@ -43,23 +43,23 @@ export type InstallOpt = { modules: string[]; installType: PackageInstallType; i
 
 
 export class PostInstalls {
-  public static run() {
+  public static async run() {
     const pkg = getPkg();
 
     if (pkg.rmvi.additionalModules.length) {
-      this.install(pkg, {
+      await this.install(pkg, {
         modules: pkg.rmvi.additionalModules,
         installType: PackageInstallType.PROD,
         installTypescriptTypes: pkg.rmvi.installTypes
       });
     }
 
-    this.updateDLL();
-    this.build();
+    await this.updateDLL();
+    await this.build();
   }
 
 
-  public static update(pkg) {
+  public static async update(pkg) {
     const modules = [];
     for (const dep in pkg.dependencies) {
       if (dep.indexOf('@react-mvi') > -1) {
@@ -67,55 +67,63 @@ export class PostInstalls {
       }
     }
     const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-    packageManager.uninstall(modules);
-    packageManager.install(modules);
+    await packageManager.uninstall(modules);
+    await packageManager.install(modules);
 
     if (!pkg.rmvi.migrated) {
-      this.updateDLL();
+      await this.updateDLL();
     }
   }
 
 
-  public static dev() {
-    execSync('npm start', EXEC_OPT);
+  public static async dev() {
+    return await Process.run('npm', ['start']);
   }
 
 
-  public static build(isDebug = false) {
-    execSync(`npm run bundle${isDebug ? '-debug' : ''}`, EXEC_OPT);
+  public static async build(isDebug = false) {
+    return await Process.run('npm', ['run', `webpack${isDebug ? '-debug' : ''}`]);
   }
 
 
-  public static install(pkg: any, { modules, installType, installTypescriptTypes }: InstallOpt) {
+  public static async install(pkg: any, { modules, installType, installTypescriptTypes }: InstallOpt) {
     if (modules.length) {
       const packageManager = PackageManagerFactory.create(pkg.rmvi.packageManager);
-      packageManager.install(modules, installType);
+      await packageManager.install(modules, installType);
       if (installTypescriptTypes) {
-        this.installTypesIfExists(pkg, modules);
+        await this.installTypesIfExists(pkg, modules);
       }
 
       if (installType === PackageInstallType.PROD) {
-        this.updateDLL();
+        await this.updateDLL();
       }
     }
   }
 
 
-  public static test() {
-    execSync('npm run test', EXEC_OPT);
+  public static async test() {
+    return await Process.run('npm', ['run', 'test']);
   }
 
 
-  private static installTypesIfExists(pkg, modules) {
+  private static async installTypesIfExists(pkg, modules) {
     try {
-      const types = modules.map(module => {
+      const jsons = [];
+      const loop = async (index) => {
+        const module = modules[index];
         const name = `@types/${module}`;
-        const ret = execSync(`npm search --json ${name}`).toString('utf8');
+        const { stdout } = await Process.run('npm', ['search', '--json', 'name'], true);
+        const next = index + 1;
+        jsons.push(JSON.parse(stdout).map(v => v.name).filter(m => m === name));
+        if (modules.length > next) {
+          await loop(modules[next]);
+        }
+      };
 
-        return JSON.parse(ret).map(v => v.name).filter(m => m === name);
-      }).reduce((i, n) => i.concat(n), []);
+      await loop(0);
+      const types = jsons.reduce((i, n) => i.concat(n), []);
 
-      this.install(pkg, { modules: types, installType: PackageInstallType.DEV });
+      await this.install(pkg, { modules: types, installType: PackageInstallType.DEV });
     } catch (e) {
       console.error(e);
       process.exit(1);
@@ -123,8 +131,7 @@ export class PostInstalls {
   }
 
 
-  private static updateDLL() {
-    execSync(`npm run dll-prod`, EXEC_OPT);
-    execSync(`npm run dll-debug`, EXEC_OPT);
+  private static async updateDLL() {
+    await Process.run('npm', ['run', 'dll']);
   }
 }

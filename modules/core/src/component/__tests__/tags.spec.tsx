@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+// -*- mode: typescript -*-
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
@@ -13,33 +13,40 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- *  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * @fileoverview 
  * @author Taketoshi Aono
  */
 
 
+import * as React from 'react';
 import {
-  PostInstalls
-} from '../post-installs';
+  Observable,
+  Subject
+} from 'rxjs/Rx';
 import {
-  pkg,
-  checkPkg
-} from '../pkg';
+  Tags as T
+} from '../tags';
+import {
+  expect
+} from 'chai';
 
+const WAIT_TIME_MS = 100;
 
-export const command = 'update';
-export const desc = 'Update react-mvi module.';
-export const handler = async () => {
-  checkPkg(pkg, true);
-  if (!pkg.version) {
-    throw new Error('update called before init.');
-  }
-  try {
-    await PostInstalls.update(pkg);
-    process.exit(0);
-  } catch (e) {
-    console.error(e.stack);
-    process.exit(1);
-  }
-};
+describe('tags.tsx', () => {
+  describe('Tags', () => {
+    it('should attribute type is ok', () => {
+      const e1 = <T.Button disabled={true}></T.Button>;
+    });
+
+    it('should has Observable attribute type.', () => {
+      const o = new Observable<boolean>(o => { o.next(true); });
+      const e2 = <T.Button disabled={o}></T.Button>;
+    });
+
+    it('should has Subject attribute type.', () => {
+      const o = new Subject<boolean>();
+      const e2 = <T.Button disabled={o}></T.Button>;
+    });
+  });
+});

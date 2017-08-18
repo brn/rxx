@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@react-mvi/core@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@react-mvi/core/-/core-1.0.4.tgz#883879b8e8b766f4e57dfefad3cae3f7d0aafad5"
+"@react-mvi/core@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@react-mvi/core/-/core-1.0.10.tgz#0de7d1ddd3eb833dffab98736b907de07bcc05c4"
 
 "@react-mvi/testing@^1.0.0":
   version "1.0.0"

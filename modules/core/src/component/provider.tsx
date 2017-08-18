@@ -86,7 +86,13 @@ export type ProviderProps = {
  * </Provider>
  */
 export class Provider extends React.Component<ProviderProps, {}> {
-  public static contextTypes = { intent: PropTypes.any, state: PropTypes.any, parent: PropTypes.any, __intent: PropTypes.any };
+  public static contextTypes = {
+    intent: PropTypes.any,
+    state: PropTypes.any,
+    parent: PropTypes.any,
+    unobservablifiedStateGetter: PropTypes.any,
+    __intent: PropTypes.any
+  };
 
   /**
    * Internal component.
@@ -116,6 +122,7 @@ export class Provider extends React.Component<ProviderProps, {}> {
         return {
           intent: provisioning.getIntentHandler(),
           state: provisioning.getState(),
+          unobservablifiedStateGetter: provisioning.getUnobservablifiedStateGetter(),
           parent: context,
           __intent: provisioning.getIntent()
         };

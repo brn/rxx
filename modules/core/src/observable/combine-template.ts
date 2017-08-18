@@ -37,8 +37,6 @@ class ObservableUpdater {
 
   private currentIndex = 0;
 
-  private id = Date.now();
-
   private templateObject;
 
 
@@ -72,21 +70,13 @@ class ObservableUpdater {
         const { context, key } = this.observables[index];
         context[key] = value;
       });
-      const id = this.id = Date.now();
-      let persisted = false;
 
       return typeof Proxy === 'function' ? new Proxy(this.clone, {
         get: (target, name) => {
           if (name === 'persist') {
             return () => {
-              persisted = true;
               this.collect(this.templateObject);
             };
-          }
-
-          if (!persisted && id !== this.id) {
-            console.warn(new Error(`State object is reused for performance.
-If you want to use state object after updated, call persist().`).stack);
           }
 
           return target[name];

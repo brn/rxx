@@ -293,9 +293,7 @@ class StreamStore {
      * @inheritDoc
      */
     has(key) {
-        const splited = key.split('::');
-        const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
-        return !!this.subjectMap[key] || (globalKey ? !!this.subjectMap[globalKey] : false);
+        return this.get(key).length > 0;
     }
     /**
      * @inheritDoc
@@ -309,16 +307,16 @@ class StreamStore {
     /**
      * @inheritDoc
      */
-    get(key) {
+    get(keySpace) {
         const ret = [];
-        const splited = key.split('::');
-        const globalKey = splited.length > 1 ? `*::${splited[1]}` : null;
-        const globalBus = globalKey && this.subjectMap[globalKey] ? this.subjectMap[globalKey] : null;
-        if (this.subjectMap[key]) {
-            ret.push(this.subjectMap[key]);
+        const [ns, key] = keySpace.split('::');
+        const globalKeys = [`*::${key}`, `${ns}::*`];
+        const globalBus = globalKeys.filter(key => !!this.subjectMap[key]).map(key => this.subjectMap[key]);
+        if (this.subjectMap[keySpace]) {
+            ret.push(this.subjectMap[keySpace]);
         }
-        if (globalBus) {
-            ret.push(globalBus);
+        if (globalBus.length) {
+            return ret.concat(globalBus);
         }
         return ret;
     }
@@ -532,7 +530,6 @@ class ObservableUpdater {
         this.observables = [];
         this.doNotCollectObservables = false;
         this.currentIndex = 0;
-        this.id = Date.now();
     }
     push(observable) {
         if (!this.doNotCollectObservables) {
@@ -560,19 +557,12 @@ class ObservableUpdater {
                 const { context, key } = this.observables[index];
                 context[key] = value;
             });
-            const id = this.id = Date.now();
-            let persisted = false;
             return typeof Proxy === 'function' ? new Proxy(this.clone, {
                 get: (target, name) => {
                     if (name === 'persist') {
                         return () => {
-                            persisted = true;
                             this.collect(this.templateObject);
                         };
-                    }
-                    if (!persisted && id !== this.id) {
-                        console.warn(new Error(`State object is reused for performance.
-If you want to use state object after updated, call persist().`).stack);
                     }
                     return target[name];
                 }
@@ -753,6 +743,7 @@ class Provisioning {
                 }
             }
             this.subscription = combineTemplate(state).subscribe(state => {
+                this.unobservablifiedState = state;
                 this.intent.setState(state);
                 forIn(getHandlers(), v => v.setState(state));
             });
@@ -764,6 +755,9 @@ class Provisioning {
     }
     getState() {
         return this.cache.storeState;
+    }
+    getUnobservablifiedStateGetter() {
+        return () => this.unobservablifiedState;
     }
     getIntentHandler() {
         return this.cache.intentHandler;
@@ -822,6 +816,7 @@ class Provider extends Component {
                 return {
                     intent: provisioning.getIntentHandler(),
                     state: provisioning.getState(),
+                    unobservablifiedStateGetter: provisioning.getUnobservablifiedStateGetter(),
                     parent: context,
                     __intent: provisioning.getIntent()
                 };
@@ -845,7 +840,13 @@ class Provider extends Component {
         this.childrenProps = Object.assign({}, omit(nextProps, ['store', 'intent', 'service', 'children']), this.provisioning.getState().view || {});
     }
 }
-Provider.contextTypes = { intent: any, state: any, parent: any, __intent: any };
+Provider.contextTypes = {
+    intent: any,
+    state: any,
+    parent: any,
+    unobservablifiedStateGetter: any,
+    __intent: any
+};
 
 // -*- mode: typescript -*-
 /**
@@ -1221,6 +1222,7 @@ const DEFAULT = { mapStateToProps: undefined, mapIntentToProps: undefined };
 const CONTEXT_TYPES = {
     intent: any,
     state: any,
+    unobservablifiedStateGetter: any,
     parent: any
 };
 /**
@@ -1230,7 +1232,7 @@ const CONTEXT_TYPES = {
  * @returns Function that wrap passed component with Context component.
  */
 function connect(args = DEFAULT) {
-    const { mapStateToProps = s => s, mapIntentToProps = i => ({}) } = args;
+    const { mapStateToProps = (s, p) => p, mapIntentToProps = i => ({}) } = args;
     return (C) => {
         // Set context type to passed to component.
         C.contextTypes = CONTEXT_TYPES;
@@ -1241,13 +1243,13 @@ function connect(args = DEFAULT) {
         return _a = class extends Component {
                 constructor(p, c) {
                     super(p, c);
-                    this.mappedProps = Object.assign({}, mapStateToProps(this.props), mapIntentToProps(this.context.intent));
+                    this.mappedProps = Object.assign({}, this.mapStateToProps(), this.mapIntentToProps());
                 }
                 render() {
                     return createElement(C, Object.assign({}, this.mappedProps));
                 }
                 componentWillReceiveProps(nextProps) {
-                    this.mappedProps = Object.assign({}, mapStateToProps(nextProps), mapIntentToProps(this.context.intent));
+                    this.mappedProps = Object.assign({}, this.mapStateToProps(), this.mapIntentToProps());
                 }
                 getChildContext() {
                     return {
@@ -1255,6 +1257,12 @@ function connect(args = DEFAULT) {
                         state: this.context.state,
                         parent: this.context.parent
                     };
+                }
+                mapIntentToProps() {
+                    return mapIntentToProps(this.context.intent, this.context.unobservablifiedStateGetter, this.props);
+                }
+                mapStateToProps() {
+                    return mapStateToProps(this.context.unobservablifiedStateGetter, this.props);
                 }
                 static get childContextTypes() {
                     return CONTEXT_TYPES;

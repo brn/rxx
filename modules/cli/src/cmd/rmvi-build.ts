@@ -33,11 +33,18 @@ export const builder = (yargs) => {
   return yargs.option('--debug', { alias: '-d' });
 };
 
-export const handler = argv => {
+export const handler = async (argv) => {
   checkPkg(pkg);
   if (!pkg.version) {
     throw new Error('build called before init.');
   }
 
-  PostInstalls.build(argv.debug);
+  try {
+    await PostInstalls.build(argv.debug);
+  } catch (e) {
+    console.error(e.stack);
+    process.exit(1);
+  }
+
+  process.exit(0);
 };

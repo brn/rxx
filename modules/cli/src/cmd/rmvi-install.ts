@@ -40,18 +40,23 @@ export const builder = yargs => {
     .option('peer', { desc: 'Install module in peerDependencies.' });
 };
 
-export const handler = argv => {
+export const handler = async (argv) => {
   checkPkg(pkg, true);
   if (!pkg.version) {
     throw new Error('install called before init.');
   }
 
   const modules = argv.modules;
-  PostInstalls.install(pkg, {
-    modules,
-    installType: argv.dev ? PackageInstallType.DEV :
-      PackageInstallType.PEER ? argv.peer : PackageInstallType.PROD,
-    installTypescriptTypes: pkg.rmvi.installTypings
-  });
-
+  try {
+    await PostInstalls.install(pkg, {
+      modules,
+      installType: argv.dev ? PackageInstallType.DEV :
+        PackageInstallType.PEER ? argv.peer : PackageInstallType.PROD,
+      installTypescriptTypes: pkg.rmvi.installTypings
+    });
+    process.exit(0);
+  } catch (e) {
+    console.error(e.stack);
+    process.exit(1);
+  }
 };

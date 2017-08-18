@@ -40,4 +40,5 @@ export interface GeneratorRequirements {
   installTypings: boolean;
   packageManager: PackageManagerName;
   git: Git;
+  isPrivate: boolean;
 }

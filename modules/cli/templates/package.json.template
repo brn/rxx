@@ -4,13 +4,22 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
+    "dll": "run-s dll-prod dll-debug",
     "dll-prod": "NODE_ENV=production node node_modules/.bin/webpack --config webpack.dll.config.js",
     "dll-debug": "NODE_ENV=debug node node_modules/.bin/webpack --config webpack.dll.config.js",
-    "bundle": "NODE_ENV=production node node_modules/.bin/webpack",
-    "bundle-debug": "NODE_ENV=debug node node_modules/.bin/webpack",
+    "webpack": "NODE_ENV=production node node_modules/.bin/webpack",
+    "webpack-debug": "NODE_ENV=debug node node_modules/.bin/webpack",
     "test": "NODE_ENV=debug karma start --single-run --browsers ChromeHeadless",
-    "start": "NODE_ENV=debug node server.js"
+    "debug": "NODE_ENV=debug node server.js",
+    "start": "NODE_ENV=production node server.js",
+    "clean": "rimraf dist",
+    "prebuild": "run-s clean dll-prod test",
+    "build": "run-s webpack",
+    "postbuild": "echo done"
   },
+  <%if (isPrivate) {%>
+  "private": true,
+  <%}%>
   "author": "<%= author %>",
   "license": "<%= license %>",
   "private": true,
@@ -19,7 +28,7 @@
   <%if (git.use && git.remote) {%>
   "repository": {
     "type": "git",
-    "url": <%- git.remote %>
+    "url": "<%- git.remote %>"
   },
   <%}%>
   "rmvi": {

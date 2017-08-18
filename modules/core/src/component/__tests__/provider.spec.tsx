@@ -109,42 +109,38 @@ class TestStore3 implements Store<{ view: { test: Observable<number> } }> {
 
 
 const Component = connect({
-  mapStateToProps(state) {
-    return { text: state.test };
+  mapStateToProps(getState, props) {
+    return { text: props.test };
   },
-  mapIntentToProps(intent) {
-    return { click: intent.callback('test') };
+  mapIntentToProps(intent, getState, props) {
+    return { click: intent.callback('test'), getState };
   }
-})(
-  class Component extends React.Component<{ text: Observable<number>; click(): void }, any> {
-    public context: ProviderContextType<TestStore>;
+})(class Component extends React.Component<{ text: Observable<number>; getState(): { view: { [key: string]: any } }; click(): void }, any> {
+  public context: ProviderContextType<TestStore>;
 
-    public render() {
-      return (
-        <T.Div className="test-el" onClick={this.props.click}>{this.props.text}</T.Div>
-      );
-    }
+  public render() {
+    return (
+      <T.Div className="test-el" onClick={this.props.click}>{this.props.text.map(v => `${v}-${this.props.getState().view.test}`)}</T.Div>
+    );
   }
-  );
+});
 
 const Component2 = connect({
   mapIntentToProps(intent) {
     return { click: intent.callback('test') };
   }
-})(
-  class Component extends React.Component<{ test: Observable<number>; test2: Observable<number>; click(): void }, any> {
-    public context: ProviderContextType<TestStore>;
+})(class Component extends React.Component<{ test: Observable<number>; test2: Observable<number>; click(): void }, any> {
+  public context: ProviderContextType<TestStore>;
 
-    public render() {
-      return (
-        <div>
-          <T.Div className="test-el-1" onClick={this.props.click}>{this.props.test}</T.Div>
-          <T.Div className="test-el-2" onClick={this.context.intent.callback('test')}>{this.props.test2}</T.Div>
-        </div>
-      );
-    }
+  public render() {
+    return (
+      <div>
+        <T.Div className="test-el-1" onClick={this.props.click}>{this.props.test}</T.Div>
+        <T.Div className="test-el-2" onClick={this.context.intent.callback('test')}>{this.props.test2}</T.Div>
+      </div>
+    );
   }
-  );
+});
 
 describe('provider.tsx', () => {
   const WAIT_TIME_MS = 200;
@@ -157,9 +153,9 @@ describe('provider.tsx', () => {
       );
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(instance, 'test-el');
-        expect(el.textContent).to.be.eq('1');
+        expect(el.textContent).to.be.eq('1-1');
         TestUtils.Simulate.click(el);
-        expect(el.textContent).to.be.eq('2');
+        expect(el.textContent).to.be.eq('2-2');
         done();
       }, WAIT_TIME_MS);
     });
@@ -214,9 +210,9 @@ describe('provider.tsx', () => {
         TestUtils.Simulate.click(button);
 
         const el = TestUtils.findRenderedDOMComponentWithClass(instance, 'test-el');
-        expect(el.textContent).to.be.eq('1');
+        expect(el.textContent).to.be.eq('1-1');
         TestUtils.Simulate.click(el);
-        expect(el.textContent).to.be.eq('2');
+        expect(el.textContent).to.be.eq('2-2');
         done();
       }, WAIT_TIME_MS);
     });
@@ -230,9 +226,9 @@ describe('provider.tsx', () => {
       );
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(instance, 'test-el');
-        expect(el.textContent).to.be.eq('10');
+        expect(el.textContent).to.be.eq('10-10');
         TestUtils.Simulate.click(el);
-        expect(el.textContent).to.be.eq('11');
+        expect(el.textContent).to.be.eq('11-11');
         done();
       }, WAIT_TIME_MS);
     });

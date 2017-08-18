@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/cli",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Commadline tools for react-mvi.",
   "main": "lib/cli.js",
   "bin": {

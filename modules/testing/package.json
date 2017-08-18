@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/testing",
-  "version": "2.0.6",
+  "version": "2.0.11",
   "description": "Test module for React MVI.",
   "main": "lib/cjs/index.js",
   "jsnext:main": "lib/esnext/index.js",
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "dependencies": {},
   "devDependencies": {
-    "@react-mvi/core": "^1.0.4",
+    "@react-mvi/core": "^1.0.10",
     "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.40",
     "@types/react": "^15.0.38",

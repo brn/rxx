@@ -29,6 +29,7 @@ const DEFAULT = { mapStateToProps: undefined, mapIntentToProps: undefined };
 export const CONTEXT_TYPES = {
   intent: PropTypes.any,
   state: PropTypes.any,
+  unobservablifiedStateGetter: PropTypes.any,
   parent: PropTypes.any
 };
 
@@ -41,7 +42,7 @@ export const CONTEXT_TYPES = {
  */
 export function connect<T>(args: ConnectArgs = DEFAULT) {
   const {
-    mapStateToProps = s => s,
+    mapStateToProps = (s, p) => p,
     mapIntentToProps = i => ({})
   } = args;
 
@@ -64,8 +65,8 @@ export function connect<T>(args: ConnectArgs = DEFAULT) {
       constructor(p, c) {
         super(p, c);
         this.mappedProps = {
-          ...mapStateToProps(this.props),
-          ...mapIntentToProps(this.context.intent)
+          ...this.mapStateToProps(),
+          ...this.mapIntentToProps()
         };
       }
 
@@ -75,8 +76,8 @@ export function connect<T>(args: ConnectArgs = DEFAULT) {
 
       public componentWillReceiveProps(nextProps) {
         this.mappedProps = {
-          ...mapStateToProps(nextProps),
-          ...mapIntentToProps(this.context.intent)
+          ...this.mapStateToProps(),
+          ...this.mapIntentToProps()
         };
       }
 
@@ -86,6 +87,15 @@ export function connect<T>(args: ConnectArgs = DEFAULT) {
           state: this.context.state,
           parent: this.context.parent
         };
+      }
+
+      private mapIntentToProps() {
+        return mapIntentToProps(this.context.intent, this.context.unobservablifiedStateGetter, this.props);
+      }
+
+
+      private mapStateToProps() {
+        return mapStateToProps(this.context.unobservablifiedStateGetter, this.props);
       }
 
       static get childContextTypes() {

@@ -40,9 +40,13 @@ export const desc = 'Initialize react-mvi application with interaction.';
 export const handler = () => {
   checkPkg(pkg);
   const init = async () => {
-    const opt = await Interaction.collectInformation();
-    new Generator(opt).generate();
-    PostInstalls.run();
+    try {
+      const opt = await Interaction.collectInformation();
+      await new Generator(opt).generate();
+      await PostInstalls.run();
+    } catch (e) {
+      throw e;
+    }
   };
 
   init().then(() => process.exit(0), e => {

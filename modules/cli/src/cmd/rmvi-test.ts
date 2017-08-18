@@ -29,11 +29,17 @@ import {
 
 export const command = 'test';
 export const desc = 'Unit test your application.';
-export const handler = () => {
+export const handler = async () => {
   checkPkg(pkg);
   if (!pkg.version) {
     throw new Error('test called before init.');
   }
 
-  PostInstalls.test();
+  try {
+    await PostInstalls.test();
+    process.exit(0);
+  } catch (e) {
+    console.error(e.stack);
+    process.exit(1);
+  }
 };
