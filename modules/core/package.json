@@ -1,6 +1,6 @@
 {
   "name": "@react-mvi/core",
-  "version": "1.0.10",
+  "version": "1.0.106",
   "description": "React MVI micro framework.",
   "main": "lib/cjs/index.js",
   "jsnext:main": "lib/esnext/index.js",
@@ -42,7 +42,6 @@
   "homepage": "https://github.com/brn/react-mvi#readme",
   "dependencies": {},
   "devDependencies": {
-    "@react-mvi/testing": "^0.0.19",
     "@types/chai": "^3.5.2",
     "@types/mocha": "^2.2.41",
     "@types/prop-types": "^15.5.1",
@@ -59,12 +58,12 @@
     "react-addons-test-utils": "^15.6.0",
     "react-dom": "^15.6.1",
     "react-test-renderer": "^15.6.1",
-    "rxjs": "^5.4.2",
-    "typescript": "^2.4.1"
+    "rxjs": "^6.3.3",
+    "typescript": "^3.1.1"
   },
   "peerDependencies": {
     "prop-types": ">= 15.5.0 <= 15.5.10",
     "react": ">= 15.0.0 <= 15.6.1",
-    "rxjs": ">= 5.0.0 <= 5.4.2"
+    "rxjs": ">= 6.0.0 <= 6.3.3"
   }
 }

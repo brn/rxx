@@ -1,31 +1,36 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
 
+import * as React from 'react';
 
 const OBJECT_REGEXP = /\[object ([^\]]+)\]/;
-const toStringClass = o => o ? Object.prototype.toString.call(o).match(OBJECT_REGEXP)[1] : 'null';
+const toStringClass = o =>
+  o ? Object.prototype.toString.call(o).match(OBJECT_REGEXP)[1] : 'null';
 
+export function symbol(val: string) {
+  return typeof Symbol === 'function' ? Symbol(val) : val;
+}
 
 export function isDefined(obj: any): boolean {
   return obj !== undefined && obj !== null;
 }
 
 export function assign<T extends {}, U extends {}>(base: T, append: U): T & U {
-  return { ...base as any, ...append as any } as any;
+  return { ...(base as any), ...(append as any) } as any;
 }
 
 export function extend<T extends {}, U extends {}>(base: T, append: U): T & U {
@@ -48,14 +53,25 @@ export function omit(obj: any, name: string | string[]) {
   return ret;
 }
 
-export function forIn<T>(obj: T, cb: (value: T[keyof T], key: string, values: T) => void) {
+export function forIn<T>(
+  obj: T,
+  cb: (value: T[keyof T], key: string, values: T) => void,
+) {
   for (const key in obj || {}) {
     cb(obj[key], key, obj);
   }
 }
 
-export function isObject(obj: any): obj is Object {
+export function isObject<T extends { [key: string]: any }>(
+  obj: T | any,
+): obj is T {
   return toStringClass(obj) === 'Object';
+}
+
+export const STATE_ENTITY = '__RMVI_STATE_ENTITY__';
+
+export function isSimpleObject(obj: any): obj is { [key: string]: any } {
+  return isObject(obj) && (obj.constructor === Object && !obj[STATE_ENTITY]);
 }
 
 export function isArray(obj: any): obj is any[] {
@@ -66,10 +82,18 @@ export function isRegExp(obj: any): obj is RegExp {
   return toStringClass(obj) === 'RegExp';
 }
 
-
-export function filter<T>(obj: T[], cb: (e: T, key: number, all: T[]) => boolean): T[];
-export function filter<T>(obj: T, cb: (e: T[keyof T], key: string, all: T) => boolean): T[keyof T][];
-export function filter<T>(obj: T | T[], cb: (e: T[keyof T] | T, key: any, all: T | T[]) => boolean): T[keyof T][] | T[] {
+export function filter<T>(
+  obj: T[],
+  cb: (e: T, key: number, all: T[]) => boolean,
+): T[];
+export function filter<T>(
+  obj: T,
+  cb: (e: T[keyof T], key: string, all: T) => boolean,
+): T[keyof T][];
+export function filter<T>(
+  obj: T | T[],
+  cb: (e: T[keyof T] | T, key: any, all: T | T[]) => boolean,
+): T[keyof T][] | T[] {
   if (isArray(obj)) {
     return obj.filter(cb as any) as any;
   }
@@ -83,9 +107,18 @@ export function filter<T>(obj: T | T[], cb: (e: T[keyof T] | T, key: any, all: T
   return ret;
 }
 
-export function map<T, U>(obj: T[], cb: (e: T, key: number, all: T[]) => U): U[];
-export function map<T, U>(obj: T, cb: (e: T[keyof T], key: string, all: T) => U): U[];
-export function map<T, U>(obj: T | T[], cb: (e: T[keyof T] | T[], key: any, all: T | T[]) => U): U[] {
+export function map<T, U>(
+  obj: T[],
+  cb: (e: T, key: number, all: T[]) => U,
+): U[];
+export function map<T, U>(
+  obj: T,
+  cb: (e: T[keyof T], key: string, all: T) => U,
+): U[];
+export function map<T, U>(
+  obj: T | T[],
+  cb: (e: T[keyof T] | T[], key: any, all: T | T[]) => U,
+): U[] {
   if (isArray(obj)) {
     return obj.map(cb as any) as any;
   }
@@ -97,8 +130,10 @@ export function map<T, U>(obj: T | T[], cb: (e: T[keyof T] | T[], key: any, all:
   return ret;
 }
 
-
-export function some<T>(obj: T, cb: (value: T[keyof T], index: number | string, all: T) => boolean): boolean {
+export function some<T>(
+  obj: T,
+  cb: (value: T[keyof T], index: number | string, all: T) => boolean,
+): boolean {
   if (isArray(obj)) {
     return obj.some(cb as any);
   } else if (isObject(obj)) {
@@ -112,8 +147,10 @@ export function some<T>(obj: T, cb: (value: T[keyof T], index: number | string, 
   return false;
 }
 
-
-export function every<T>(obj: T, cb: (value: T[keyof T], index: number | string, all: T) => boolean): boolean {
+export function every<T>(
+  obj: T,
+  cb: (value: T[keyof T], index: number | string, all: T) => boolean,
+): boolean {
   if (isArray(obj)) {
     return obj.every(cb as any);
   } else if (isObject(obj)) {
@@ -127,8 +164,10 @@ export function every<T>(obj: T, cb: (value: T[keyof T], index: number | string,
   return true;
 }
 
-
-export function mapValues<T, U>(obj: T, cb: (value: T[keyof T], key: string, all: T) => U): { [key: string]: U } {
+export function mapValues<T, U>(
+  obj: T,
+  cb: (value: T[keyof T], key: string, all: T) => U,
+): { [key: string]: U } {
   const ret: any = {};
   for (const key in obj || {}) {
     ret[key] = cb(obj[key], key, obj);
@@ -139,7 +178,7 @@ export function mapValues<T, U>(obj: T, cb: (value: T[keyof T], key: string, all
 
 export function clone<T>(target: T): T {
   if (isObject(target)) {
-    return { ...target as any };
+    return { ...(target as any) };
   } else if (isArray(target)) {
     return (target as any).slice();
   }
@@ -147,7 +186,38 @@ export function clone<T>(target: T): T {
   return target;
 }
 
+export function mergeDeep<T, U>(target: T, source: U): T & U {
+  if ((target as any) === (source as any)) {
+    return target as any;
+  }
+  const isTargetReactElement = React.isValidElement(target);
+  const isSourceReactElement = React.isValidElement(source);
+  if (isTargetReactElement || isSourceReactElement) {
+    return source as any;
+  }
 
-export function symbol(val: string) {
-  return typeof Symbol === 'function' ? Symbol(val) : val;
+  if (isSimpleObject(target) && isSimpleObject(source)) {
+    const ret = { ...(target as any) };
+    Object.keys(source).forEach(key => {
+      if (isSimpleObject(source[key])) {
+        if (!(key in ret)) {
+          ret[key] = {};
+        }
+        ret[key] = mergeDeep(ret[key], source[key]);
+      } else {
+        ret[key] = source[key];
+      }
+    });
+
+    return ret;
+  }
+
+  return source as any;
+}
+
+export class IDGenerator {
+  private static id = 0;
+  public static genNextId() {
+    return this.id++;
+  }
 }

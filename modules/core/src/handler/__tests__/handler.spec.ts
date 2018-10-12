@@ -1,47 +1,44 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
 
-
+import { HandlerResponse, StreamStore, Handler } from '../handler';
 import {
   registerHandlers,
   getHandlers,
   StateHandler,
   removeHandler,
-  HandlerResponse,
-  StreamCollection,
-  StreamStore
-} from '../handler';
-import {
-  Subscription,
-  Subject,
-  Observable
-} from 'rxjs/Rx';
-import {
-  expect
-} from 'chai';
-
+} from '../state-handler';
+import { StreamCollection } from '../stream-collection';
+import { Subscription, Subject, Observable } from 'rxjs';
+import { expect } from 'chai';
 
 class TestHandler extends StateHandler {
-  public push(p) { return new Promise(r => { }); }
-  public subscribe(p) { return new Subscription(); }
+  public push(p) {
+    return new Promise(r => {});
+  }
+  public subscribe(p) {
+    return new Subscription();
+  }
+  public clone() {
+    return new TestHandler();
+  }
 }
-
 
 class StreamStoreMock implements StreamCollection {
   public collection = {};
@@ -58,10 +55,9 @@ class StreamStoreMock implements StreamCollection {
     return this.collection[key];
   }
   public add<T>(key: string): Subject<T> {
-    return this.collection[key] = new Subject<T>();
+    return (this.collection[key] = new Subject<T>());
   }
 }
-
 
 describe('handler.ts', () => {
   describe('registerHandlers', () => {
@@ -133,7 +129,7 @@ describe('handler.ts', () => {
     let collection: StreamStoreMock;
 
     beforeEach(() => {
-      response = new HandlerResponse(collection = new StreamStoreMock());
+      response = new HandlerResponse((collection = new StreamStoreMock()));
     });
 
     describe('#for()', () => {
@@ -146,18 +142,22 @@ describe('handler.ts', () => {
   });
 
   describe('StateHandler', () => {
-
     class TestHandler extends StateHandler {
       public constructor(advices) {
         super(advices, { greeting: ['hello', 'hi'] });
+      }
+
+      public clone(): Handler {
+        return new TestHandler(this.advices);
       }
 
       public subscribe(p) {
         return new Subscription();
       }
 
-      public push(p) { }
-
+      public push(...args) {
+        return Promise.resolve(null);
+      }
 
       public hello() {
         return 'Hello';
@@ -173,12 +173,11 @@ describe('handler.ts', () => {
         const th = new TestHandler({
           greeting(mi) {
             return `${mi.proceed()} Tester!`;
-          }
+          },
         });
         expect(th.hello()).to.be.eq('Hello Tester!');
         expect(th.hi()).to.be.eq('Hi Tester!');
       });
     });
-
   });
 });

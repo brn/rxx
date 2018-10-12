@@ -17,36 +17,44 @@
  * @author Taketoshi Aono
  */
 
-import { store, STORE_SYMBOL } from "../store";
-import { expect } from "chai";
+import { MethodInvocation } from '../advice';
+import { combineAdvice } from '../combine-advice';
+import { generateIntentHandler } from '../../intent/intent-handler';
+import { Intent } from '../../intent/intent';
+import { expect } from 'chai';
+import { SubjectTree } from '../../subject';
+import { connectDevTools } from '../../devtools';
 
-@store
-class S {
-  public a: any;
-  public b: any;
-  public initialize() {
-    return {};
-  }
-  public intent: any;
-  public constructor(intent, service?) {}
-}
-const intent = {};
-const service = { a: {}, b: {} };
+describe('combine-advice.ts', () => {
+  describe('combineAdvice', () => {
+    it('should combine all advices', async () => {
+      let called = false;
+      const result = [];
+      const mi = new MethodInvocation(
+        function() {
+          called = true;
+        },
+        1,
+        [],
+        '',
+        '',
+      );
+      const advice1 = (mi: MethodInvocation) => {
+        result.push('advice1');
+        mi.proceed();
+      };
 
-describe("store", () => {
-  it("create enhanced constructor that define intent as property", () => {
-    const store = new S({ intent });
+      const advice2 = (mi: MethodInvocation) => {
+        result.push('advice2');
+        mi.proceed();
+      };
+      const ih = generateIntentHandler(
+        new Intent(null),
+        new SubjectTree(connectDevTools({ name: '', instanceId: '' }), null),
+      );
 
-    expect(S[STORE_SYMBOL]).to.be.eq(true);
-    expect(store.intent).to.be.eq(intent);
-  });
-
-  it("create enhanced constructor that extend base class properties by services.", () => {
-    const store = new S({ intent }, service);
-
-    expect(S[STORE_SYMBOL]).to.be.eq(true);
-    expect(store.intent).to.be.eq(intent);
-    expect(store.a).to.be.eq(service.a);
-    expect(store.b).to.be.eq(service.b);
+      await combineAdvice(advice1, advice2)(mi, ih);
+      expect(result).to.be.deep.equal(['advice1', 'advice2']);
+    });
   });
 });

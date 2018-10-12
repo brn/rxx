@@ -3,11 +3,7 @@
  * @author Taketoshi Aono
  */
 
-
-import {
-  StateHandlerData
-} from '@react-mvi/core';
-
+import { StateHandlerData } from '@react-mvi/core';
 
 /**
  * The methods of the Http request.
@@ -16,9 +12,9 @@ export enum HttpMethod {
   GET = 1,
   POST,
   PUT,
-  DELETE
+  DELETE,
+  PATCH,
 }
-
 
 /**
  * Response type of the Http request.
@@ -29,23 +25,21 @@ export enum ResponseType {
   ARRAY_BUFFER,
   FORM_DATA,
   TEXT,
-  STREAM
+  STREAM,
 }
-
 
 export enum UploadEventType {
   PROGRESS = 1,
   ERROR,
   ABORT,
-  COMPLETE
+  COMPLETE,
 }
-
 
 /**
  * Type for Http request options.
  */
 export interface HttpConfig {
-  url: string;
+  url: string | string[];
   method?: HttpMethod;
   headers?: any;
   mode?: 'cors' | 'same-origin' | 'no-cors';
@@ -54,16 +48,13 @@ export interface HttpConfig {
   form?: boolean;
   responseType?: ResponseType;
   upload?: boolean;
-  reduce?<T, U>({ data: T, state: U }): any;
+  reduce?(httpResponse: HttpResponse<any, any>, state: any): any;
 }
-
 
 export enum ResponseObjectType {
   RESPONSE = 1,
-  UPLOAD_PROGRESS = 2
+  UPLOAD_PROGRESS = 2,
 }
-
-
 
 export interface HttpResponse<T, E> {
   ok: boolean;
@@ -74,7 +65,6 @@ export interface HttpResponse<T, E> {
   type: ResponseObjectType;
 }
 
-
 export interface HttpUploadProgress {
   percent: number;
   total: number;
@@ -83,13 +73,10 @@ export interface HttpUploadProgress {
   type: ResponseObjectType;
 }
 
-
-export function ____$_react_mvi_module_reference_bug_fix__dummy_$____() { }
-
+export function ____$_react_mvi_module_reference_bug_fix__dummy_$____() {}
 
 export interface Fetch {
   (input: RequestInfo, init?: RequestInit): Promise<Response>;
 }
-
 
 export type HttpHandlerData = StateHandlerData<any, any>;

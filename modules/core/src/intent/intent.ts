@@ -1,59 +1,54 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
 
-import {
-  HandlerResponse,
-  StreamStore,
-  StateHandler
-} from '../handler/handler';
-import {
-  isDefined,
-  assign
-} from '../utils';
-import {
-  Subscription
-} from 'rxjs/Rx';
-
+import { StateHandler } from '../handler/state-handler';
+import { HandlerResponse, StreamStore } from '../handler/handler';
+import { isDefined, assign } from '../utils';
+import { Subscription } from 'rxjs';
+import { SubjectTree } from '../subject';
 
 /**
  * History size.
  */
 const MAX_HISTORY_LENGTH = 10;
 
-
 /**
  * User defined Intent instance.
  */
-export interface IntentClass { }
+export interface IntentClass {}
 
 /**
  * User defined Intent class constructor.
  */
 export interface IntentConstructor {
-  new(handlers: { [key: string]: HandlerResponse }): IntentClass;
+  new (
+    dispatch: (type: string, payload: any) => void,
+    handlers: { [key: string]: HandlerResponse },
+  ): IntentClass;
 }
 
 /**
  * Intent decorator that assign StateHandler to instance properties.
  */
 export function intent<T extends IntentConstructor>(Base: T) {
-  function EnhancedIntent(handlers) {
+  function EnhancedIntent(dispatch, handlers) {
+    this.dispatch = dispatch;
     for (const key in handlers) {
       this[key] = handlers[key];
     }
@@ -64,7 +59,6 @@ export function intent<T extends IntentConstructor>(Base: T) {
   return EnhancedIntent as any;
 }
 
-
 /**
  * Singleton event publisher.
  */
@@ -72,23 +66,20 @@ export class Intent extends StateHandler {
   /**
    * Event history.
    */
-  private history = [];
+  private history: { key: string; fire(): void }[] = [];
 
   private children: Intent[] = [];
 
   private parent: Intent;
-
 
   constructor(parent?: Intent) {
     super();
     this.prepare(parent);
   }
 
-
   private addChild(child: Intent) {
     this.children.push(child);
   }
-
 
   private removeChild(intent: Intent) {
     const index = this.children.indexOf(intent);
@@ -96,7 +87,6 @@ export class Intent extends StateHandler {
       this.children.splice(index, 1);
     }
   }
-
 
   public dispose() {
     if (this.parent) {
@@ -106,7 +96,6 @@ export class Intent extends StateHandler {
     this.parent = null;
   }
 
-
   public prepare(parent?: Intent) {
     this.parent = parent;
     if (this.parent) {
@@ -114,11 +103,13 @@ export class Intent extends StateHandler {
     }
   }
 
-
   public subscribe(props: { [key: string]: any }): Subscription {
     return new Subscription();
   }
 
+  public clone(...args: any[]) {
+    return this;
+  }
 
   /**
    * Publish event.
@@ -129,9 +120,11 @@ export class Intent extends StateHandler {
    */
   public push(key: string, args?: any): Promise<any> {
     if (key === 'RETRY') {
-      const target = this.history[args || this.history.length - 1];
+      const target = args
+        ? this.findHistory(args)
+        : this.history[this.history.length - 1];
       if (target) {
-        target();
+        target.fire();
       }
 
       return;
@@ -141,8 +134,12 @@ export class Intent extends StateHandler {
       return;
     }
 
-    const fire = () => subjects.forEach(subject => subject.next({ data: args, state: this.state }));
-    this.history.push(fire);
+    const fire = () => {
+      subjects.forEach(subject =>
+        subject.next({ data: args, state: this.state }),
+      );
+    };
+    this.history.push({ fire, key });
     if (this.history.length > MAX_HISTORY_LENGTH) {
       this.history.shift();
     }
@@ -151,9 +148,9 @@ export class Intent extends StateHandler {
     return Promise.resolve();
   }
 
-
-  public getStreamStore() { return this.store; }
-
+  public getStreamStore() {
+    return this.store;
+  }
 
   /**
    * Return callback function that will publish event.
@@ -161,10 +158,12 @@ export class Intent extends StateHandler {
    * @param key Event name.
    * @param v Event args. Override publish args.
    */
-  public callback(key: string, v?: any): (args?: any) => void {
+  public callback<Args = any, ReturnType = any>(
+    key: string,
+    v?: any,
+  ): (args?: Args) => Promise<ReturnType> {
     return (args?: any) => this.push(key, isDefined(v) ? v : args);
   }
-
 
   private findSubjects(key: string) {
     let subjects = this.store.get(key);
@@ -178,7 +177,6 @@ export class Intent extends StateHandler {
     return subjects;
   }
 
-
   private findParentSubjects(key: string, searchSelfStore = true) {
     const subjects = searchSelfStore ? this.store.get(key) : [];
     if (this.parent) {
@@ -188,13 +186,58 @@ export class Intent extends StateHandler {
     return subjects;
   }
 
-
   private findChildrenSubjects(key: string, searchSelfStore = true) {
     const subjects = searchSelfStore ? this.store.get(key) : [];
     if (this.children.length) {
-      return this.children.reduce((subject, child) => subjects.concat(child.findChildrenSubjects(key)), subjects);
+      return this.children.reduce(
+        (subject, child) => subjects.concat(child.findChildrenSubjects(key)),
+        subjects,
+      );
     }
 
     return subjects;
+  }
+
+  private findHistory(retryKey: string) {
+    let history = this.history.filter(({ key }) => key === retryKey)[0];
+    if (!history && this.parent) {
+      history = this.findParentHistory(retryKey, false);
+    }
+    if (!history && this.children.length) {
+      history = this.findChildrenHistory(retryKey, false);
+    }
+
+    return history;
+  }
+
+  private findParentHistory(retryKey: string, searchSelfStore = true) {
+    const history = searchSelfStore
+      ? this.history.filter(({ key }) => key === retryKey)[0]
+      : null;
+
+    if (!history && this.parent) {
+      return this.parent.findParentHistory(retryKey);
+    }
+
+    return history;
+  }
+
+  private findChildrenHistory(retryKey: string, searchSelfStore = true) {
+    const history = searchSelfStore
+      ? this.history.filter(({ key }) => key === retryKey)[0]
+      : null;
+    if (!history && this.children.length) {
+      let found: typeof history;
+      this.children.some(child => {
+        found = child.findChildrenHistory(retryKey);
+        if (found) {
+          return true;
+        }
+        return false;
+      });
+      return found;
+    }
+
+    return history;
   }
 }

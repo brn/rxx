@@ -1,149 +1,170 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
 
+import { Observable, of, combineLatest } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
-import {
-  Observable,
-} from 'rxjs/Rx';
-import {
-  isArray,
-  isObject
-} from '../utils';
+type Instantiable<T = {}> = new (...args: any[]) => T;
 
+/*tslint:disable:ban-types*/
+type UnObservablifyField<T> = {
+  [P in keyof T]: T[P] extends Observable<infer U>
+    ? UnObservablify<U>
+    : T[P] extends Function
+      ? T[P]
+      : T[P] extends RegExp
+        ? T[P]
+        : T[P] extends Date
+          ? T[P]
+          : T[P] extends Symbol
+            ? T[P]
+            : T[P] extends Boolean
+              ? T[P]
+              : T[P] extends String
+                ? T[P]
+                : T[P] extends Number
+                  ? T[P]
+                  : T[P] extends Instantiable<any>
+                    ? T[P]
+                    : T[P] extends Array<infer U>
+                      ? UnObservablify<U>[]
+                      : UnObservablify<T[P]>
+};
+/*tslint:enable:ban-types*/
 
-type ObservableSite = { context: any; key: string | number; value: Observable<any> };
+export type UnObservablify<T> = T extends Observable<infer U>
+  ? UnObservablifyField<U>
+  : UnObservablifyField<T>;
 
+function isObject(o): o is object {
+  return (
+    Object.prototype.toString.call(o) === '[object Object]' &&
+    o.constructor === Object
+  );
+}
+const { isArray } = Array;
 
-class ObservableUpdater {
-  private observables: ObservableSite[] = [];
+type Injector<T> = (values: { [key: string]: any }) => UnObservablify<T>;
+class Collector<T> {
+  private code = 'const template = ';
 
-  private clone: any;
+  private observables: { key: string; observable: Observable<any> }[] = [];
+  private values: { key: string; value: any }[] = [];
+  private injector: Injector<T>;
+  private id = 0;
 
-  private doNotCollectObservables = false;
-
-  private currentIndex = 0;
-
-  private templateObject;
-
-
-  private push(observable: ObservableSite) {
-    if (!this.doNotCollectObservables) {
-      this.observables.push(observable);
-    } else {
-      this.observables[this.currentIndex++].context = observable.context;
+  public collect<U>(
+    object: { [P in keyof U]: Observable<U[P]> | U[P] },
+    startWithNull: boolean = false,
+  ): Observable<UnObservablify<T>> {
+    if (object instanceof Observable) {
+      return object;
     }
-  }
 
+    if (!isArray(Object) && !isObject(object)) {
+      throw new Error('Invalid object passed to combineTemplate');
+    }
 
-  public mapObservablesToValue() {
+    this.doCollect(object);
+    this.initInjector();
     if (!this.observables.length) {
-      return Observable.of(this.templateObject);
+      return of(object) as Observable<any>;
     }
 
-    return Observable.combineLatest(...this.observables.map(({ value }) => {
-      const NULL_VALUE = {};
-      let firstValue = NULL_VALUE;
-      const sub = value.subscribe(v => firstValue = v);
-      sub.unsubscribe();
+    return combineLatest(
+      ...this.observables.map(({ observable }) => {
+        const NULL_VALUE = {};
+        let firstValue = NULL_VALUE;
+        const sub = observable.subscribe(v => (firstValue = v));
+        sub.unsubscribe();
 
-      if (firstValue === NULL_VALUE) {
-        return value.startWith(null);
-      }
-
-      return value;
-    })).map(values => {
-      values.forEach((value, index) => {
-        const { context, key } = this.observables[index];
-        context[key] = value;
-      });
-
-      return typeof Proxy === 'function' ? new Proxy(this.clone, {
-        get: (target, name) => {
-          if (name === 'persist') {
-            return () => {
-              this.collect(this.templateObject);
-            };
-          }
-
-          return target[name];
+        if (firstValue === NULL_VALUE && startWithNull) {
+          return observable.pipe(startWith(null));
         }
-      }) : (() => {
-        return Object.defineProperty(this.clone, 'persist', {
-          value: () => { this.collect(this.templateObject); },
-          configurable: true,
-          enumerable: false,
-          writable: true
+
+        return observable;
+      }),
+    ).pipe(
+      map(results => {
+        const values = {};
+        results.forEach((value, i) => {
+          values[this.observables[i].key] = value;
         });
-      })();
-    });
+
+        this.values.forEach(({ key, value }) => (values[key] = value));
+
+        return this.injector(values);
+      }),
+    );
   }
 
-  public collect<T>(object: {[P in keyof T]: Observable<P> | P}): void {
-    this.templateObject = object;
-    if (isArray(object)) {
-      this.clone = object.slice();
-    } else if (isObject(object) && Object.getPrototypeOf(object) === Object.prototype) {
-      this.clone = { ...object as Object };
-    } else {
-      throw new Error('Invalid object passed to combineTemplate');
-    }
-    this.doCollectObservable(object, this.clone);
-    this.doNotCollectObservables = true;
-    this.currentIndex = 0;
-  }
-
-
-  private doCollectObservable<T>(object: {[P in keyof T]: Observable<P> | P}, clone: any): void {
-    if (isArray(object)) {
-      for (let i = 0, len = object.length; i < len; i++) {
-        this.doFindObservable(object, i, clone);
-      }
-    } else if (isObject(object) && Object.getPrototypeOf(object) === Object.prototype) {
+  private doCollect(object: any) {
+    if (isObject(object)) {
+      this.code += '{';
       for (const key in object) {
-        this.doFindObservable(object, key, clone);
+        const k = JSON.stringify(key);
+        if (object[key] instanceof Observable) {
+          this.code += `${k}: values[${++this.id}]`;
+          this.observables.push({
+            observable: object[key],
+            key: String(this.id),
+          });
+        } else {
+          this.code += `${k}: `;
+          this.doCollect(object[key]);
+        }
+        this.code += ',';
       }
+      this.sliceComma();
+      this.code += '}';
+    } else if (isArray(object)) {
+      this.code += '[';
+      object.forEach((o, i) => {
+        if (o instanceof Observable) {
+          this.code += `values[${++this.id}]`;
+          this.observables.push({ observable: o, key: String(this.id) });
+        } else {
+          this.doCollect(o);
+        }
+        this.code += ',';
+      });
+      this.sliceComma();
+      this.code += ']';
     } else {
-      throw new Error('Invalid object passed to combineTemplate');
+      this.code += `values[${++this.id}]`;
+      this.values.push({ value: object, key: String(this.id) });
     }
   }
 
-
-  private doFindObservable(base: any, key: string | number, context: any) {
-    const value = base[key];
-    if (value instanceof Observable) {
-      this.push({ context, key, value });
-      context[key] = value;
-    } else if (isArray(value)) {
-      context[key] = value.slice();
-      this.doCollectObservable(base[key], context[key]);
-    } else if (isObject(value) && Object.getPrototypeOf(value) === Object.prototype) {
-      context[key] = { ...value };
-      this.doCollectObservable(base[key], context[key]);
-    } else {
-      context[key] = value;
+  private sliceComma() {
+    if (this.code.charAt(this.code.length - 1) === ',') {
+      this.code = this.code.slice(0, this.code.length - 1);
     }
   }
 
+  private initInjector() {
+    this.code += '\n;return template;';
+    this.injector = Function('values', this.code) as Injector<T>;
+  }
 }
 
-
-export function combineTemplate<T>(object: T): Observable<T & { persist(): void }> {
-  const updater = new ObservableUpdater();
-  updater.collect(object);
-
-  return updater.mapObservablesToValue() as any;
+export function combineTemplate<T>(
+  object: T,
+  startWithNull: boolean = true,
+): Observable<UnObservablify<T>> {
+  return new Collector<T>().collect(object, startWithNull);
 }

@@ -8,11 +8,8 @@ import {
   HandlerResponse,
   StreamStore,
   Advices
-} from '@react-mvi/core';
-import {
-  HttpHandler
-} from './http-handler';
-
+} from "@react-mvi/core";
+import { HttpHandler } from "./http-handler";
 
 /**
  * Config for HttpRequestMock.
@@ -38,8 +35,7 @@ export type HttpHandlerMockOptions = {
    * Specify delete method return value.
    */
   delete?: (uri: string, req: RequestInit) => Response;
-}
-
+};
 
 /**
  * Mock class for HttpRequest.
@@ -47,30 +43,37 @@ export type HttpHandlerMockOptions = {
 export class HttpHandlerMock extends HttpHandler {
   private fetchFunction;
 
-
   /**
    * @param methods Definitions of each method return value.
    */
-  public constructor(private methods: HttpHandlerMockOptions, advices?: Advices) {
+  public constructor(
+    private methods: HttpHandlerMockOptions,
+    advices?: Advices
+  ) {
     super(advices);
     this.fetchFunction = (url: string, request: RequestInit) => {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          const method = this.methods[(request.method || 'get').toLowerCase()];
-          if (typeof method === 'function') {
-            const fn = method as (uri: string, req: RequestInit, param?: any) => Response;
+          const method = this.methods[(request.method || "get").toLowerCase()];
+          if (typeof method === "function") {
+            const fn = method as (
+              uri: string,
+              req: RequestInit,
+              param?: any
+            ) => Response;
             try {
               return resolve(fn(url, request));
             } catch (e) {
               return reject(e);
             }
           }
-          resolve(new Response(request.body, { status: 200, statusText: 'OK' }));
+          resolve(
+            new Response(request.body, { status: 200, statusText: "OK" })
+          );
         }, 100);
       });
     };
   }
-
 
   /**
    * Return whatwgFetch function mock.

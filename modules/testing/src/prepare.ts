@@ -1,22 +1,21 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
-
 
 import {
   getHandlers,
@@ -27,51 +26,109 @@ import {
   Store,
   Provisioning,
   StateHandler,
-  registerHandlers
+  registerHandlers,
+  isObject,
+  StateFactory,
+  SubjectPayload,
 } from '@react-mvi/core';
-import {
-  Mocker,
-  MockManipulator
-} from './mocker';
+import { Observable } from 'rxjs';
+import { Mocker, MockManipulator } from './mocker';
+import { Interrupter } from './interrupter';
 
-
-export type Prepared<V> = {
+export type Prepared<V, I = IntentConstructor> = {
   stores: Store<V>[];
   store: Store<V>;
-  mock: MockManipulator;
+  mock: I extends IntentConstructor
+    ? MockManipulator
+    : { [P in keyof I]: MockManipulator };
 };
-
 
 export type PrepareOptions = {
   services?: { [key: string]: any };
   handlers?: { [key: string]: StateHandler };
   state?: any;
+  multiIntent?: boolean;
 };
-
 
 /**
  * Prepare Intent and Store.
  * @param IntentClass Intent constructor.
  * @param StoreClass Store constructor or Array of Store constructor.
- * @param opt Options if contains handlers, call registerHandlers with that,  
+ * @param opt Options if contains handlers, call registerHandlers with that,
  * if contains state, set as parent state of intent arguments.
  */
-export function prepareTest<T extends IntentConstructor, U extends StoreConstructor<T, V>, V>(
+export function prepareTest<
+  T extends IntentConstructor | { [key: string]: IntentConstructor },
+  U extends StoreConstructor<T, V>,
+  V
+>(
   IntentClass: T,
   StoreClass: StoreConstructor<T, V> | StoreConstructor<T, V>[],
-  opt: PrepareOptions = { state: {} }): Prepared<V> {
-
+  opt: PrepareOptions = { state: {}, multiIntent: false },
+): Prepared<V, T> {
   if (opt && opt.handlers) {
     registerHandlers(opt.handlers);
   }
 
-  const context = { state: opt.state, __intent: null };
-  const provisioning = new Provisioning(context, IntentClass, StoreClass, opt.services || {}, intent => new Mocker(intent, opt.state));
+  const context = {
+    state: opt.state,
+    mergedState: opt.state,
+    __intent: null,
+    __subject: null,
+  };
+  const provisioning = new Provisioning(
+    'Prepare',
+    context,
+    isObject<{ [key: string]: IntentConstructor }>(IntentClass)
+      ? (IntentClass as any)
+      : { intent: IntentClass },
+    Array.isArray(StoreClass) ? StoreClass : [StoreClass],
+    undefined,
+    opt.services || {},
+    {},
+    intent => new Mocker(intent, opt.state),
+  );
   provisioning.prepare();
 
   return {
     store: provisioning.getStores()[0],
     stores: provisioning.getStores(),
-    mock: new MockManipulator(provisioning.getIntentInstance())
+    mock: opt.multiIntent
+      ? ((() => {
+          const map = provisioning.getIntentInstance();
+          const ret: { [P in keyof T]: MockManipulator } = {} as any;
+          for (const key in map) {
+            ret[key] = new MockManipulator(map[key]);
+          }
+
+          return ret;
+        })() as any)
+      : (new MockManipulator(provisioning.getIntentInstance().intent) as any),
   };
+}
+
+export function interrupt<S>(
+  stateFactory: StateFactory<S>,
+  opt: { state?: any; handlers?: { [key: string]: StateHandler } } = {
+    state: {},
+  },
+): Interrupter<S> {
+  const context = {
+    state: opt.state,
+    mergedState: opt.state,
+    __intent: null,
+    __subject: null,
+  };
+  const provisioning = new Provisioning(
+    'Interrupter',
+    context,
+    {},
+    [],
+    stateFactory,
+    opt.handlers || {},
+    {},
+  );
+  provisioning.prepare();
+
+  return new Interrupter(provisioning);
 }

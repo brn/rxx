@@ -1,106 +1,139 @@
 /**
  * The MIT License (MIT)
  * Copyright (c) Taketoshi Aono
- *  
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *  
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *  
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * @fileoverview 
+ * @fileoverview
  * @author Taketoshi Aono
  */
-
 
 import * as React from 'react';
 import * as TestUtils from 'react-addons-test-utils';
 import * as TestRenderer from 'react-test-renderer';
-import {
-  connect,
-  ConnectArgs,
-  CONTEXT_TYPES
-} from '../connect';
-import {
-  expect
-} from 'chai';
-import {
-  extend,
-  omit
-} from '../../utils';
+import { connect, ConnectArgs, CONTEXT_TYPES } from '../connect';
+import { intent } from '../../intent/intent';
+import { store } from '../../store/store';
+import { expect } from 'chai';
+import { extend, omit } from '../../utils';
+import { Provisioning } from '../../provisioning';
+import { PropTypes } from 'react';
 
+@store
+class TestStore {
+  private intent: TestIntent;
+  public initialize() {
+    return { view: { test: 1 } };
+  }
+}
+@intent
+class TestIntent {}
 
 class ContextProvider extends React.Component<any, any> {
-  public static childContextTypes = CONTEXT_TYPES;
+  public static childContextTypes = {
+    provisioning: PropTypes.any,
+    ...CONTEXT_TYPES,
+  };
 
   public render() {
-    return this.props.children;
+    return this.props.children as React.ReactElement<any>;
   }
 
   public getChildContext() {
+    const p = new Provisioning(
+      '',
+      {},
+      { intent: TestIntent },
+      [TestStore],
+      undefined,
+      {},
+    );
+    p.prepare();
+
     return {
-      intent: this.props.intent,
-      state: this.props.state,
-      unobservablifiedStateGetter() { return { test: 1 }; },
-      parent: this.props.parent
+      provisioning: p,
+      intent: p.getIntentHandler(),
+      state: p.getState(),
+      parent: {},
     };
   }
 }
-
 
 describe('connect.tsx', () => {
   let init;
 
   beforeEach(() => {
-    init = (opt?: ConnectArgs) => {
+    init = (opt?: ConnectArgs<any, any, any, any>) => {
       const props = {};
-      const context = {};
-      const Component = connect(opt)(class TestComponent extends React.Component<any, any> {
-        constructor(p, c) {
-          super(p, c);
-          extend(props, p);
-          extend(context, c);
-        }
+      const Component = connect(opt)(
+        class TestComponent extends React.Component<any, any> {
+          constructor(p, c) {
+            super(p, c);
+            extend(props, p);
+          }
 
-        public render() {
-          return <div></div>;
-        }
-      });
+          public render() {
+            return <div />;
+          }
+        },
+      );
 
       return {
-        props, context, Component
+        props,
+        Component,
       };
     };
   });
 
   describe('connect', () => {
     it('should create context aware component.', () => {
-      const CONTEXT = { intent: 'ok', state: 'state', parent: 'parent' };
-      const { Component, context, props } = init();
-      const renderer = TestRenderer.create(<ContextProvider {...CONTEXT}><Component /></ContextProvider>);
-      expect(omit(context, 'unobservablifiedStateGetter')).to.be.deep.eq({ intent: 'ok', state: 'state', parent: 'parent' });
+      const { Component, props } = init();
+      const renderer = TestRenderer.create(
+        <ContextProvider>
+          <Component />
+        </ContextProvider>,
+      );
+      expect(props).to.be.deep.eq({ test: 1 });
     });
 
     it('should convert state to props', () => {
-      const { Component, context, props } = init({ mapStateToProps(s, p) { return { convertedValue: p.value }; } });
-      const renderer = TestRenderer.create(<Component value="1" />);
-      expect(props).to.be.deep.eq({ convertedValue: '1' });
+      const { Component, props } = init({
+        mapStateToProps(state) {
+          return { convertedProps: state.test };
+        },
+      });
+      const renderer = TestRenderer.create(
+        <ContextProvider>
+          <Component />
+        </ContextProvider>,
+      );
+      expect(props).to.be.deep.eq({ convertedProps: 1 });
     });
 
     it('should convert intent to props', () => {
-      const CONTEXT = { intent: 'intent', state: 'state', parent: 'parent' };
-      const { Component, context, props } = init({
-        mapIntentToProps(intent, getState, props) {
-          return { convertedValue: intent, state: getState() };
-        }
+      const { Component, props } = init({
+        mapIntentToProps(intent, state) {
+          return { convertedIntent: state.test };
+        },
+        mapStateToProps(state) {
+          return { convertedProps: state.test };
+        },
       });
-      const renderer = TestRenderer.create(<ContextProvider {...CONTEXT}><Component /></ContextProvider>);
-      expect(props).to.be.deep.eq({ convertedValue: 'intent', state: { test: 1 } });
+      const renderer = TestRenderer.create(
+        <ContextProvider>
+          <Component />
+        </ContextProvider>,
+      );
+      expect(props).to.be.deep.eq({ convertedProps: 1, convertedIntent: 1 });
     });
   });
 });

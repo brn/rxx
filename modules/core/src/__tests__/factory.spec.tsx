@@ -21,16 +21,20 @@ import { Observable, Subject } from 'rxjs';
 import * as React from 'react';
 import { render } from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
-import { Provider, ProviderContextType, directConnect } from '../provider';
-import { HandlerResponse, Handler } from '../../handler/handler';
-import { connect } from '../../decorators/connect';
-import { intent } from '../../intent/intent';
-import { Store, store } from '../../store/store';
+import {
+  Provider,
+  ProviderContextType,
+  directConnect,
+} from '../component/provider';
+import { HandlerResponse } from '../handler/handler';
+import { connect } from '../decorators/connect';
+import { intent } from '../intent/intent';
+import { Store, store } from '../store/store';
 import { expect } from 'chai';
-import { SubjectPayload } from '../../subject';
-import { scan, share, startWith, map, filter, tap } from 'rxjs/operators';
-import { makeApp } from '../../factory';
-import { StateHandler } from '../../handler/state-handler';
+import { SubjectPayload } from '../subject';
+import { scan, share, startWith, map, filter } from 'rxjs/operators';
+import { makeApp, makeView } from '../factory';
+import { reducer } from '../reducer';
 
 @intent
 class Intent {
@@ -254,14 +258,19 @@ const SubjectTestComponent = connect({
 );
 
 const WAIT_TIME_MS = 200;
-describe('provider.tsx', () => {
-  describe('Provider', () => {
+describe('factory.tsx', () => {
+  describe('makeView/makeApp', () => {
     it('should pass intent and store to children.', done => {
-      const instance: any = TestUtils.renderIntoDocument(
-        <Provider store={TestStore} intent={Intent}>
-          <Component />
-        </Provider>,
+      const view = makeView(
+        Component,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component<any>,
       );
+      const app = makeApp({});
+      const instance = view(app({}), {
+        store: TestStore,
+        intent: Intent,
+      });
+
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(
           instance,
@@ -275,11 +284,15 @@ describe('provider.tsx', () => {
     });
 
     it('should pass intent and store group to children.', done => {
-      const instance: any = TestUtils.renderIntoDocument(
-        <Provider store={[TestStore, TestStore2]} intent={Intent}>
-          <Component2 />
-        </Provider>,
+      const view = makeView(
+        <Component2 />,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component<any>,
       );
+      const app = makeApp({});
+      const instance = view(app({}), {
+        store: [TestStore, TestStore2],
+        intent: Intent,
+      });
       setTimeout(() => {
         const el1 = TestUtils.findRenderedDOMComponentWithClass(
           instance,
@@ -300,6 +313,13 @@ describe('provider.tsx', () => {
     });
 
     it('should pass intent and store to children if rerendered.', done => {
+      const view = makeView(<Component />);
+      const app = makeApp({});
+      const Rendered = view(app({}), {
+        store: TestStore,
+        intent: Intent,
+      });
+
       class X extends React.Component<any, any> {
         public render() {
           return null;
@@ -311,13 +331,7 @@ describe('provider.tsx', () => {
           return (
             <div className="root">
               <span className="button" onClick={e => this.handleClick()} />
-              {this.state.showComponent ? (
-                <Provider store={TestStore} intent={Intent}>
-                  <Component />
-                </Provider>
-              ) : (
-                <X />
-              )}
+              {this.state.showComponent ? <Rendered /> : <X />}
             </div>
           );
         }
@@ -348,11 +362,16 @@ describe('provider.tsx', () => {
     });
 
     it('should pass services', done => {
-      const instance: any = TestUtils.renderIntoDocument(
-        <Provider store={TestStore3} intent={Intent} service={{ foo: 10 }}>
-          <Component />
-        </Provider>,
+      const view = makeView(
+        <Component />,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component,
       );
+      const app = makeApp({});
+      const instance = view(app({}), {
+        store: TestStore3,
+        intent: Intent,
+        service: { foo: 10 },
+      });
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(
           instance,
@@ -372,12 +391,22 @@ describe('provider.tsx', () => {
             return <div>{this.props.children}</div>;
           }
         };
+        private Component: any;
+        constructor(p) {
+          super(p);
+          const view = makeView(() => (
+            <GParent.Component>{this.props.children}</GParent.Component>
+          ));
+          const app = makeApp({});
+
+          this.Component = view(app({}), {
+            store: TestStore,
+            intent: Intent,
+          });
+        }
+
         public render() {
-          return (
-            <Provider store={TestStore} intent={Intent}>
-              <GParent.Component>{this.props.children}</GParent.Component>
-            </Provider>
-          );
+          return <this.Component />;
         }
       };
 
@@ -387,12 +416,22 @@ describe('provider.tsx', () => {
             return <div>{this.props.children}</div>;
           }
         };
+        private Component: any;
+        constructor(p) {
+          super(p);
+          const view = makeView(() => (
+            <Parent.Component>{this.props.children}</Parent.Component>
+          ));
+          const app = makeApp({});
+
+          this.Component = view(app({}), {
+            store: TestStore2,
+            intent: Intent,
+          });
+        }
+
         public render() {
-          return (
-            <Provider store={TestStore2} intent={Intent}>
-              <Parent.Component>{this.props.children}</Parent.Component>
-            </Provider>
-          );
+          return <this.Component />;
         }
       };
 
@@ -421,12 +460,20 @@ describe('provider.tsx', () => {
           },
         );
 
+        private Component: any;
+        constructor(p) {
+          super(p);
+          const view = makeView(() => <Component.Component />);
+          const app = makeApp({});
+
+          this.Component = view(app({}), {
+            store: TestStore4,
+            intent: Intent4,
+          });
+        }
+
         public render() {
-          return (
-            <Provider store={TestStore4} intent={Intent4}>
-              <Component.Component />
-            </Provider>
-          );
+          return <this.Component />;
         }
       };
 
@@ -446,11 +493,15 @@ describe('provider.tsx', () => {
     });
 
     it('pass through payload from subject', done => {
-      const instance: any = TestUtils.renderIntoDocument(
-        <Provider store={TestStore} intent={Intent}>
-          <SubjectTestComponent />
-        </Provider>,
+      const app = makeApp({});
+      const view = makeView(
+        <SubjectTestComponent />,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component<any>,
       );
+      const instance = view(app({}), {
+        store: TestStore,
+        intent: Intent,
+      });
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(
           instance,
@@ -464,98 +515,13 @@ describe('provider.tsx', () => {
     });
 
     it('should accept state factories', done => {
-      const instance: any = TestUtils.renderIntoDocument(
-        <Provider app={makeApp({ test: testStore })({ test: 1 })}>
-          <Component />
-        </Provider>,
+      const app = makeApp({ test: testStore });
+      const view = makeView(
+        <Component />,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component<any>,
       );
-      setTimeout(() => {
-        const el = TestUtils.findRenderedDOMComponentWithClass(
-          instance,
-          'test-el',
-        );
-        expect(el.textContent).to.be.eq('1-1');
-        TestUtils.Simulate.click(el);
-        expect(el.textContent).to.be.eq('2-2');
-        done();
-      }, WAIT_TIME_MS);
-    });
-  });
 
-  describe('directConnect', () => {
-    it('should convert container component to component which can receive state by props.', done => {
-      const ConnectedComponent = directConnect(Component);
-      class Renderer extends React.Component<any, { test: number }> {
-        constructor(p) {
-          super(p);
-          this.state = { test: 1 };
-        }
-
-        public render() {
-          return (
-            <ConnectedComponent
-              state={this.state}
-              handlers={[
-                {
-                  test: ({ dispatch }) => {
-                    this.setState({ test: this.state.test + 1 }, () =>
-                      dispatch('test2'),
-                    );
-                  },
-                  test2: () => {
-                    this.setState({ test: this.state.test + 1 });
-                  },
-                },
-              ]}
-            />
-          );
-        }
-      }
-
-      const instance: any = TestUtils.renderIntoDocument(<Renderer />);
-      setTimeout(() => {
-        const el = TestUtils.findRenderedDOMComponentWithClass(
-          instance,
-          'test-el',
-        );
-        expect(el.textContent).to.be.eq('1-1');
-        TestUtils.Simulate.click(el);
-        const TIME = 300;
-        setTimeout(() => {
-          expect(el.textContent).to.be.eq('3-3');
-          done();
-        }, TIME);
-      }, WAIT_TIME_MS);
-    });
-
-    it('should convert container component to component which can receive state by props(subject).', done => {
-      const ConnectedComponent = directConnect(Component);
-      class Renderer extends React.Component<any, { test: number }> {
-        constructor(p) {
-          super(p);
-          this.state = { test: 1 };
-        }
-
-        public render() {
-          return (
-            <ConnectedComponent
-              app={makeApp({
-                test: (observable, initialState) => {
-                  return {
-                    view: observable.pipe(
-                      filter(args => args.type === 'test'),
-                      scan((acc, next) => acc + 1, initialState),
-                      startWith(initialState),
-                    ),
-                  };
-                },
-              })(this.state)}
-            />
-          );
-        }
-      }
-
-      const instance: any = TestUtils.renderIntoDocument(<Renderer />);
+      const instance = view(app({ test: 1 }));
       setTimeout(() => {
         const el = TestUtils.findRenderedDOMComponentWithClass(
           instance,
@@ -568,60 +534,60 @@ describe('provider.tsx', () => {
       }, WAIT_TIME_MS);
     });
 
-    it('should receive StateHandler.', done => {
-      const ConnectedComponent = directConnect(Component);
-      let pushed = false;
-      class TestHandler extends StateHandler {
-        public subscribe(props: { test: Observable<any> }) {
-          return props.test.subscribe(v => this.push('', ''));
-        }
-        public push(key: string, args: any) {
-          pushed = true;
-          return Promise.resolve();
-        }
-        public clone(...args: any[]): Handler {
-          return new TestHandler();
-        }
-      }
-      class Renderer extends React.Component<any, { test: number }> {
-        constructor(p) {
-          super(p);
-          this.state = { test: 1 };
-        }
+    it('should create observable', done => {
+      const Component = connect({
+        mapIntentToProps(intent) {
+          return {
+            onClick: intent.callback('test'),
+          };
+        },
+        mapStateToProps(state) {
+          return {
+            text: state.text,
+          };
+        },
+      })(
+        class Component extends React.Component<{
+          onClick(): void;
+          text: string;
+        }> {
+          public render() {
+            return (
+              <div className="foo" onClick={this.props.onClick}>
+                {this.props.text}
+              </div>
+            );
+          }
+        },
+      );
 
-        public render() {
-          return (
-            <ConnectedComponent
-              stateHandlers={{
-                test: new TestHandler(),
-              }}
-              app={makeApp({
-                test: (observable, initialState) => {
-                  return {
-                    view: observable.pipe(
-                      filter(args => args.type === 'test'),
-                      scan((acc, next) => acc + 1, initialState),
-                      startWith(initialState),
-                    ),
-                    test: observable,
-                  };
-                },
-              })(this.state)}
-            />
-          );
-        }
+      function stream(source: Observable<any>, initial) {
+        return {
+          view: reducer(
+            source,
+            (state, payload) => {
+              if (payload.type === 'test') {
+                return (state += '-clicked');
+              }
+            },
+            initial,
+          ),
+        };
       }
 
-      const instance: any = TestUtils.renderIntoDocument(<Renderer />);
+      const app = makeApp({ text: stream });
+      const view = makeView(
+        Component,
+        C => TestUtils.renderIntoDocument(<C />) as React.Component<any>,
+      );
+
+      const instance = view(app({ text: 'test' }));
+
       setTimeout(() => {
-        const el = TestUtils.findRenderedDOMComponentWithClass(
-          instance,
-          'test-el',
-        );
-        expect(el.textContent).to.be.eq('1-1');
+        const el = TestUtils.findRenderedDOMComponentWithClass(instance, 'foo');
+        expect(el.textContent).to.be.eq('test');
         TestUtils.Simulate.click(el);
-        expect(el.textContent).to.be.eq('2-2');
-        expect(pushed).to.be.true;
+        expect(el.textContent).to.be.eq('test-clicked');
         done();
       }, WAIT_TIME_MS);
     });

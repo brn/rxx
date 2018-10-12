@@ -27,7 +27,6 @@ import { combineTemplate } from './observable/combine-template';
 import { generateIntentHandler, IntentHandler } from './intent/intent-handler';
 import { SubjectTree } from './subject';
 import { ReduxDevTools, connectDevTools } from './devtools';
-import { SystemEvent } from './reducer';
 
 /**
  * Type definition of state which created by StoreGroup.
@@ -252,14 +251,8 @@ export class Provisioning<
             message.payload.type === 'JUMP_TO_STATE'
           ) {
             const state = JSON.parse(message.state);
-            this.notifyUpdateView(state);
-            this.subject.suspendDevtools();
-            this.subject.notify({
-              type: SystemEvent.REPLACE_STATE,
-              payload: { state: state },
-            });
+            this.notifyUpdate(state);
             this.subject.notify(state.__payload__);
-            this.subject.resumeDevtools();
           }
         }),
       );
