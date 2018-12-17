@@ -1,0 +1,74 @@
+{
+  "name": "@react-mvi/react",
+  "version": "2.0.0",
+  "description": "React MVI micro framework.",
+  "main": "index.js",
+  "jsnext:main": "lib/development/index.d.ts",
+  "types": "lib/cjs/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf lib",
+    "build": "ts-node -O '{\"module\": \"commonjs\"}' ../../scripts/build.ts",
+    "test": "NODE_ENV=test RMVI_TEST=1 jest --maxWorkers=$(node -e 'console.log(os.cpus().length)') --setupTestFrameworkScriptFile=../../scripts/vendor-register.js --verbose",
+    "clean:jest": "jest --clearCache",
+    "prepublish": "run-s test build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brn/react-mvi.git"
+  },
+  "keywords": [
+    "react.js",
+    "react",
+    "reactive",
+    "rx",
+    "rxjs",
+    "rfp",
+    "cyclejs",
+    "mvi",
+    "model-view-intent",
+    "redux",
+    "flux"
+  ],
+  "author": "Taketoshi Aono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brn/react-mvi/issues"
+  },
+  "homepage": "https://github.com/brn/react-mvi#readme",
+  "devDependencies": {
+    "@react-mvi/worker": "^2.0.0",
+    "@types/power-assert": "^1.5.0",
+    "@types/prop-types": "^15.5.6",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.9",
+    "@types/react-test-renderer": "^16.0.3",
+    "babel-preset-power-assert": "^3.0.0",
+    "jsdom-worker": "^0.1.0",
+    "node-fetch": "^2.3.0",
+    "power-assert": "^1.6.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-test-renderer": "^16.6.3"
+  },
+  "peerDependencies": {
+    "prop-types": ">= 15.6.2",
+    "react": ">= 16.6.0"
+  },
+  "resolutions": {
+    "@types/react": "16.0.20",
+    "type-detect": "4.0.3",
+    "minimist": "1.2.0",
+    "object-assign": "3.0.0",
+    "through2": "2.0.3",
+    "vinyl": "0.5.3",
+    "readable-stream": "2.2.9",
+    "inherits": "2.0.3",
+    "isarray": "1.0.0",
+    "string_decoder": "1.0.0",
+    "clone": "1.0.2",
+    "graceful-fs": "3.0.11",
+    "glob": "4.5.3",
+    "minimatch": "2.0.10",
+    "domelementtype": "1.3.0"
+  }
+}

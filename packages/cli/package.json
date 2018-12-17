@@ -1,0 +1,35 @@
+{
+  "name": "@react-mvi/cli",
+  "version": "1.0.10",
+  "description": "Commadline tools for react-mvi.",
+  "main": "lib/cli.js",
+  "bin": {
+    "rmvi": "lib/cli.js"
+  },
+  "scripts": {
+    "bundle": "npx tsc -p tsconfig.json --outDir lib",
+    "_test": "mkdir test && npm run bundle && npm link && cd test && rmvi init && rmvi test && cd ../ && rm -rf test",
+    "test-auto": "mkdir test && npm run bundle && npm link && cd test && rmvi new && rmvi test && cd ../ && rm -rf test",
+    "pub": "npm run bundle && npm publish --access public",
+    "build": "echo 'noop'"
+  },
+  "author": "brn(Taketoshi Aono)",
+  "license": "MIT",
+  "dependencies": {
+    "@types/colors": "^1.1.3",
+    "colors": "^1.1.2",
+    "commander": "^2.11.0",
+    "ejs": "^2.5.7",
+    "lodash.uniq": "^4.5.0",
+    "yargs": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.9.1",
+    "@types/ejs": "^2.3.33",
+    "@types/npm": "^2.0.28",
+    "@types/power-assert": "^1.5.0",
+    "@types/yargs": "^8.0.2",
+    "power-assert": "^1.6.1",
+    "typescript": "^2.4.2"
+  }
+}

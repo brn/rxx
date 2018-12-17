@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": false,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "jsx": "React",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "baseUrl": "./",
+    "importHelpers": true,
+    "alwaysStrict": true,
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["dom", "es5", "ES2015", "es2016", "es2017"],
+    "esModuleInterop": true,
+    "outDir": "lib"
+  },
+  "exclude": ["node_modules", "flycheck_*"]
+}

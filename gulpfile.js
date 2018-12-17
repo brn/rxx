@@ -231,7 +231,7 @@ gulp.task("copy-linked-core", ["unlink"], () => {
 gulp.task(
   "check-releasable",
   ["typescript-next"],
-  runKarma.bind(null, true, "PhantomJS")
+  runKarma.bind(null, true, "ChromeHeadless")
 );
 
 gulp.task("pre-publish-with-patch", ["check-releasable"], () => {
