@@ -24,7 +24,7 @@ function stream(source, initialState) {
   return {
     view: reducer(
       source,
-      ((states, payload) => {
+      (states, payload) => {
         switch (payload.type) {
           case 'COUNTER::PLUS':
             return { ...states, count: states.count + 1 };
@@ -33,7 +33,7 @@ function stream(source, initialState) {
           default:
             return states;
         }
-      }),
+      },
       initialState
     )
   }
