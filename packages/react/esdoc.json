@@ -1,0 +1,5 @@
+{
+  "source": "./lib/es2015",
+  "destination": "./esdoc",
+  "excludes": ["node_modules\\/.+"]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@react-mvi/worker",
+  "version": "2.0.0",
+  "description": "React MVI micro framework.",
+  "main": "index.js",
+  "types": "lib/development/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf lib",
+    "build": "ts-node -O '{\"module\": \"commonjs\"}' ../../scripts/build.ts",
+    "test": "NODE_ENV=test RMVI_TEST=1 jest --maxWorkers=$(node -e 'console.log(os.cpus().length)') --setupTestFrameworkScriptFile=../../scripts/vendor-register.js --verbose",
+    "clean:jest": "jest --clearCache",
+    "prepublish": "run-s test build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brn/react-mvi.git"
+  },
+  "keywords": [
+    "react.js",
+    "react",
+    "reactive",
+    "rx",
+    "rxjs",
+    "rfp",
+    "cyclejs",
+    "mvi",
+    "model-view-intent",
+    "redux",
+    "flux"
+  ],
+  "author": "Taketoshi Aono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brn/react-mvi/issues"
+  },
+  "homepage": "https://github.com/brn/react-mvi#readme",
+  "devDependencies": {
+    "@types/power-assert": "^1.5.0",
+    "power-assert": "^1.6.1",
+    "rxjs": "^6.3.3"
+  },
+  "peerDependencies": {
+    "rxjs": ">= 6.0.0 <= 6.3.3"
+  },
+  "resolutions": {}
+}

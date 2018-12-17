@@ -1,0 +1,40 @@
+{
+  "name": "<%= appName %>",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "dll": "run-s dll-prod dll-debug",
+    "dll-prod": "NODE_ENV=production node node_modules/.bin/webpack --config webpack.dll.config.js",
+    "dll-debug": "NODE_ENV=debug node node_modules/.bin/webpack --config webpack.dll.config.js",
+    "webpack": "NODE_ENV=production node node_modules/.bin/webpack",
+    "webpack-debug": "NODE_ENV=debug node node_modules/.bin/webpack",
+    "test": "NODE_ENV=debug karma start --single-run --browsers ChromeHeadless",
+    "debug": "NODE_ENV=debug node server.js",
+    "start": "NODE_ENV=production node server.js",
+    "clean": "rimraf dist",
+    "prebuild": "run-s clean dll-prod test",
+    "build": "run-s webpack",
+    "postbuild": "echo done"
+  },
+  <%if (isPrivate) {%>
+  "private": true,
+  <%}%>
+  "author": "<%= author %>",
+  "license": "<%= license %>",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {},
+  <%if (git.use && git.remote) {%>
+  "repository": {
+    "type": "git",
+    "url": "<%- git.remote %>"
+  },
+  <%}%>
+  "rmvi": {
+    "language": "<%if (language === 1) {%>ts<%} else {%>js<%}%>",
+    "additionalModules": <%- JSON.stringify(additionalModules, null, '  ') %>,
+    "packageManager": "<%- packageManager.name %>",
+    "installTypings": <%- installTypings %>
+  }
+}

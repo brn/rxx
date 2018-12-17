@@ -1,0 +1,42 @@
+/**
+ * @fileoverview
+ * @author Taketoshi Aono
+ */
+
+
+const path = require('path');
+const webpack = require('webpack');
+
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  entry: {
+    [PRODUCTION? 'vendor.production': 'vendor.development']: Object.keys(require('./package.json').dependencies)
+  },
+  devtool: PRODUCTION? 'inline-source-map': '',
+  output: {
+    filename: '[name].dll.js',
+    path: `${__dirname}/dll`,
+    library: 'vendor_library'
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      'Promise': 'es6-promise',
+      'Symbol': 'es6-symbol',
+      'fetch': 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch',
+      'Response': 'imports-loader?this=>global!exports-loader?global.Response!whatwg-fetch'
+    }),
+    new webpack.DllPlugin({
+      path: path.join(__dirname, 'dll', '[name]-manifest.json'),
+      name: 'vendor_library'
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': PRODUCTION? '"production"': '"debug"'
+    }),
+
+    ...(PRODUCTION? [
+      new webpack.optimize.UglifyJsPlugin(),
+    ]: [])
+  ]
+};

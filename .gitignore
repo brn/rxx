@@ -1,5 +1,7 @@
 jspm_packages
 node_modules
 post-install.lock
+lib
+.linked-core
 .karma.pid
 *.log

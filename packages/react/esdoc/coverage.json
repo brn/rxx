@@ -1,0 +1,130 @@
+{
+  "coverage": "70.89%",
+  "expectCount": 134,
+  "actualCount": 95,
+  "files": {
+    "es2015/di/abstract-module.js": {
+      "expectCount": 13,
+      "actualCount": 11,
+      "undocumentLines": [
+        24,
+        91
+      ]
+    },
+    "es2015/di/binding.js": {
+      "expectCount": 22,
+      "actualCount": 13,
+      "undocumentLines": [
+        23,
+        22,
+        98,
+        49,
+        48,
+        97,
+        85,
+        78,
+        51
+      ]
+    },
+    "es2015/component/context.js": {
+      "expectCount": 9,
+      "actualCount": 3,
+      "undocumentLines": [
+        116,
+        78,
+        85,
+        113,
+        110,
+        126
+      ]
+    },
+    "es2015/di/injector.js": {
+      "expectCount": 26,
+      "actualCount": 26,
+      "undocumentLines": []
+    },
+    "es2015/io/io.js": {
+      "expectCount": 19,
+      "actualCount": 9,
+      "undocumentLines": [
+        21,
+        37,
+        26,
+        69,
+        49,
+        44,
+        85,
+        72,
+        70,
+        50
+      ]
+    },
+    "es2015/di/method-proxy.js": {
+      "expectCount": 13,
+      "actualCount": 8,
+      "undocumentLines": [
+        32,
+        31,
+        33,
+        30,
+        34
+      ]
+    },
+    "es2015/component/subscriber.js": {
+      "expectCount": 19,
+      "actualCount": 16,
+      "undocumentLines": [
+        61,
+        76,
+        109
+      ]
+    },
+    "es2015/shims/symbol.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        19
+      ]
+    },
+    "es2015/component/tags.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        35
+      ]
+    },
+    "es2015/component/utils.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "es2015/di/inject.js": {
+      "expectCount": 4,
+      "actualCount": 4,
+      "undocumentLines": []
+    },
+    "es2015/env.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "es2015/di/intercept.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "es2015/utils.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "es2015/run.js": {
+      "expectCount": 2,
+      "actualCount": 0,
+      "undocumentLines": [
+        55,
+        29
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": false,
+    "jsx": "React",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "lib": ["dom", "es5", "es6", "es2016", "es2017"],
+    "noLib": false,
+    "baseUrl": "./",
+    "alwaysStrict": true
+  },
+  "exclude": [
+    "node_modules",
+    "lib",
+    "test"
+  ]
+}

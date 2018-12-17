@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= appName %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register('/dist/sw.js');
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app"></div>
+    <script type="text/javascript" src="/vendor.production.dll.js"></script>
+    <script type="text/javascript" src="/assets/app.js"></script>
+  </body>
+</html>

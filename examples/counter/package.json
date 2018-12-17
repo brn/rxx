@@ -4,129 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bundle": "node node_modules/.bin/webpack",
+    "start": "gulp serve"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0",
-    "jspm": "^0.17.0-beta.22"
-  },
-  "jspm": {
-    "name": "counter",
-    "main": "counter.js",
-    "dependencies": {
-      "@react-mvi/event": "npm:@react-mvi/event@^0.4.1",
-      "@react-mvi/http": "npm:@react-mvi/http@^0.4.4",
-      "ts": "github:frankwallis/plugin-typescript@^4.0.16"
-    },
-    "devDependencies": {
-      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
-    },
-    "peerDependencies": {
-      "/Users/a12360/react-mvi/core": "npm:@react-mvi/core@^0.4.0",
-      "@react-mvi/core": "npm:@react-mvi/core@^0.4.0",
-      "assert": "github:jspm/nodelibs-assert@^0.2.0-alpha",
-      "buffer": "github:jspm/nodelibs-buffer@^0.2.0-alpha",
-      "child_process": "github:jspm/nodelibs-child_process@^0.2.0-alpha",
-      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
-      "crypto": "github:jspm/nodelibs-crypto@^0.2.0-alpha",
-      "domain": "github:jspm/nodelibs-domain@^0.2.0-alpha",
-      "es6-promise": "npm:es6-promise@^3.2.1",
-      "es6-symbol": "npm:es6-symbol@^3.1.0",
-      "events": "npm:jspm-nodelibs-events@^0.2.0",
-      "fs": "github:jspm/nodelibs-fs@^0.2.0-alpha",
-      "http": "github:jspm/nodelibs-http@^0.2.0-alpha",
-      "https": "github:jspm/nodelibs-https@^0.2.0-alpha",
-      "lodash": "npm:lodash@^4.13.1",
-      "module": "github:jspm/nodelibs-module@^0.2.0-alpha",
-      "net": "github:jspm/nodelibs-net@^0.2.0-alpha",
-      "os": "github:jspm/nodelibs-os@^0.2.0-alpha",
-      "path": "github:jspm/nodelibs-path@^0.2.0-alpha",
-      "process": "github:jspm/nodelibs-process@^0.2.0-alpha",
-      "react": "npm:react@^15.4.2",
-      "react-dom": "npm:react-dom@^15.1.0",
-      "rxjs": "npm:rxjs@^5.0.3",
-      "stream": "github:jspm/nodelibs-stream@^0.2.0-alpha",
-      "string_decoder": "github:jspm/nodelibs-string_decoder@^0.2.0-alpha",
-      "url": "github:jspm/nodelibs-url@^0.2.0-alpha",
-      "util": "github:jspm/nodelibs-util@^0.2.0-alpha",
-      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
-      "whatwg-fetch": "npm:whatwg-fetch@^1.0.0",
-      "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
-    },
-    "overrides": {
-      "npm:browserify-zlib@0.1.4": {
-        "dependencies": {
-          "readable-stream": "^2.0.2",
-          "pako": "~0.2.0"
-        },
-        "map": {
-          "_stream_transform": "readable-stream/transform"
-        }
-      },
-      "npm:inherits@2.0.1": {
-        "ignore": [
-          "test.js"
-        ]
-      },
-      "npm:inherits@2.0.3": {
-        "ignore": [
-          "test.js"
-        ]
-      },
-      "npm:lodash@4.17.4": {
-        "map": {
-          "buffer": "@empty",
-          "process": "@empty"
-        }
-      },
-      "npm:mocha@2.5.1": {
-        "browser": "mocha",
-        "main": "mocha",
-        "meta": {
-          "mocha.js": {
-            "deps": [
-              "./mocha.css!"
-            ],
-            "exports": "Mocha"
-          }
-        },
-        "dependencies": {
-          "css": "*"
-        },
-        "registry": "jspm"
-      },
-      "npm:typescript@1.8.10": {
-        "browser": {},
-        "map": {
-          "buffer": "@empty",
-          "child_process": "@empty",
-          "fs": "@empty",
-          "path": "@empty",
-          "process": "@empty",
-          "readline": "@empty"
-        }
-      },
-      "npm:typescript@2.1.5": {
-        "browser": {},
-        "map": {
-          "buffer": "@empty",
-          "child_process": "@empty",
-          "fs": "@empty",
-          "path": "@empty",
-          "process": "@empty",
-          "readline": "@empty"
-        },
-        "dependencies": {
-          "source-map-support": "*"
-        }
-      }
-    }
+    "express": "^4.14.0"
   },
   "devDependencies": {
-    "rxjs": "^5.0.0-beta.10",
-    "serve-static": "^1.11.1"
+    "@react-mvi/core": "^1.0.0",
+    "@react-mvi/http": "^1.0.0",
+    "@types/react": "^15.6.0",
+    "@types/react-dom": "^15.5.1",
+    "awesome-typescript-loader": "^3.2.2",
+    "exports-loader": "^0.6.4",
+    "imports-loader": "^0.7.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "rxjs": "^5.4.2",
+    "serve-static": "^1.11.1",
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1"
   }
 }

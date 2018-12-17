@@ -1,0 +1,30 @@
+/**
+ * @fileoverview react-mvi generated store TEST.
+ */
+
+
+import { prepareTest } from '@react-mvi/testing';
+import { Observable } from 'rxjs/Rx';
+import { <%= classNamePrefix %>Store } from '../store';
+import { <%= classNamePrefix %>Intent } from '../../intents/intent';
+import { expect } from 'chai';
+
+
+describe('<%= classNamePrefix %>Store', () => {
+  let prepared;
+  beforeEach(() => {
+    prepared = prepareTest(<%= classNamePrefix %>Intent, <%= classNamePrefix %>Store);
+  });
+
+  describe('initialize().view.greeting', () => {
+    it('should send greet to stream.', done => {
+      const { store, mock } = prepared;
+      const { greeting } = store.initialize().view;
+      greeting.skip(1).subscribe(v => {
+        expect(v).to.be.eq('Hello World!');
+        done();
+      });
+      mock.send('onMounted', {});
+    });
+  });
+});
