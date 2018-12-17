@@ -116,9 +116,9 @@ npm install @react-mvi/core
 
 ## Requirements
 
-- react >= 15.0.0 <= 15.6.1
-- react-dom >= 15.0.0 <= 15.6.1
-- rxjs >= 5.0.0 <= 5.4.2
+- react >= 16.6.0
+- react-dom >= 16.6.0
+- rxjs >= 6.0.0 <= 6.3.3
 
 ## Modules
 
