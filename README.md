@@ -18,20 +18,24 @@ Inspired by
 
 import React from 'react';
 import { Observable } from 'rxjs';
-import { connect } from '@react-mvi/core';
+import { connect, reducer } from '@react-mvi/core';
 
 function stream(source, initialState) {
   return {
-    view: source.scan((states, payload) => {
-      switch (payload.type) {
-        case 'COUNTER::PLUS':
-          return { ...states, count: states.count + 1 };
-        case 'COUNTER::MINUS':
-          return { ...states, count: states.count - 1 };
-        default:
-          return states;
-      }
-    })
+    view: reducer(
+      source,
+      ((states, payload) => {
+        switch (payload.type) {
+          case 'COUNTER::PLUS':
+            return { ...states, count: states.count + 1 };
+          case 'COUNTER::MINUS':
+            return { ...states, count: states.count - 1 };
+          default:
+            return states;
+        }
+      }),
+      initialState
+    )
   }
 }
 
