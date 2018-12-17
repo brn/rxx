@@ -98,7 +98,7 @@ npm install @react-mvi/core
 ## Guide
 
 - Examples
-    - [Simple Counter Programe](./docs/basic_guide.md)
+    - [Simple Counter Program](./docs/basic_guide.md)
     - [Single Page Application with react-router](./docs/spa.md)
 - Basics
     - [Setup](./docs/setup.md)
