@@ -45,8 +45,8 @@ function stream(source, initialState) {
 @connect({
   mapIntentToProps(intent) {
     return {
-      onPlus: intent.callback('counter::plus'),
-      onMinus: intent.callback('counter::minus'),
+      onPlus: intent.callback('COUNTER::PLUS'),
+      onMinus: intent.callback('COUNTER::MINUS'),
     }
   },
   mapStateToProps(state) {
