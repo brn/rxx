@@ -1,6 +1,6 @@
 {
-  "name": "@react-mvi/cli",
-  "version": "1.0.10",
+  "name": "@hyper/cli",
+  "version": "1.0.0",
   "description": "Commadline tools for react-mvi.",
   "main": "lib/cli.js",
   "bin": {

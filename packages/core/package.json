@@ -1,6 +1,6 @@
 {
-  "name": "@react-mvi/core",
-  "version": "1.1.1",
+  "name": "@hyper/core",
+  "version": "1.0.0",
   "description": "React MVI micro framework.",
   "main": "lib/cjs/index.js",
   "jsnext:main": "lib/esnext/index.js",

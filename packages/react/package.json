@@ -1,6 +1,6 @@
 {
-  "name": "@react-mvi/react",
-  "version": "2.0.0",
+  "name": "@hyper/react",
+  "version": "1.0.0",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "jsnext:main": "lib/development/index.d.ts",
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "devDependencies": {
-    "@react-mvi/worker": "^2.0.0",
+    "@hyper/worker": "^1.0.0",
     "@types/power-assert": "^1.5.0",
     "@types/prop-types": "^15.5.6",
     "@types/react": "^16.7.17",

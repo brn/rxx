@@ -17,8 +17,8 @@
  * @author Taketoshi Aono
  */
 
-import { graceful } from '@react-mvi/testing';
-import { MethodInvocation } from '@react-mvi/worker';
+import { graceful } from '@hyper/testing';
+import { MethodInvocation } from '@hyper/worker';
 import { HttpHandler } from '../http-handler';
 import { HttpMethod, HttpConfig, ResponseType, HttpResponse } from '../types';
 import { HttpResponseImpl } from '../http-response';

@@ -1,6 +1,6 @@
 {
-  "name": "@react-mvi/testing",
-  "version": "2.1.1",
+  "name": "@hyper/testing",
+  "version": "1.0.0",
   "description": "Test module for React MVI.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "devDependencies": {
-    "@react-mvi/worker": "2.0.0",
+    "@hyper/worker": "1.0.0",
     "@types/power-assert": "^1.5.0",
     "@types/sinon": "^2.1.1",
     "power-assert": "^1.6.1",
