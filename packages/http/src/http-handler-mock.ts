@@ -8,7 +8,7 @@ import {
   HandlerResponse,
   StreamStore,
   Advices,
-} from '@react-mvi/worker';
+} from '@hyper/worker';
 import { HttpHandler } from './http-handler';
 
 /**

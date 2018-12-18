@@ -1,6 +1,6 @@
 {
-  "name": "@react-mvi/core",
-  "version": "1.1.1",
+  "name": "@hyper/core",
+  "version": "1.0.0",
   "description": "React MVI micro framework.",
   "main": "lib/cjs/index.js",
   "jsnext:main": "lib/esnext/index.js",
@@ -11,6 +11,9 @@
     "test": "NODE_ENV=test jest --maxWorkers=$(node -e 'console.log(os.cpus().length)') --setupTestFrameworkScriptFile=../../scripts/vendor-register.js --verbose",
     "clean:jest": "jest --clearCache",
     "prepublish": "run-s test build"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",

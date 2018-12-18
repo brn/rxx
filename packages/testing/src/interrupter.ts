@@ -8,7 +8,7 @@ import {
   SubjectPayload,
   Provisioning,
   UnObservablify,
-} from '@react-mvi/worker';
+} from '@hyper/worker';
 import { Subject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 

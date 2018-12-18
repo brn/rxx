@@ -3,7 +3,7 @@
  * @author Taketoshi Aono
  */
 
-import { StateHandlerData } from '@react-mvi/worker';
+import { StateHandlerData } from '@hyper/worker';
 
 /**
  * The methods of the Http request.

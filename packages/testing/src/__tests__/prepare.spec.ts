@@ -25,7 +25,7 @@ import {
   HandlerResponse,
   SubjectPayload,
   makeApp,
-} from '@react-mvi/worker';
+} from '@hyper/worker';
 import { Observable } from 'rxjs';
 import { share, mapTo, startWith, skip, filter, tap } from 'rxjs/operators';
 import { prepareTest, initAppTester, safeSubscribe } from '../prepare';
