@@ -11,6 +11,9 @@
     "clean:jest": "jest --clearCache",
     "prepublish": "run-s test build"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brn/react-mvi.git"

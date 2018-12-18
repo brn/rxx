@@ -10,6 +10,9 @@
     "test": "NODE_ENV=test RMVI_TEST=1 jest --maxWorkers=$(node -e 'console.log(os.cpus().length)') --setupTestFrameworkScriptFile=../../scripts/vendor-register.js --verbose",
     "clean:jest": "jest --clearCache"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brn/react-mvi.git"
