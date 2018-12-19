@@ -10,22 +10,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "@react-mvi/core": "^1.0.0",
     "@react-mvi/http": "^1.0.0",
-    "@types/react": "^15.6.0",
-    "@types/react-dom": "^15.5.1",
+    "@types/react": "^16.7.17",
+    "@types/react-dom": "^16.0.11",
     "awesome-typescript-loader": "^3.2.2",
-    "exports-loader": "^0.6.4",
-    "imports-loader": "^0.7.1",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "rxjs": "^5.4.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "rxjs": "^6.3.3",
     "serve-static": "^1.11.1",
-    "typescript": "^2.4.2",
-    "webpack": "^3.4.1"
+    "typescript": "^3.2.2",
+    "webpack": "^4.27.1"
   }
 }
