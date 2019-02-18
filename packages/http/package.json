@@ -37,8 +37,8 @@
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
   "devDependencies": {
-    "@hyper/testing": "^1.0.0",
     "@hyper/core": "^1.0.0",
+    "@hyper/testing": "^1.0.0",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
   }
