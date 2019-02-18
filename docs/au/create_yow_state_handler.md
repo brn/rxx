@@ -7,7 +7,7 @@ This section describe how you create your own StateHandler.
 ```typescript
 import {
   StateHandler
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   Observable,
   Subscription

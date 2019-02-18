@@ -1,6 +1,6 @@
 # DI Container
 
-react-mvi provide google guice based DI Container.
+rxx provide google guice based DI Container.
 
 ## Usage
 
@@ -12,7 +12,7 @@ Examples
 import {
   AbstractModule,
   inject
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 class Foo {
   @inject()
@@ -50,7 +50,7 @@ or
 import {
   AbstractModule,
   inject
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 class Foo {
   @inject()
@@ -86,7 +86,7 @@ Examples
 ```typescript
 import {
   Injector
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   Module,
   Foo
@@ -103,7 +103,7 @@ createModule pattern is become like below.
 ```typescript
 import {
   Injector
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   module,
   Foo
@@ -123,7 +123,7 @@ And if you want to inject to parameters, see below.
 ```typescript
 import {
   param
-} from '@react-mvi/core';
+} from '@rxx/core';
 class Foo {
   constructor(@param('foo') private foo)
 }
@@ -143,7 +143,7 @@ See below.
 import {
   intercept,
   createModule
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   cmodule,
   Foo
@@ -192,7 +192,7 @@ Foo
 
 Above examples show intercept method _doSomething_ by intercept decorator and FooInterceptor.
 
-## Work with react-mvi/core run or runner function.
+## Work with rxx/core run or runner function.
 
 run or runner function accept modules as arguments.
 

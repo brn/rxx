@@ -1,10 +1,10 @@
-# react-mvi
+# rxx
 
-react-mvi is Model-View-Intent based minimal framework with Reactjs and RxJS.
+rxx is Model-View-Intent based minimal framework with Reactjs and RxJS.
 
 - We built more redux user friendly Model-View-Intent framework than [cyclejs](http://cycle.js.org/).
 - Asynchronous process is no more problem, StateHandler make it easy and clean.
-- Command line tool has been prepared! as `@react-mvi/cli`
+- Command line tool has been prepared! as `@rxx/cli`
 
 Inspired by  
 [cyclejs](http://cycle.js.org/)  
@@ -18,7 +18,7 @@ Inspired by
 
 import React from 'react';
 import { Observable } from 'rxjs';
-import { connect, reducer } from '@react-mvi/core';
+import { connect, reducer } from '@rxx/core';
 
 function stream(source, initialState) {
   return {
@@ -82,7 +82,7 @@ render(
 
 
 ```
-npm install @react-mvi/cli -g
+npm install @rxx/cli -g
 rmvi init
 ```
 
@@ -91,7 +91,7 @@ or
 ### Manual installation
 
 ```
-npm install @react-mvi/core
+npm install @rxx/core
 ```
 
 
@@ -112,7 +112,7 @@ npm install @react-mvi/core
 
 ## Architecture
 
-![architecture](./images/react-mvi.png)
+![architecture](./images/rxx.png)
 
 ## Requirements
 
@@ -122,7 +122,7 @@ npm install @react-mvi/core
 
 ## Modules
 
-- [@react-mvi/core](modules/core)
-- [@react-mvi/http](modules/http)
-- [@react-mvi/testing](modules/testing)
-- [@react-mvi/cli](modules/cli)
+- [@rxx/core](modules/core)
+- [@rxx/http](modules/http)
+- [@rxx/testing](modules/testing)
+- [@rxx/cli](modules/cli)

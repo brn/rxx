@@ -2,7 +2,7 @@
 
 ## Create react component that connected to Provider.
 
-Root Component must connect Provider with `connect` decorator of `@react-mvi/core`;
+Root Component must connect Provider with `connect` decorator of `@rxx/core`;
 Component that decorated by connect could access some optional context and props.
 
 ### What is connect?
@@ -48,7 +48,7 @@ so you need to call connect as function.
 import {
   connect,
   PoviderContextType
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 export interface Props {
   ...

@@ -5,7 +5,7 @@
 ```typescript
 import {
   Provider
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   render
 } from 'react-dom';
@@ -38,4 +38,4 @@ render((
 ), document.querySelector('#app'));
 ```
 
-If you want to use react-router with react-mvi, create high-order component with Provider.
+If you want to use react-router with rxx, create high-order component with Provider.

@@ -11,7 +11,7 @@ So simply call `npm install` or `yarn install`.
 
 ```
 npm init # make package.json
-npm i @react-mvi/core @react-mvi/http rxjs react react-dom @types/react @types/react-dom es6-promise es6-symbol -D
+npm i @rxx/core @rxx/http rxjs react react-dom @types/react @types/react-dom es6-promise es6-symbol -D
 
 touch tsconfig.json
 ```
@@ -41,14 +41,14 @@ Skip if use example project.
 
 Now we make as like above.  
 But be careful of about only 'lib' section.  
-react-mvi need `Promise` type and `Symbol` type, so you need some Ecamascript lib.
+rxx need `Promise` type and `Symbol` type, so you need some Ecamascript lib.
 
 
 ## Let's Begin
 
 First of all, create index.tsx.
 
-This examples show basic implementations of react-mvi,
+This examples show basic implementations of rxx,
 
 so this example does not separate modules, all of implementations into index.tsx.
 
@@ -147,7 +147,7 @@ class HttpStore implements Store<ObservableHttpState> {
 }
 ```
 
-This HttpStore#initialize create Observable state that post request to 'localhost:8989' for @react-mvi/http.
+This HttpStore#initialize create Observable state that post request to 'localhost:8989' for @rxx/http.
 
 ##### 4. ViewStore
 
@@ -201,7 +201,7 @@ const View = connect({
 ```
 
 The View accept props that containing Observable, but React can't process props that containing Observables propery.  
-So we wrap ReactElement by react-mvi `Tags` that was renamed to 'T' and make it is able to process props that containing Observables.
+So we wrap ReactElement by rxx `Tags` that was renamed to 'T' and make it is able to process props that containing Observables.
 
 #### 6. Bootstrap
 

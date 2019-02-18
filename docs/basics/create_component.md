@@ -12,15 +12,15 @@ To share context, simply define context value at the root component
 and if you want to use context properties,  
 you simply add some required properties to child component.
 
-### In react-mvi
+### In rxx
 
-react-mvi use context system as well.  
-react-mvi context has some useful function or properties.  
+rxx use context system as well.  
+rxx context has some useful function or properties.  
 
 How do you create component which has context?
 
 The component which has created from `Provider` has root context,  
-so, only you need is create child component with `context` decorator function of `react-mvi/core`.
+so, only you need is create child component with `context` decorator function of `rxx/core`.
 
 *Exmaples*
 
@@ -28,7 +28,7 @@ so, only you need is create child component with `context` decorator function of
 import {
   context,
   ProviderContextType
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 export interface Props {
   ...
@@ -51,7 +51,7 @@ or
 import {
   view,
   ProviderContextType
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 export interface Props {
   ...

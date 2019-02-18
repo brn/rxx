@@ -2,8 +2,8 @@
 
 ## Create Store.
 
-react-mvi has store layer that has state of application.  
-Usually store class is called by react-mvi auto when you render `Provider` component.
+rxx has store layer that has state of application.  
+Usually store class is called by rxx auto when you render `Provider` component.
 
 ### Implements Store
 
@@ -15,7 +15,7 @@ Below case is most simple Store implementation.
 import {
   store,
   Store
-} from '@react-mvi/core';
+} from '@rxx/core';
 import {
   Observable
 } from 'rxjs/Rx';

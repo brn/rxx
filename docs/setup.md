@@ -1,11 +1,11 @@
 # Setup
 
-## Install @react-mvi/cli
+## Install @rxx/cli
 
-react-mvi has command line tools, so you simply install
+rxx has command line tools, so you simply install
 
 ```
-npm i @react-mvi/cli -D
+npm i @rxx/cli -D
 ```
 
 ## Setup

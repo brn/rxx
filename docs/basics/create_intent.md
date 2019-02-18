@@ -15,7 +15,7 @@ Below examples is most simple intent implementation.
 import {
   intent,
   HandlerResponse
-} from '@react-mvi/core';
+} from '@rxx/core';
 
 
 @intent
@@ -29,7 +29,7 @@ export class AppIntent {
 
 ```
 
-Intent must decorated by `intent` decorator of `@react-mvi/core`.  
+Intent must decorated by `intent` decorator of `@rxx/core`.  
 So `intent` decorator merge HandlerResponse to intent instance.  
 And only you need to implements is `intent.for(key: string)`.
 
