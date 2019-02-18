@@ -1,6 +1,6 @@
 {
   "name": "@hyper/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React MVI micro framework.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",

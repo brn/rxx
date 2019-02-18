@@ -1,6 +1,6 @@
 {
   "name": "@hyper/http",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Http IO module for hyper.",
   "main": "index.js",
   "types": "lib/index.d.ts",
@@ -37,8 +37,8 @@
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
   "devDependencies": {
-    "@hyper/core": "^1.0.0",
-    "@hyper/testing": "^1.0.0",
+    "@hyper/core": "^1.0.1",
+    "@hyper/testing": "^1.0.1",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
   },
