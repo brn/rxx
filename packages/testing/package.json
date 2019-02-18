@@ -44,5 +44,5 @@
     "@hyper/core": "1.0.0",
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
-  "gitHead": "6706509663ddf31b66f4e9d1e6b7542caaf32041"
+  "gitHead": "482085cb42358f7fe062c0c279d913dcde1a7854"
 }
