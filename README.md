@@ -80,16 +80,6 @@ render(
 
 ## Installation and setup
 
-
-```
-npm install @rxx/cli -g
-rmvi init
-```
-
-or
-
-### Manual installation
-
 ```
 npm install @rxx/core
 ```
