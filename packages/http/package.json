@@ -41,5 +41,6 @@
     "@hyper/testing": "^1.0.0",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
-  }
+  },
+  "gitHead": "3384a262312ff876a7a5fa8b1e7254a02bf84f41"
 }

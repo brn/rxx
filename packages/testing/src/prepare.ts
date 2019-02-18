@@ -38,6 +38,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { Mocker, MockManipulator } from './mocker';
 import { Interrupter } from './interrupter';
 import { share } from 'rxjs/operators';
+import { connectDevTools } from '@hyper/core/lib/development/devtools';
 
 export type Prepared<V, I = IntentConstructor> = {
   stores: Store<V>[];
@@ -81,6 +82,8 @@ export function prepareTest<
     __subject: null,
   };
   const provisioning = new Provisioning(
+    '',
+    {},
     isObject<{ [key: string]: IntentConstructor }>(IntentClass)
       ? (IntentClass as any)
       : { intent: IntentClass },
@@ -117,7 +120,7 @@ export function initAppTester<S, I>(
   initialState: I,
   opt: AppTesterOption = { states: {} },
 ): { input(type: string, payload?: any): void; output: S } {
-  const input = new SubjectTree();
+  const input = new SubjectTree(connectDevTools({ name: '', instanceId: '' }));
   const output = app(input.observable, initialState);
   input.setState(opt.states);
   return {
