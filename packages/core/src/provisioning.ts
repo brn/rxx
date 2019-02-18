@@ -197,7 +197,6 @@ export class Provisioning<
         );
       }
       this.cache!.intentInstance = intentInstance;
-
       const storeGroup = (this.cache!.storeGroup = new StoreGroup(
         intentInstance,
         this.storeConstructors,
