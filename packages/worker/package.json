@@ -45,5 +45,6 @@
   "peerDependencies": {
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
-  "resolutions": {}
+  "resolutions": {},
+  "gitHead": "086502f18991fae8ef33c98d2b08e5049ced6fc2"
 }

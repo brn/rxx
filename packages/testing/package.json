@@ -44,5 +44,5 @@
     "@rxx/core": "1.0.0",
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
-  "gitHead": "7e3f18854de3ea8655d8c05ea86962fca1e3fe7f"
+  "gitHead": "086502f18991fae8ef33c98d2b08e5049ced6fc2"
 }
