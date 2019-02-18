@@ -2,9 +2,8 @@
   "name": "@hyper/core",
   "version": "1.0.0",
   "description": "React MVI micro framework.",
-  "main": "lib/cjs/index.js",
-  "jsnext:main": "lib/esnext/index.js",
-  "types": "lib/cjs/index.d.ts",
+  "main": "index.js",
+  "types": "lib/development/index.d.ts",
   "scripts": {
     "prebuild": "rimraf lib",
     "build": "ts-node -O '{\"module\": \"commonjs\"}' ../../scripts/build.ts",

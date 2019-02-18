@@ -8,7 +8,7 @@ import {
   HandlerResponse,
   StreamStore,
   Advices,
-} from '@hyper/worker';
+} from '@hyper/core';
 import { HttpHandler } from './http-handler';
 
 /**

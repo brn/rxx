@@ -24,7 +24,7 @@ import {
   StateHandler,
   Advice,
   Advices,
-} from '@hyper/worker';
+} from '@hyper/core';
 import { Observable, Subscription, ConnectableObservable, Subject } from 'rxjs';
 import { HttpResponseImpl, HttpUploadProgressImpl } from './http-response';
 import { qs } from './qs';

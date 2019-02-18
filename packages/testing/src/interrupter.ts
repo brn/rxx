@@ -8,19 +8,19 @@ import {
   SubjectPayload,
   Provisioning,
   UnObservablify,
-} from '@hyper/worker';
+} from '@hyper/core';
 import { Subject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 export class Interrupter<S> {
   public observable = new Subject<UnObservablify<S>>();
-  private publisher: ReturnType<Provisioning['getPublisher']>;
+  private publisher: ReturnType<Provisioning<any>['getSubject']>;
 
-  constructor(private provisioning: Provisioning) {
+  constructor(private provisioning: Provisioning<any>) {
     this.provisioning.subscribe(state => {
       this.observable.next(state);
     });
-    this.publisher = this.provisioning.getPublisher();
+    this.publisher = this.provisioning.getSubject();
   }
 
   public toObservable(
@@ -41,7 +41,7 @@ export class Interrupter<S> {
   }
 
   public send<T>(type: string, payload: any = {}): void {
-    this.publisher(type, payload);
+    this.publisher.notify({ type, payload });
   }
 
   public subscribe(
@@ -59,7 +59,7 @@ export class Interrupter<S> {
     type: string,
   ): Promise<{ type: string; payload: any }> {
     return new Promise(resolve => {
-      this.publisher.subscribe(payload => resolve(payload));
+      this.provisioning.subscribe(payload => resolve(payload));
     });
   }
 }

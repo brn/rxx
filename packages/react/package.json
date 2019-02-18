@@ -1,6 +1,7 @@
 {
   "name": "@hyper/react",
   "version": "1.0.0",
+  "private": true,
   "description": "React MVI micro framework.",
   "main": "index.js",
   "jsnext:main": "lib/development/index.d.ts",

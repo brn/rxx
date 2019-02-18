@@ -1,0 +1,47 @@
+{
+  "name": "@hyper/worker-testing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Test module for React MVI.",
+  "main": "index.js",
+  "types": "lib/development/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf lib",
+    "build": "ts-node -O '{\"module\": \"commonjs\"}' ../../scripts/build.ts",
+    "test": "NODE_ENV=test RMVI_TEST=1 jest --maxWorkers=$(node -e 'console.log(os.cpus().length)') --setupTestFrameworkScriptFile=../../scripts/vendor-register.js --verbose",
+    "clean:jest": "jest --clearCache",
+    "prepublish": "run-s test build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brn/react-mvi.git"
+  },
+  "keywords": [
+    "react-mvi",
+    "react.js",
+    "react",
+    "reactive",
+    "rxjs",
+    "rfp"
+  ],
+  "author": "Taketoshi Aono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brn/react-mvi/issues"
+  },
+  "homepage": "https://github.com/brn/react-mvi#readme",
+  "devDependencies": {
+    "@hyper/worker": "1.0.0",
+    "@types/power-assert": "^1.5.0",
+    "@types/sinon": "^2.1.1",
+    "power-assert": "^1.6.1",
+    "rxjs": "^6.3.3"
+  },
+  "peerDependencies": {
+    "@react-mvi/worker": "^2.0.0",
+    "rxjs": ">= 6.0.0 <= 6.3.3"
+  }
+}
