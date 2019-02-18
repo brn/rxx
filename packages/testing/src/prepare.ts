@@ -33,12 +33,12 @@ import {
   makeApp,
   InitialStateFactory,
   SubjectTree,
-} from '@hyper/core';
+} from '@rxx/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Mocker, MockManipulator } from './mocker';
 import { Interrupter } from './interrupter';
 import { share } from 'rxjs/operators';
-import { connectDevTools } from '@hyper/core/lib/development/devtools';
+import { connectDevTools } from '@rxx/core/lib/development/devtools';
 
 export type Prepared<V, I = IntentConstructor> = {
   stores: Store<V>[];

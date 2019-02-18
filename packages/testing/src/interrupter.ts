@@ -8,7 +8,7 @@ import {
   SubjectPayload,
   Provisioning,
   UnObservablify,
-} from '@hyper/core';
+} from '@rxx/core';
 import { Subject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 

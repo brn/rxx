@@ -1,5 +1,5 @@
 {
-  "name": "@hyper/cli",
+  "name": "@rxx/cli",
   "version": "1.0.0",
   "private": true,
   "description": "Commadline tools for react-mvi.",

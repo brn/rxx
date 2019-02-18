@@ -1,5 +1,5 @@
 {
-  "name": "@hyper/worker",
+  "name": "@rxx/worker",
   "version": "1.0.0",
   "description": "React MVI micro framework.",
   "main": "index.js",

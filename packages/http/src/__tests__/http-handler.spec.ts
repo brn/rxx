@@ -17,8 +17,8 @@
  * @author Taketoshi Aono
  */
 
-import { graceful } from '@hyper/testing';
-import { MethodInvocation } from '@hyper/core';
+import { graceful } from '@rxx/testing';
+import { MethodInvocation } from '@rxx/core';
 import { HttpHandler } from '../http-handler';
 import { HttpMethod, HttpConfig, ResponseType, HttpResponse } from '../types';
 import { HttpResponseImpl } from '../http-response';

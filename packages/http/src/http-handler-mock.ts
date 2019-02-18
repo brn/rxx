@@ -3,12 +3,7 @@
  * @author Taketoshi Aono
  */
 
-import {
-  StateHandler,
-  HandlerResponse,
-  StreamStore,
-  Advices,
-} from '@hyper/core';
+import { StateHandler, HandlerResponse, StreamStore, Advices } from '@rxx/core';
 import { HttpHandler } from './http-handler';
 
 /**

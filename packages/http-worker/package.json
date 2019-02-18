@@ -1,5 +1,5 @@
 {
-  "name": "@hyper/http-worker",
+  "name": "@rxx/http-worker",
   "version": "1.0.1-alpha.2",
   "private": true,
   "description": "Http IO module for React MVI.",
@@ -33,12 +33,12 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "peerDependencies": {
-    "@hyper/worker": "^1.0.0",
+    "@rxx/worker": "^1.0.0",
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
   "devDependencies": {
-    "@hyper/testing": "^1.0.1-alpha.2",
-    "@hyper/worker": "^1.0.0",
+    "@rxx/testing": "^1.0.1-alpha.2",
+    "@rxx/worker": "^1.0.0",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
   }

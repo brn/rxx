@@ -52,7 +52,7 @@ export class PostInstalls {
   public static async update(pkg) {
     const modules = [];
     for (const dep in pkg.dependencies) {
-      if (dep.indexOf("@hyper") > -1) {
+      if (dep.indexOf("@rxx") > -1) {
         modules.push(dep);
       }
     }

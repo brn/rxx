@@ -33,7 +33,7 @@ import {
   makeApp,
   InitialStateFactory,
   SubjectTree,
-} from '@hyper/worker';
+} from '@rxx/worker';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Mocker, MockManipulator } from './mocker';
 import { Interrupter } from './interrupter';

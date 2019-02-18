@@ -37,9 +37,9 @@ const stdio = [0, 1, 2];
 /*tslint:enable:no-magic-numbers*/
 
 const DEPENDENCIES = [
-  "@hyper/core",
-  "@hyper/http",
-  "@hyper/testing",
+  "@rxx/core",
+  "@rxx/http",
+  "@rxx/testing",
   "react",
   "react-dom",
   "prop-types",

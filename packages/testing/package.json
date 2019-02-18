@@ -1,7 +1,7 @@
 {
-  "name": "@hyper/testing",
+  "name": "@rxx/testing",
   "version": "1.0.1-alpha.2",
-  "description": "Testing module for hyper.",
+  "description": "Testing module for rxx.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",
   "scripts": {
@@ -19,7 +19,7 @@
     "url": "git+https://github.com/brn/react-mvi.git"
   },
   "keywords": [
-    "hyper",
+    "rxx",
     "react-mvi",
     "react.js",
     "react",
@@ -34,15 +34,15 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "devDependencies": {
-    "@hyper/core": "^1.0.1-alpha.2",
+    "@rxx/core": "^1.0.1-alpha.2",
     "@types/power-assert": "^1.5.0",
     "@types/sinon": "^2.1.1",
     "power-assert": "^1.6.1",
     "rxjs": "^6.3.3"
   },
   "peerDependencies": {
-    "@hyper/core": "1.0.0",
+    "@rxx/core": "1.0.0",
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
-  "gitHead": "482085cb42358f7fe062c0c279d913dcde1a7854"
+  "gitHead": "7e3f18854de3ea8655d8c05ea86962fca1e3fe7f"
 }

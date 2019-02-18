@@ -3,7 +3,7 @@
  * @author Taketoshi Aono
  */
 
-import { StateHandlerData } from '@hyper/worker';
+import { StateHandlerData } from '@rxx/worker';
 
 /**
  * The methods of the Http request.

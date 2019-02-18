@@ -1,5 +1,5 @@
 {
-  "name": "@hyper/core",
+  "name": "@rxx/core",
   "version": "1.0.1-alpha.2",
   "description": "React MVI micro framework.",
   "main": "index.js",
@@ -19,6 +19,7 @@
     "url": "git+https://github.com/brn/react-mvi.git"
   },
   "keywords": [
+    "rxx",
     "react.js",
     "react",
     "reactive",
@@ -54,5 +55,5 @@
     "react": ">= 16.6.0",
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
-  "gitHead": "482085cb42358f7fe062c0c279d913dcde1a7854"
+  "gitHead": "7e3f18854de3ea8655d8c05ea86962fca1e3fe7f"
 }
