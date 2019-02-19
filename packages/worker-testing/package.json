@@ -1,6 +1,6 @@
 {
   "name": "@rxx/worker-testing",
-  "version": "1.0.1-alpha.0",
+  "version": "1.0.1-alpha.3",
   "private": true,
   "description": "Test module for React MVI.",
   "main": "index.js",
@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "devDependencies": {
-    "@rxx/worker": "^1.0.1-alpha.0",
+    "@rxx/worker": "^1.0.1-alpha.3",
     "@types/power-assert": "^1.5.0",
     "@types/sinon": "^2.1.1",
     "power-assert": "^1.6.1",
