@@ -22,7 +22,7 @@ import { StoreConstructor, Store, StateFactory } from './store/store';
 import { Intent, IntentClass, IntentConstructor } from './intent/intent';
 import { HandlerResponse, Handler } from './handler/handler';
 import { getHandlers, StateHandler } from './handler/state-handler';
-import { forIn, isArray, mapValues, mergeDeep } from './utils';
+import { forIn, isArray, mapValues } from './utils';
 import { combineTemplate } from './observable/combine-template';
 import { generateIntentHandler, IntentHandler } from './intent/intent-handler';
 import { SubjectTree } from './subject';
@@ -64,7 +64,7 @@ class StoreGroup implements Store<StoreGroupState> {
         const nextState = store.initialize!();
         this.storeInstances.push(store);
         if (nextState.view) {
-          state.view = mergeDeep(state.view, nextState.view);
+          state.view = { ...state.view, ...nextState.view };
         }
         for (const key in nextState) {
           if (key !== 'view') {
@@ -230,7 +230,7 @@ export class Provisioning<
             const parentState = this.context.provisioning.getState();
             for (const key in parentState) {
               if (state[key]) {
-                state[key] = mergeDeep(parentState[key], state[key]);
+                state[key] = { ...parentState[key], ...state[key] };
               } else {
                 state[key] = parentState[key];
               }
