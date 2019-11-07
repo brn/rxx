@@ -1,6 +1,6 @@
 {
   "name": "@rxx/http-worker",
-  "version": "1.0.1-alpha.7",
+  "version": "1.0.1-alpha.8",
   "private": true,
   "description": "Http IO module for React MVI.",
   "main": "index.js",
@@ -37,8 +37,8 @@
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
   "devDependencies": {
-    "@rxx/testing": "^1.0.1-alpha.7",
-    "@rxx/worker": "^1.0.1-alpha.7",
+    "@rxx/testing": "^1.0.1-alpha.8",
+    "@rxx/worker": "^1.0.1-alpha.8",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
   }
