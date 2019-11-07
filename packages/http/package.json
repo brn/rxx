@@ -1,6 +1,6 @@
 {
   "name": "@rxx/http",
-  "version": "1.0.1-alpha.5",
+  "version": "1.0.1-alpha.6",
   "description": "Http IO module for rxx.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",
@@ -37,8 +37,8 @@
     "rxjs": ">= 6.0.0 <= 6.3.3"
   },
   "devDependencies": {
-    "@rxx/core": "^1.0.1-1.0.1-alpha.5.0",
-    "@rxx/testing": "^1.0.1-1.0.1-alpha.5.0",
+    "@rxx/core": "^1.0.1-alpha.6",
+    "@rxx/testing": "^1.0.1-alpha.6",
     "@types/power-assert": "^1.5.0",
     "rxjs": "^6.3.3"
   },
