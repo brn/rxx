@@ -3,6 +3,7 @@
   "version": "1.0.1-alpha.5",
   "description": "React MVI micro framework.",
   "main": "index.js",
+  "private": true,
   "types": "lib/development/index.d.ts",
   "scripts": {
     "prebuild": "rimraf lib",
