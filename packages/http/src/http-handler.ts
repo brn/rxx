@@ -255,7 +255,7 @@ export class HttpHandler extends StateHandler {
           const ret = config.reduce!(httpResponse, this.state);
           this.notifyResponse(
             config,
-            e.type === UploadEventType.COMPLETE ? `${key}-ok` : `${key}-ng`,
+            httpResponse.ok ? `${key}-ok` : `${key}-ng`,
             httpResponse,
             ret,
             isComplete ? subjectsOK : subjectsNG,
