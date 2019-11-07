@@ -246,7 +246,7 @@ export class HttpHandler extends StateHandler {
             }
           });
           const httpResponse = new HttpResponseImpl(
-            e.type === UploadEventType.COMPLETE,
+            e.type === UploadEventType.COMPLETE && e.xhr.status < 400,
             e.xhr.status,
             headerMap,
             isComplete ? response : null,
