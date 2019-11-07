@@ -1,6 +1,6 @@
 {
   "name": "@rxx/http",
-  "version": "1.0.1-1.0.1-alpha.5.0",
+  "version": "1.0.1-alpha.5",
   "description": "Http IO module for rxx.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",
