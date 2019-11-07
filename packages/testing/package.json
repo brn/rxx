@@ -1,6 +1,6 @@
 {
   "name": "@rxx/testing",
-  "version": "1.0.1-alpha.4",
+  "version": "1.0.1-alpha.5",
   "description": "Testing module for rxx.",
   "main": "index.js",
   "types": "lib/development/index.d.ts",
@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/brn/react-mvi#readme",
   "devDependencies": {
-    "@rxx/core": "^1.0.1-alpha.4",
+    "@rxx/core": "^1.0.1-alpha.5",
     "@types/power-assert": "^1.5.0",
     "@types/sinon": "^2.1.1",
     "power-assert": "^1.6.1",
