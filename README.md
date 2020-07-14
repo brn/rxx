@@ -96,7 +96,7 @@ npm install @rxx/core
     - [Create component with context](./docs/basics/create_component.md)
     - [Create store](./docs/basics/create_store.md)
     - [Create intent](./docs/basics/create_intent.md)
-    - [StaeHandler](./docs/basics/state_handler.md)
+    - [StateHandler](./docs/basics/state_handler.md)
 - Advanced Usage
     - [Create your own StateHandler](./docs/au/create_yow_state_handler.md)
 
