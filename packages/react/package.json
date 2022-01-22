@@ -48,7 +48,7 @@
     "@types/react-test-renderer": "^16.0.3",
     "babel-preset-power-assert": "^3.0.0",
     "jsdom-worker": "^0.1.0",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^3.1.1",
     "power-assert": "^1.6.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
